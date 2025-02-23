@@ -1,0 +1,12 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: angular-lib
+title: Angular library
+description: Add angular library
+destination: angular/[name]
+variables:
+  name:
+    type: "string"
+    required: true
+    prompt: "Library name?"

@@ -1,0 +1,14 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: rust-app
+title: Rust application
+description: Add rust application
+destination: rust/[name]
+variables:
+  name:
+    type: "string"
+    required: true
+    default: "{{ project_slug }}"
+    prompt: "Application name?"
+    order: 1

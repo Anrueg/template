@@ -1,0 +1,17 @@
+$schema: "https://moonrepo.dev/schemas/tasks.json"
+
+{%- macro task(name, tpl, note) -%}
+  "{{ name }}":
+    description: "{{ note }}"
+    command: moon generate {{ tpl }}
+    local: true
+    options:
+      interactive: true
+{%- endmacro %}
+
+tasks:
+  {{ task('add-cmp', 'angular-app', 'Add angular app') }}
+
+  {{ task('add-svc', 'angular-svc', 'Add service') }}
+
+  {{ task('add-pipe', 'angular-pipe', 'Add pipe') }}

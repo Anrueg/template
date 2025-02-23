@@ -1,0 +1,96 @@
+{
+    "editor.rulers": [{{ line_width }}],
+    "[typescript][javascript][yaml][json][jsonc]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+
+    "scss.validate": false,
+    "stylelint.validate": ["scss"],
+    "[scss]": {
+        "editor.defaultFormatter": "stylelint.vscode-stylelint",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        }
+    },
+    "[html]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        }
+    },
+
+    "eslint.enable": true,
+    "eslint.format.enable": true,
+    "eslint.lintTask.enable": true,
+    "eslint.packageManager": "{{ package_manager }}",
+
+    "material-icon-theme.files.associations": {
+        "*.esdl": "edgedb",
+        "*.edgeql": "edgedb",
+        "*.tera": "tera"
+    },
+
+    "material-icon-theme.files.customClones":[
+        {
+            "name": "angular-ngsw-config",
+            "base": "angular",
+            "color": "deep-purple-400",
+            "fileNames": [
+                "ngsw-config.json"
+            ]
+        },
+        {
+            "name": "angular-ng-config",
+            "base": "angular",
+            "color": "deep-purple-400",
+            "fileNames": [
+                "ng-config.json"
+            ]
+        },
+        {
+            "name": "env-production",
+            "base": "tune",
+            "color": "red-500",
+            "fileNames": [
+                "_production.ts"
+            ]
+        },
+        {
+            "name": "env-development",
+            "base": "tune",
+            "color": "green-500",
+            "fileNames": [
+                "_development.ts"
+            ]
+        },
+        {
+            "name": "env-staging",
+            "base": "tune",
+            "color": "amber-500",
+            "fileNames": [
+                "_staging.ts"
+            ]
+        },
+        {
+            "name": "tera",
+            "base": "terraform",
+            "color": "blue-gray-500"
+        },
+        {
+            "name": "edgedb",
+            "base": "database",
+            "color": "indigo-500"
+        }
+    ],
+
+    "material-icon-theme.folders.associations": {
+        "rust": "rust",
+        "dbschema": "database",
+        "wizard": "terraform"
+    }
+}

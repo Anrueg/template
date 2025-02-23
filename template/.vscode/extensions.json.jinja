@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "moonrepo.moon-console",
+        "redhat.vscode-yaml"
+        {%- if frontend != 'skip' -%},
+        "dbaeumer.vscode-eslint",
+        "stylelint.vscode-stylelint"
+        {%- endif -%}
+        {%- if frontend == 'angular' -%},
+        "angular.ng-template"
+        {%- endif -%}
+        {%- if backend == 'rust' -%},
+        "dustypomerleau.rust-syntax",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml"
+        {%- endif -%}
+    ]
+}

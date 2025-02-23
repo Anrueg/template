@@ -1,0 +1,44 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+language: edgedb
+
+project:
+  name: dbschema
+  description: "Database schema"
+
+stack: backend
+tags: [database, model]
+type: configuration
+
+fileGroups:
+  sources:
+    - "**/*.esdl"
+
+  migrations:
+    - migrations/*.edgeql"
+
+tasks:
+  migrate:
+    deps: [create-migration, apply-migration]
+    options:
+      runDepsInParallel: false
+
+  create-migration:
+    command: edgedb migration create
+    options:
+      runFromWorkspaceRoot: true
+      internal: true
+
+  apply-migration:
+    command: edgedb migration apply
+    options:
+      runFromWorkspaceRoot: true
+      internal: true
+
+  start:
+    command: docker compose up edgedb --no-log-prefix
+    local: true
+    preset: server
+    options:
+      runFromWorkspaceRoot: true
+      persistent: true

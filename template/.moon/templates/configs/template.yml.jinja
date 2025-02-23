@@ -1,0 +1,23 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+title: configs
+description: configs
+
+variables:
+  {% for k in _copier_answers.keys() | sort %}
+  {%- set v = _copier_answers[k] -%}
+  {%- if not k.startswith('_') and (v is number or v is string or v is boolean) -%}
+  {{ k | quote }}:
+    {%- if v is string %}
+    default: {{ v | to_json }}
+    type: string
+    {%- elif v is number and v is not boolean %}
+    default: {{ v | to_json }}
+    type: number
+    {%- elif v is boolean %}
+    default: {{ v | to_json }}
+    type: boolean
+    {%- endif %}
+    internal: true
+  {% endif -%}
+  {% endfor %}

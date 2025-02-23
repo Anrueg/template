@@ -1,0 +1,9 @@
+[package]
+name = "{{ name }}"
+version = "0.0.1"
+
+[profile.release]
+lto = true
+
+[dependencies]
+dotenv = { workspace = true }

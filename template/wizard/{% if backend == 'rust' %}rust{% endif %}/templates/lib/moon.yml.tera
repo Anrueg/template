@@ -1,0 +1,13 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+id: "rust/{{ name }}"
+
+project:
+  name: "{{ name }}"
+  description: "Rust library: {{ name }}"
+
+type: library
+stack: backend
+language: rust
+toolchain:
+  default: rust

@@ -1,0 +1,33 @@
+$schema: "https://moonrepo.dev/schemas/tasks.json"
+
+taskOptions:
+  windowsShell: pwsh
+  envFile:
+    - /.env
+    - /.moon/.env.answers
+
+implicitDeps:
+  - "^:build"
+
+fileGroups:
+  eslint:
+    - "**/*.{ts,tsx,json,json5,yml,yaml,toml}"
+
+  stylelint:
+    - "**/*.{css,scss,sass,less}"
+
+tasks:
+  runx:
+    command: "$taskToolchain $workspaceRoot/.moon/utils/task-runner.ts"
+    toolchain: "{{ frontend_toolchain }}"
+    local: true
+    options:
+      interactive: true
+      cache: false
+      internal: true
+
+  eslint:
+    command: echo @globs(eslint)
+
+  stylelint:
+    command: noop

@@ -1,0 +1,4 @@
+# Code generators
+
+> [!CAUTION]
+> DO NOT EDIT FILES IN THIS FOLDER

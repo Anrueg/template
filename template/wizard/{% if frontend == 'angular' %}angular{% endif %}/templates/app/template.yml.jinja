@@ -1,0 +1,28 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: angular-app
+title: Angular application
+description: Add angular application
+destination: angular/[name]
+variables:
+  name:
+    type: "string"
+    required: true
+    default: "{{ project_slug }}"
+    prompt: "Application name?"
+    order: 1
+
+  # prefix:
+  #   type: "string"
+  #   required: true
+  #   default: "{{ project_abbrev }}"
+  #   prompt: "Selector prefix?"
+  #   order: 2
+
+  service_worker:
+    type: "boolean"
+    required: true
+    default: true
+    prompt: "Add service worker?"
+    order: 2

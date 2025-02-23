@@ -1,0 +1,21 @@
+frontend:
+  help: "Frontend framework"
+  required: true
+  type: str
+  choices:
+    Angular: angular
+    Skip: skip
+
+frontend_toolchain:
+  when: "{{ frontend != 'skip' }}"
+  help: "Frontend toolchain"
+  required: true
+  type: str
+  choices: [bun]
+
+frontend_ns:
+  when: "{{ frontend != 'skip' }}"
+  help: Frontend package namespace (@namespace/*)
+  type: str
+  required: true
+  default: "{{ project_slug }}"

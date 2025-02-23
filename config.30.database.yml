@@ -1,0 +1,40 @@
+database:
+  help: Database
+  required: true
+  type: str
+  choices:
+    EdgeDB: edgedb
+    Postgres: postgres
+    Skip: skip
+
+database_host:
+  when: "{{ databse != 'skip' }}"
+  help: "Databse host"
+  required: true
+  type: str
+  default: localhost
+
+database_port:
+  when: "{{ databse != 'skip' }}"
+  help: "Databse port"
+  required: true
+  type: int
+  default: |
+    {%- if database == 'edgedb' -%}5656{%- endif -%}
+    {%- if database == 'postgres' -%}5432{%- endif -%}
+
+database_user:
+  when: "{{ databse != 'skip' }}"
+  type: str
+  help: "Databse user"
+  default: |
+    {%- if database == 'edgedb' -%}edgedb{%- endif -%}
+    {%- if database == 'postgres' -%}postgres{%- endif -%}
+  required: true
+
+database_password:
+  when: "{{ databse != 'skip' }}"
+  type: str
+  help: "Databse password"
+  default: "{{ database_user }}"
+  required: true

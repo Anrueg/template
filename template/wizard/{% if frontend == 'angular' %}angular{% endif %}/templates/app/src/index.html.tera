@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Application title</title>
+    <base href="/" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, interactive-widget=resizes-content" />
+</head>
+
+<body>
+    <{{ name | lower }}></{{ name | lower }}>
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+
+</html>

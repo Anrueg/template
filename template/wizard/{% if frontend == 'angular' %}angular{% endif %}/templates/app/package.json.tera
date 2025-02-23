@@ -1,0 +1,4 @@
+{
+    "name": "@{{ project_slug }}/{{ name }}",
+    "version": "0.0.1"
+}

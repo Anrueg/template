@@ -1,0 +1,54 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+id: wizard
+type: scaffolding
+language: typescript
+project:
+  name: "Wizard"
+  description: "Code generation templates"
+
+{% macro generator_task(name, tpl, post, note) -%}
+  "{{ name }}":
+    description: "{{ note }}"
+    {% if post -%}
+    script: moon generate {{ tpl }} && moon run {{ post }} && moon run :format --affected
+    {%- else -%}
+    command: moon generate {{ tpl }}
+    {%- endif %}
+    platform: system
+    toolchain: system
+    local: true
+    options:
+      runFromWorkspaceRoot: true
+      interactive: true
+{%- endmacro %}
+
+tasks:
+  {% if frontend == 'angular' -%}
+  sync-angular:
+    description: Sync angular configs from project & moon configs
+    command: $taskToolchain wizard/angular/script/sync-config.ts
+    toolchain: "{{ frontend_toolchain }}"
+    inputs:
+      - /angular/*/ng-config.json
+    outputs:
+      - /angular.json
+      - /tsconfig.base.json
+    options:
+      runFromWorkspaceRoot: true
+      mutex: wizard-sync-angular
+
+  {{ generator_task('ng-app', 'angular-app', 'wizard:sync-angular', 'Add angular app') }}
+
+  {{ generator_task('ng-lib', 'angular-lib', 'wizard:sync-angular', 'Add angular lib') }}
+  {%- endif %}
+
+  {% if backend == 'rust' -%}
+  sync-rust:
+    description: Sync rust configs from project & moon configs
+    command: noop
+
+  {{ generator_task('rust-app', 'rust-app', 'wizard:sync-rust', 'Add rust app') }}
+
+  {{ generator_task('rust-lib', 'rust-lib', 'wizard:sync-rust', 'Add rust lib') }}
+  {%- endif %}

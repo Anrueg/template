@@ -1,0 +1,13 @@
+versionGroups:
+  - dependencies: ["@{{ project_slug }}/**"]
+    dependencyTypes: ["!local"]
+    pinVersion: workspace:*
+    label: "@{{ project_slug }} packages should only be under peerDependencies with workspace:*"
+
+sortFirst:
+  - name
+  - version
+  - author
+  - description
+  - publishConfig
+  - scripts

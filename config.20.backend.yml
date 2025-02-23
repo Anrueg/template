@@ -1,0 +1,7 @@
+backend:
+  type: str
+  help: "Backend framework"
+  required: true
+  choices:
+    Rust: rust
+    Skip: skip

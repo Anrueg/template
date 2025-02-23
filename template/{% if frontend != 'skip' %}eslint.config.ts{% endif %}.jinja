@@ -1,0 +1,11 @@
+import base from "./eslint.config.base"
+import type { Linter } from "eslint"
+import globals from "globals"
+
+export default [
+    ...base,
+    {
+        files: ["**/*.ts", "**/*.tsx"],
+        languageOptions: { globals: globals.node },
+    },
+] satisfies Linter.Config[]

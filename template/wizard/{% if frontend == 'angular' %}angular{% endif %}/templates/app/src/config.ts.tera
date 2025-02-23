@@ -1,0 +1,30 @@
+import { registerLocaleData } from "@angular/common"
+import { provideHttpClient, withFetch, withInterceptorsFromDi } from "@angular/common/http"
+import LocaleHU from "@angular/common/locales/hu"
+import { type ApplicationConfig, LOCALE_ID, provideExperimentalZonelessChangeDetection } from "@angular/core"
+import { provideAnimations } from "@angular/platform-browser/animations"
+{% if service_worker -%}
+import { provideServiceWorker } from "@angular/service-worker"
+{%- endif %}
+
+import { provideNgIconsConfig } from "@ng-icons/core"
+
+import { EnableServiceWorker } from "./environment"
+
+registerLocaleData(LocaleHU)
+
+export const appConfig: ApplicationConfig = {
+    providers: [
+        provideExperimentalZonelessChangeDetection(),
+        { provide: LOCALE_ID, useValue: "hu" },
+        provideAnimations(),
+        {% if service_worker -%}
+        provideServiceWorker("ngsw-worker.js", {
+            enabled: EnableServiceWorker,
+            registrationStrategy: "registerImmediately"
+        }),
+        {%- endif %}
+        provideHttpClient(withFetch(), withInterceptorsFromDi()),
+        provideNgIconsConfig({ size: "inherit" })
+    ]
+}

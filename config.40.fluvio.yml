@@ -1,0 +1,5 @@
+fluvio_enabled:
+  help: "Using fluvio?"
+  required: true
+  type: bool
+  default: true

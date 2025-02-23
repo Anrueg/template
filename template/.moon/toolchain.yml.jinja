@@ -1,0 +1,36 @@
+$schema: "https://moonrepo.dev/schemas/toolchain.json"
+
+{% if frontend_toolchain == "bun" -%}
+bun:
+    version: latest
+    dependencyVersionFormat: workspace
+    inferTasksFromScripts: false
+    rootPackageOnly: true
+    syncProjectWorkspaceDependencies: true
+{%- endif  %}
+
+node:
+  packageManager: {{ frontend_toolchain }}
+  dependencyVersionFormat: workspace
+  inferTasksFromScripts: false
+  rootPackageOnly: true
+  syncProjectWorkspaceDependencies: true
+  {{ frontend_toolchain }}:
+    version: latest
+
+typescript:
+    createMissingConfig: false
+    projectConfigFileName: tsconfig.json
+    rootConfigFileName: tsconfig.projects.json
+    rootOptionsConfigFileName: tsconfig.base.json
+    routeOutDirToCache: false
+    syncProjectReferences: false
+    syncProjectReferencesToPaths: false
+    includeProjectReferenceSources: false
+
+{% if backend == 'rust' -%}
+rust:
+    syncToolchainConfig: true
+    bins:
+        - 'cargo-nextest'
+{% endif %}

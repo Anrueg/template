@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "anrueg://ng-config.schema.json",
+  "title": "Angular CLI Project Configuration",
+  "$ref": "../../node_modules/@angular/cli/lib/config/schema.json#/definitions/project"
+}

@@ -1,0 +1,15 @@
+import { ChangeDetectionStrategy, Component } from "@angular/core"
+
+@Component({
+    selector: "{{ name | lower }}",
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: [
+        `
+            :host {
+                display: block;
+            }
+        `
+    ],
+    template: "<h1>It works!</h1>",
+})
+export class Application { }

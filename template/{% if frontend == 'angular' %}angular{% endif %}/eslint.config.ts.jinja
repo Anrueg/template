@@ -1,0 +1,12 @@
+import base from "../eslint.config"
+import type { Linter } from "eslint"
+import globals from "globals"
+
+export default [
+    ...base,
+    {
+        files: ["**/*.ts", "**/*.tsx"],
+        languageOptions: { globals: globals.browser },
+    },
+    // TODO: angular eslint
+]  satisfies Linter.Config[]

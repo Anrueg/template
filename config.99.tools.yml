@@ -1,0 +1,5 @@
+tools_add:
+  help: "Add tools folder"
+  required: true
+  type: bool
+  default: true

@@ -1,0 +1,9 @@
+{% macro abbrev(value) -%}
+    {% set result = [] %}
+    {%- for v in value -%}
+        {%- if v.isupper() or (loop.index0 > 0 and value[loop.index0 - 1].isspace()) -%}
+            {%- set x = result.append(v) -%}
+        {%- endif -%}
+    {%- endfor -%}
+    {{ result | join }}
+{%- endmacro %}

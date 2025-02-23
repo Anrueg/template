@@ -1,0 +1,38 @@
+project_name:
+  type: str
+  help: "Project name"
+  required: true
+
+project_slug:
+  type: str
+  help: "Project slug"
+  required: true
+  default: "{{ project_name | slug | lower }}"
+  validator: >-
+    {% if not (project_slug | regex_search('^[a-z][a-z0-9\-]+$')) %}
+    Project slug must start with a letter, followed one or more letters, digits or dashes all lowercase.
+    {% endif %}
+
+project_abbrev:
+  help: "Project abbrevation"
+  required: true
+  type: str
+  default: "{%- from 'macros.jinja' import abbrev -%}{{ abbrev(project_name) | lower }}"
+  validator: >-
+    {% if not (project_abbrev | regex_search('^[a-z][a-z]+$')) %}
+    Project abbrevation must be alphabetical and minimum of two characters
+    {% endif %}
+
+default_branch:
+  type: str
+  help: "Default branch name"
+  default: main
+  validator: >-
+    {% if not (default_branch | regex_search('^[a-z][a-z0-9\-]+$')) %}
+    default_branch must start with a letter, followed one or more letters, digits or dashes all lowercase.
+    {% endif %}
+
+line_width:
+  type: int
+  help: "Line width"
+  default: 120

@@ -1,0 +1,82 @@
+---
+!include ./config.*.yml
+---
+_min_copier_version: "9.5.0"
+
+_message_before_copy: |
+  Thanks for generating a project using our template.
+
+  You'll be asked a series of questions whose answers will be used to
+  generate a tailored project for you.
+
+_subdirectory: template
+
+_jinja_extensions:
+  - jinja2_slug.SlugExtension
+
+_tasks:
+  # - command: powershell -c "irm https://moonrepo.dev/install/moon.ps1 | iex"
+  #   when: "{{ _copier_conf.os == 'windows' }}"
+
+  - git init --initial-branch={{ default_branch }}
+
+  - >
+    git log --pretty=format:"%H" -n 1
+    || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
+
+  - command: >
+      {{ frontend_toolchain }} add -d
+      @types/{{ frontend_toolchain }}
+      jiti
+      eslint
+      globals
+      prettier
+      typescript-eslint
+      @typescript-eslint/eslint-plugin
+      @typescript-eslint/parser
+      eslint-plugin-prettier
+      eslint-config-prettier
+      eslint-plugin-unused-imports
+      @trivago/prettier-plugin-sort-imports
+      @stylistic/eslint-plugin-ts
+      @stylistic/eslint-plugin-js
+      jsonc-eslint-parser
+      eslint-plugin-jsonc
+      yaml-eslint-parser
+      eslint-plugin-yml
+      toml-eslint-parser
+      eslint-plugin-toml
+      stylelint
+      stylelint-config-standard-scss
+      stylelint-prettier
+    when: "{{ frontend != 'skip' }}"
+
+  - command: >
+      {{ frontend_toolchain }} add -d
+      @angular-eslint/eslint-plugin
+      @angular-eslint/eslint-plugin-template
+      @angular-eslint/template-parser
+      typescript
+      @angular/cli
+      @angular/compiler-cli
+      @angular-devkit/build-angular
+      ng-packagr
+      yaml
+      && {{ frontend_toolchain }} add
+      @angular/animations
+      @angular/common
+      @angular/compiler
+      @angular/core
+      @angular/forms
+      @angular/platform-browser
+      @angular/platform-browser-dynamic
+      @angular/router
+      @angular/service-worker
+      rxjs
+      tslib
+      @ng-icons/core
+    when: "{{ frontend == 'angular' }}"
+
+  # TODO ONLY ON UPGRADE
+  # - command: "{{ frontend_toolchain }} install --force --no-frozen-lockfile"
+  #   when: "{{ frontend != 'skip' }}"

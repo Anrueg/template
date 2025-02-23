@@ -1,0 +1,14 @@
+[workspace]
+members = ["{{ backend }}/*"]
+
+# Dependency management:
+#
+# in workspace Cargo.toml
+# [workspace.dependencies]
+# dotenv = "0.15.0"
+#
+# in package Cargo.toml
+# [dependencies]
+# dotenv = { workspace = true }
+[workspace.dependencies]
+dotenv = "0.15.0"

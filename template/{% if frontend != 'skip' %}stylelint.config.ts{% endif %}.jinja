@@ -1,0 +1,13 @@
+import type { Config } from "stylelint"
+
+export default {
+    extends: ["stylelint-config-standard-scss", "stylelint-prettier/recommended"],
+    rules: {
+        "prettier/prettier": [
+            true,
+            {
+                semi: true,
+                trailingComma: "none"
+            }]
+    }
+} satisfies Config
