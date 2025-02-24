@@ -6,6 +6,13 @@ export default [
     ...base,
     {
         files: ["**/*.ts", "**/*.tsx"],
-        languageOptions: { globals: globals.node },
+        languageOptions: {
+            globals: globals.node,
+            parserOptions: {
+                projectService: {
+                    allowDefaultProject: ["*.ts"],
+                }
+            },
+        },
     },
 ] satisfies Linter.Config[]

@@ -7,3 +7,13 @@
     {%- endfor -%}
     {{ result | join }}
 {%- endmacro %}
+
+
+{% macro eslint_extensions(extra=None) -%}
+{{ '{' }}ts,tsx,json,jsonc,json5,yml,yaml,toml{% if extra %},{{ extra }}{% endif %}{{ '}' }}
+{%- endmacro %}
+
+
+{% macro stylelint_extensions(extra=None) -%}
+{{ '{' }}css,scss,sass,less{% if extra %},{{ extra }}{% endif %}{{ '}' }}
+{%- endmacro %}

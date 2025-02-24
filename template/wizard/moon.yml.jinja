@@ -1,3 +1,5 @@
+{%- from 'macros.jinja' import eslint_extensions -%}
+
 $schema: "https://moonrepo.dev/schemas/project.json"
 
 id: wizard
@@ -7,14 +9,18 @@ project:
   name: "Wizard"
   description: "Code generation templates"
 
+fileGroups:
+  eslint:
+    - "**/*.{{ eslint_extensions() }}"
+    - "/*.{{ eslint_extensions() }}"
+    - "/.moon/**/*.{{ eslint_extensions() }}"
+    - "!/.moon/cache/**/*"
+
+
 {% macro generator_task(name, tpl, post, note) -%}
   "{{ name }}":
     description: "{{ note }}"
-    {% if post -%}
-    script: moon generate {{ tpl }} && moon run {{ post }} && moon run :format --affected
-    {%- else -%}
-    command: moon generate {{ tpl }}
-    {%- endif %}
+    script: moon generate {{ tpl }}{% if post -%} && moon run {{ post }}{% endif %} && moon :format
     platform: system
     toolchain: system
     local: true
@@ -52,3 +58,9 @@ tasks:
 
   {{ generator_task('rust-lib', 'rust-lib', 'wizard:sync-rust', 'Add rust lib') }}
   {%- endif %}
+
+  format:
+    command: noop
+    deps: ["~:eslint-fix", "~:stylelint-fix"]
+    options:
+      runDepsInParallel: false

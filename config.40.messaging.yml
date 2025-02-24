@@ -1,0 +1,8 @@
+messaging:
+  help: "Messaging?"
+  required: true
+  type: str
+  default: nats
+  choices:
+    NATS: nats
+    Skip: skip

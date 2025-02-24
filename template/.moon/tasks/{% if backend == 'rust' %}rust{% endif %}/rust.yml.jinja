@@ -2,11 +2,54 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/rust/tasks.yml
 
 tasks:
-  format:
-    command: noop
+  clean:
+    command: cargo clean -p $projectName
+    toolchain: rust
+    local: true
+    options:
+      runFromWorkspaceRoot: true
+
+  clippy:
+    command: clippy -p $projectName -q
+    args:
+      - --
+      - --no-deps
+      - -Dwarnings
+    toolchain: rust
+    inputs:
+      - "$projectSource/**/*.rs"
+      - "$projectSource/Cargo.toml"
+      - "/Cargo.toml"
+    options:
+      runFromWorkspaceRoot: true
+      mergeArgs: prepend
+      internal: true
+
+  clippy-fix:
+    extends: clippy
+    args:
+      - --fix
+      - --allow-dirty
+
+  fmt:
+    command: fmt -p $projectName -- --emit files
+    inputs:
+      - "$projectSource/**/*.rs"
+      - "$projectSource/Cargo.toml"
+      - "/Cargo.toml"
+    options:
+      runFromWorkspaceRoot: true
+      internal: true
 
   lint:
     command: noop
+    deps: ["~:clippy", "~:eslint"]
+    options:
+      runDepsInParallel: false
 
-  flint:
+  format:
     command: noop
+    deps: ["~:fmt", "~:clippy-fix", "~:eslint-fix"]
+    options:
+      runDepsInParallel: false
+

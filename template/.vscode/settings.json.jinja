@@ -1,6 +1,6 @@
 {
     "editor.rulers": [{{ line_width }}],
-    "[typescript][javascript][yaml][json][jsonc]": {
+    "[typescript][javascript][yaml][json][jsonc][toml]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
@@ -27,7 +27,29 @@
     "eslint.enable": true,
     "eslint.format.enable": true,
     "eslint.lintTask.enable": true,
-    "eslint.packageManager": "{{ package_manager }}",
+    "eslint.packageManager": "{{ frontend_toolchain }}",
+    "eslint.probe": [
+      "typescript",
+      "typescriptreact",
+      "html",
+      "mdx",
+      "markdown",
+      "json",
+      "jsonc",
+      "toml",
+      "yaml"
+    ],
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact",
+      "html",
+      "mdx",
+      "markdown",
+      "json",
+      "jsonc",
+      "toml",
+      "yaml"
+    ],
 
     "material-icon-theme.files.associations": {
         "*.esdl": "edgedb",

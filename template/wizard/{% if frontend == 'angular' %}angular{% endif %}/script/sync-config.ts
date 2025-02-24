@@ -3,7 +3,7 @@ import path from "path"
 import { parse } from "yaml"
 
 const CopierConfig = parse(fs.readFileSync(".copier-answers.yml", "utf-8"))
-const { package_manager: PackageManager, angular_ns: AngularNs, angular_prefix: AngularPrefix } = CopierConfig
+const { frontend_toolchain: PackageManager, frontend_ns: AngularNs } = CopierConfig
 
 interface AngularPackage {
     name: string

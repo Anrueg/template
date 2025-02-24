@@ -1,26 +1,45 @@
+import { includeIgnoreFile } from "@eslint/compat"
+import markdown from "@eslint/markdown"
 import jsStylistic from "@stylistic/eslint-plugin-js"
 import tsStylistic from "@stylistic/eslint-plugin-ts"
-import tsParser from "@typescript-eslint/parser"
 import tsPlugin from "@typescript-eslint/eslint-plugin"
-import prettierRecommended from "eslint-plugin-prettier/recommended"
-import unusedImportsPlugin from "eslint-plugin-unused-imports"
-import jsoncParser from "jsonc-eslint-parser"
-import jsoncPlugin from "eslint-plugin-jsonc"
-import yamlParser from "yaml-eslint-parser"
-import yamlPlugin from "eslint-plugin-yml"
-import tomlParser from "toml-eslint-parser"
-import tomlPlugin from 'eslint-plugin-toml'
+import tsParser from "@typescript-eslint/parser"
 import type { Linter } from "eslint"
+import jsoncPlugin from "eslint-plugin-jsonc"
+import prettierPluginConfig from "eslint-plugin-prettier/recommended"
+import tomlPlugin from "eslint-plugin-toml"
+import unusedImportsPlugin from "eslint-plugin-unused-imports"
+import yamlPlugin from "eslint-plugin-yml"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const gitignorePath = path.resolve(__dirname, ".gitignore")
 
 /* ! DO NOT EDIT ! */
 
 export default [
-    prettierRecommended as any,
-    ...jsoncPlugin.configs["flat/prettier"],
-    ...yamlPlugin.configs['flat/prettier'],
-    ...tomlPlugin.configs['flat/standard'],
+    includeIgnoreFile(gitignorePath),
+    ...(jsoncPlugin.configs["flat/prettier"] as any),
+    ...yamlPlugin.configs["flat/prettier"],
+    ...tomlPlugin.configs["flat/standard"],
+    ...markdown.configs.recommended,
+    {
+        settings: {
+            projectName: "{{ project_name }}",
+            projectNs: "{{ project_slug }}",
+            projectAbbrev: "{{ project_abbrev }}",
+        }
+    },
     {
         files: ["**/*.ts", "**/*.tsx"],
+        plugins: {
+            "@stylistic/js": jsStylistic,
+            "@stylistic/ts": tsStylistic,
+            "@typescript-eslint": tsPlugin,
+            "unused-imports": unusedImportsPlugin
+        },
         languageOptions: {
             parser: tsParser,
             parserOptions: {
@@ -28,37 +47,6 @@ export default [
                 tsconfigRootDir: import.meta.dirname,
             }
         },
-    },
-    {
-        files: ["**/*.json", "**/*.json5"],
-        languageOptions: {
-            parser: jsoncParser,
-        }
-    },
-    {
-        files: ["**/*.yml", "**/*.yaml"],
-        languageOptions: {
-            parser: yamlParser,
-        }
-    },
-    {
-        files: ["**/*.toml"],
-        languageOptions: {
-            parser: tomlParser,
-        }
-    },
-    {
-        settings: {
-            angularNs: "alma",
-            angularPrefix: "app",
-        },
-        plugins: {
-            "@stylistic/js": jsStylistic,
-            "@stylistic/ts": tsStylistic,
-            '@typescript-eslint': tsPlugin,
-            "unused-imports": unusedImportsPlugin,
-        },
-
         rules: {
             // COMMON
             "arrow-body-style": ["error", "as-needed"],
@@ -92,7 +80,25 @@ export default [
                 },
             ],
 
-            // PRETTIER
+            // JAVASCRIPT
+            "@stylistic/js/max-len": ["warn", { code: {{ line_width }} }],
+            "@stylistic/js/quotes": ["error", "double", { "avoidEscape": true }],
+
+            // TYPESCRIPT
+            "@stylistic/ts/quotes": ["error", "double", { "avoidEscape": true }],
+            "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
+
+            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-non-null-assertion": "off",
+            "@typescript-eslint/no-for-in-array": "error"
+        }
+    },
+    {
+        ...prettierPluginConfig,
+        files: ["!**/*.toml"],
+        rules: {
+            ...prettierPluginConfig.rules,
             "prettier/prettier": [
                 "error",
                 {
@@ -112,30 +118,17 @@ export default [
                     importOrderCaseInsensitive: true,
                     importOrderParserPlugins: ["typescript", "decorators-legacy"],
                     importOrderImportAttributesKeyword: "with",
+                    importOrderGroupNamespaceSpecifiers: true,
                     importOrder: [
+                        "^node:.*?",
                         "^@angular/",
                         "^rxjs",
                         "<THIRD_PARTY_MODULES>",
+                        "^@{{ project_slug }}/*",
                         "^[./]"
                     ]
-
                 }
             ],
-
-            // JAVASCRIPT
-            "@stylistic/js/max-len": ["warn", { code: {{ line_width }} }],
-            "@stylistic/js/quotes": ["error", "double", { "avoidEscape": true }],
-
-            // TYPESCRIPT
-            "@stylistic/ts/quotes": ["error", "double", { "avoidEscape": true }],
-            "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
-
-            "@typescript-eslint/no-unused-vars": "off",
-            "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-non-null-assertion": "off",
-            "@typescript-eslint/no-for-in-array": "error",
-
-        }
-    },
-
+        },
+    }
 ] satisfies Linter.Config[]

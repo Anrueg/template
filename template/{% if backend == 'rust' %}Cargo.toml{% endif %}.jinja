@@ -1,5 +1,12 @@
 [workspace]
 members = ["{{ backend }}/*"]
+# TODO: after version 1.85: resolver = "3"
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+# TODO: after version 1.85: edition = "2024"
+edition = "2021"
 
 # Dependency management:
 #
@@ -12,3 +19,6 @@ members = ["{{ backend }}/*"]
 # dotenv = { workspace = true }
 [workspace.dependencies]
 dotenv = "0.15.0"
+
+[profile.release]
+lto = true

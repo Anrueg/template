@@ -19,7 +19,7 @@ node:
     version: latest
 
 typescript:
-    createMissingConfig: false
+    createMissingConfig: true
     projectConfigFileName: tsconfig.json
     rootConfigFileName: tsconfig.projects.json
     rootOptionsConfigFileName: tsconfig.base.json
@@ -30,6 +30,7 @@ typescript:
 
 {% if backend == 'rust' -%}
 rust:
+    version: "stable"
     syncToolchainConfig: true
     bins:
         - 'cargo-nextest'

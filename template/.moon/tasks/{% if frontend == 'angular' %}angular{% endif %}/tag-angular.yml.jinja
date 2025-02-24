@@ -2,5 +2,22 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/angular/tasks.yml
 
 tasks:
-  angular-all-task:
+  clean:
+    command: rimraf dist/angular/$projectName
+    toolchain: {{ frontend_toolchain }}
+    local: true
+    options:
+      runFromWorkspaceRoot: true
+
+  lint:
     command: noop
+    deps: ["~:eslint", "~:stylelint"]
+    options:
+      runDepsInParallel: false
+
+  format:
+    command: noop
+    deps: ["~:eslint-fix", "~:stylelint-fix"]
+    options:
+      runDepsInParallel: false
+

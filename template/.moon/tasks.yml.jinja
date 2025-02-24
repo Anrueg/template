@@ -1,3 +1,5 @@
+{%- from 'macros.jinja' import eslint_extensions, stylelint_extensions -%}
+
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 taskOptions:
@@ -11,10 +13,10 @@ implicitDeps:
 
 fileGroups:
   eslint:
-    - "**/*.{ts,tsx,json,json5,yml,yaml,toml}"
+    - "**/*.{{ eslint_extensions() }}"
 
   stylelint:
-    - "**/*.{css,scss,sass,less}"
+    - "**/*.{{ stylelint_extensions() }}"
 
 tasks:
   runx:
@@ -27,7 +29,39 @@ tasks:
       internal: true
 
   eslint:
-    command: echo @globs(eslint)
+    command:
+      - eslint
+      - --no-error-on-unmatched-pattern
+      - --exit-on-fatal-error
+    args:
+      - "@files(eslint)"
+    toolchain: {{ frontend_toolchain }}
+    inputs:
+      - "@group(eslint)"
+    options:
+      mergeArgs: prepend
+      internal: true
+
+
+  eslint-fix:
+    extends: eslint
+    args:
+      - --fix
 
   stylelint:
-    command: noop
+    command:
+      - stylelint
+      - --allow-empty-input
+    args:
+      - "@files(stylelint)"
+    inputs:
+      - "@group(stylelint)"
+    toolchain: {{ frontend_toolchain }}
+    options:
+      mergeArgs: prepend
+      internal: true
+
+  stylelint-fix:
+    extends: stylelint
+    args:
+      - --fix=strict

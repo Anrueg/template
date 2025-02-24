@@ -20,6 +20,9 @@ _tasks:
 
   - git init --initial-branch={{ default_branch }}
 
+  - moon sync projects
+  - moon :format
+
   - >
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
@@ -27,8 +30,11 @@ _tasks:
   - command: >
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
+      rimraf
       jiti
       eslint
+      @eslint/compat
+      @eslint/markdown
       globals
       prettier
       typescript-eslint
@@ -40,11 +46,8 @@ _tasks:
       @trivago/prettier-plugin-sort-imports
       @stylistic/eslint-plugin-ts
       @stylistic/eslint-plugin-js
-      jsonc-eslint-parser
       eslint-plugin-jsonc
-      yaml-eslint-parser
       eslint-plugin-yml
-      toml-eslint-parser
       eslint-plugin-toml
       stylelint
       stylelint-config-standard-scss
