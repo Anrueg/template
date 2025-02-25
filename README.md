@@ -20,3 +20,8 @@ pip install copier jinja2_slug
 ## TODO
 
 - Angular [FlatModuleOutFile](https://angular.dev/reference/configs/angular-compiler-options#flatmoduleoutfile)
+
+
+```bash
+copier copy . ../test-app --trust --overwrite --defaults
+```

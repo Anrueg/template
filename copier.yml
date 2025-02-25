@@ -14,14 +14,16 @@ _subdirectory: template
 _jinja_extensions:
   - jinja2_slug.SlugExtension
 
+_skip_if_exists:
+  - eslint.config.ts
+
 _tasks:
   # - command: powershell -c "irm https://moonrepo.dev/install/moon.ps1 | iex"
   #   when: "{{ _copier_conf.os == 'windows' }}"
 
   - git init --initial-branch={{ default_branch }}
 
-  - moon sync projects
-  - moon :format
+  - moon wizard:sync
 
   - >
     git log --pretty=format:"%H" -n 1
@@ -31,7 +33,6 @@ _tasks:
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
       rimraf
-      jiti
       eslint
       @eslint/compat
       @eslint/markdown
@@ -56,7 +57,6 @@ _tasks:
       {{ frontend_toolchain }} add -d
       @angular-eslint/eslint-plugin
       @angular-eslint/eslint-plugin-template
-      @angular-eslint/template-parser
       typescript
       @angular/cli
       @angular/compiler-cli

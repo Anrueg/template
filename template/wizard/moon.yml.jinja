@@ -55,6 +55,8 @@ tasks:
   sync-rust:
     description: Sync rust configs from project & moon configs
     command: noop
+    options:
+      mutex: wizard-sync-rust
 
   {{ generator_task('rust-app', 'rust-app', 'wizard:sync-rust', 'Add rust app') }}
 
@@ -66,3 +68,25 @@ tasks:
     deps: ["~:eslint-fix", "~:stylelint-fix"]
     options:
       runDepsInParallel: false
+
+  moon-sync:
+    command: moon sync projects
+    local: true
+    options:
+      internal: true
+
+  sync:
+    command: moon :format
+    local: true
+    deps:
+      {% if frontend == 'angular' -%}
+      - sync-angular
+      {%- endif %}
+      {% if frontend == 'rust' -%}
+      - sync-rust
+      {%- endif %}
+      - moon-sync
+    options:
+      runDepsInParallel: true
+      runFromWorkspaceRoot: true
+      mutex: wizard-sync-all

@@ -1,5 +1,11 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  angular-lib-task:
-    command: noop
+  start:
+    command: ng build --watch --configuration=development $projectName
+    preset: server
+    toolchain: {{ frontend_toolchain }}
+    options:
+      runFromWorkspaceRoot: true
+    deps:
+      - ^:start

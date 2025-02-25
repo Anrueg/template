@@ -3,8 +3,7 @@ extends: file://../../../wizard/angular/tasks.yml
 
 tasks:
   clean:
-    command: rimraf dist/angular/$projectName
-    toolchain: {{ frontend_toolchain }}
+    script: {{ frontend_toolchain }} rimraf dist/angular/$projectName && {{ frontend_toolchain }} ng cache clean
     local: true
     options:
       runFromWorkspaceRoot: true

@@ -2,8 +2,10 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
   start:
-    command: ng serve $projectName
+    command: ng serve --configuration=development $projectName
     preset: server
     toolchain: {{ frontend_toolchain }}
     options:
       runFromWorkspaceRoot: true
+    deps:
+      - ^:start

@@ -16,7 +16,7 @@
                 "outputPath": "dist/angular/{{ name }}",
                 "index": "angular/{{ name }}/src/index.html",
                 "browser": "angular/{{ name }}/src/main.ts",
-                "tsConfig": "angular/{{ name }}/tsconfig.json",
+                "tsConfig": "angular/{{ name }}/tsconfig.cli.json",
                 "inlineStyleLanguage": "scss",
                 "assets": [
                     {

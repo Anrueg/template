@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <{{ name | lower }}></{{ name | lower }}>
+    <{{ project_abbrev }}-app></{{ project_abbrev }}-app>
     <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 

@@ -1,43 +1,73 @@
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+import angularLint from "@angular-eslint/eslint-plugin"
 import { includeIgnoreFile } from "@eslint/compat"
 import markdown from "@eslint/markdown"
 import jsStylistic from "@stylistic/eslint-plugin-js"
 import tsStylistic from "@stylistic/eslint-plugin-ts"
-import tslint from "typescript-eslint"
 import type { Linter } from "eslint"
 import jsoncPlugin from "eslint-plugin-jsonc"
 import prettierPluginConfig from "eslint-plugin-prettier/recommended"
 import tomlPlugin from "eslint-plugin-toml"
 import unusedImportsPlugin from "eslint-plugin-unused-imports"
 import yamlPlugin from "eslint-plugin-yml"
-import path from "node:path"
-import { fileURLToPath } from "node:url"
+import globals from "globals"
+import tslint from "typescript-eslint"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const gitignorePath = path.resolve(__dirname, ".gitignore")
 
+export const PROJECT_ABBREV = "{{ project_abbrev }}"
+
+export function flatten(configs: Linter.Config[]): Linter.Config {
+    return configs.reduce((dst, curr) => {
+        const { rules, ...others } = curr
+        return { ...dst, ...others, rules: { ...dst.rules, ...rules } }
+    }, {})
+}
+
 /* ! DO NOT EDIT ! */
 
 export default [
     {
-        settings: {
-            projectName: "{{ project_name }}",
-            projectNs: "{{ project_slug }}",
-            projectAbbrev: "{{ project_abbrev }}",
+        ...includeIgnoreFile(gitignorePath),
+        name: "Anrueg / .gitignore"
+    },
+    {
+        ...flatten(jsoncPlugin.configs["flat/prettier"]),
+        name: "JSONC / prettier"
+    },
+    {
+        ...flatten(yamlPlugin.configs["flat/prettier"]),
+        name: "YAML / prettier"
+    },
+    {
+        ...flatten(tomlPlugin.configs["flat/standard"]),
+        name: "TOML / standard"
+    },
+    {
+        ...flatten(markdown.configs.recommended),
+        name: "Markdown / recommended",
+        language: "markdown/gfm",
+        processor: "markdown/markdown"
+    },
+    {
+        name: "Markdown / code-blocks",
+        files: ["**/*.md/**"],
+        languageOptions: {
+            parserOptions: {
+                ecmaFeatures: {
+                    impliedStrict: true,
+                },
+            },
         }
-    } as any,
-    includeIgnoreFile(gitignorePath),
-    ...jsoncPlugin.configs["flat/prettier"],
-    ...yamlPlugin.configs["flat/prettier"],
-    ...tomlPlugin.configs["flat/standard"],
-    ...markdown.configs.recommended,
-    ...tslint.config(
-        {
-            name: "typescript",
-            extends: [
-                tslint.configs.strictTypeChecked,
-                tslint.configs.stylisticTypeChecked
-            ],
+    },
+    ...tslint
+        .config({
+            name: "Typescript / overrides",
+            extends: [tslint.configs.strictTypeChecked, tslint.configs.stylisticTypeChecked],
             files: ["**/*.ts", "**/*.tsx"],
             plugins: {
                 "@stylistic/js": jsStylistic,
@@ -45,15 +75,20 @@ export default [
                 "unused-imports": unusedImportsPlugin
             },
             languageOptions: {
+                globals: globals.node,
                 parserOptions: {
-                    projectService: true,
+                    projectService: true
                     // tsconfigRootDir: import.meta.dirname,
-                },
+                }
+            },
+            linterOptions: {
+                reportUnusedDisableDirectives: "error",
+                reportUnusedInlineConfigs: "error"
             },
             rules: {
                 // COMMON
                 "arrow-body-style": ["error", "as-needed"],
-                "eqeqeq": ["error", "always", { "null": "ignore" }],
+                "eqeqeq": ["error", "always", { null: "ignore" }],
                 "yoda": ["error", "never", { exceptRange: true }],
                 "no-alert": "error",
                 "no-empty": "error",
@@ -80,15 +115,15 @@ export default [
                         destructuredArrayIgnorePattern: "^_",
                         ignoreRestSiblings: true,
                         ignoreClassWithStaticInitBlock: true
-                    },
+                    }
                 ],
 
                 // JAVASCRIPT
-                "@stylistic/js/max-len": ["warn", { code: {{ line_width }} }],
-                "@stylistic/js/quotes": ["error", "double", { "avoidEscape": true }],
+                "@stylistic/js/max-len": ["warn", { code: 120 }],
+                "@stylistic/js/quotes": ["error", "double", { avoidEscape: true }],
 
                 // TYPESCRIPT
-                "@stylistic/ts/quotes": ["error", "double", { "avoidEscape": true }],
+                "@stylistic/ts/quotes": ["error", "double", { avoidEscape: true }],
                 "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
 
                 "@typescript-eslint/no-unused-vars": "off",
@@ -104,27 +139,17 @@ export default [
                     }
                 ]
             }
-        }
-    ),
-    // {
-    //     files: ["**/*.ts", "**/*.tsx"],
-    //     plugins: {
-    //         "@stylistic/js": jsStylistic,
-    //         "@stylistic/ts": tsStylistic,
-    //         "@typescript-eslint": tsPlugin,
-    //         "unused-imports": unusedImportsPlugin
-    //     },
-    //     languageOptions: {
-    //         parser: tsParser,
-    //         parserOptions: {
-    //             projectService: true,
-    //             tsconfigRootDir: import.meta.dirname,
-    //         }
-    //     },
-    // },
+        })
+        .map(value => {
+            const parts = value.name!.split(/\s*\/\s*/)
+            value.name = `${parts[0]} / ${parts[parts.length - 1]}`
+            return value
+        }),
     {
         ...prettierPluginConfig,
-        files: ["!**/*.toml"],
+        name: "Prettier / common",
+        files: ["**/*.{% from "macros.jinja" import eslint_extensions %}{{ eslint_extensions() }}"],
+        ignores: ["**/*.toml"],
         rules: {
             ...prettierPluginConfig.rules,
             "prettier/prettier": [
@@ -152,11 +177,49 @@ export default [
                         "^@angular/",
                         "^rxjs",
                         "<THIRD_PARTY_MODULES>",
-                        "^@{{ project_slug }}/*",
+                        "^@some-fancy-name/*",
                         "^[./]"
                     ]
                 }
-            ],
+            ]
+        }
+    },
+    {% if frontend == "angular" -%}
+    {
+        name: "Angular / common",
+        files: ["angular/**/*.ts"],
+        plugins: {
+            "@angular-eslint": angularLint
         },
-    }
-] as Linter.Config[]
+        languageOptions: { globals: globals.browser },
+        rules: {
+            ...angularLint.configs.all.rules,
+            "@angular-eslint/component-selector": [
+                "error",
+                {
+                    type: "element",
+                    prefix: PROJECT_ABBREV,
+                    style: "kebab-case"
+                }
+            ],
+            "@angular-eslint/directive-selector": [
+                "error",
+                {
+                    type: "attribute",
+                    prefix: PROJECT_ABBREV,
+                    style: "camelCase"
+                }
+            ],
+            "@angular-eslint/pipe-prefix": [
+                "error",
+                {
+                    prefixes: [PROJECT_ABBREV]
+                }
+            ],
+            "@angular-eslint/component-max-inline-declarations": "off",
+            "@angular-eslint/no-input-rename": "off",
+            "@angular-eslint/use-component-view-encapsulation": "off"
+        }
+    },
+    {%- endif %}
+].filter((v, i, a) => a.findIndex(value => value.name === v.name) === i) as Linter.Config[]

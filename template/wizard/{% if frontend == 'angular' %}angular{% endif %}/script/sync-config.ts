@@ -51,9 +51,7 @@ function updateAngularConfig(packages: AngularPackage[]) {
     fs.writeFileSync("angular.json", JSON.stringify(result, null, 2))
 }
 
-function updateTsConfig(packages: AngularPackage[]) {
-    const confPath = path.join("tsconfig.base.json")
-
+function updateTsConfig(confPath: string, packages: AngularPackage[], pkgPath: string) {
     if (fs.existsSync(confPath)) {
         const conf = JSON.parse(fs.readFileSync(confPath, "utf-8")) as {
             compilerOptions?: { paths?: Record<string, string[]> }
@@ -71,7 +69,7 @@ function updateTsConfig(packages: AngularPackage[]) {
                 continue
             }
 
-            conf.compilerOptions.paths[`@${AngularNs}/${pkg.name}`] = [`dist/angular/${pkg.name}`]
+            conf.compilerOptions.paths[`@${AngularNs}/${pkg.name}`] = [`${pkgPath}${pkg.name}`]
         }
 
         fs.writeFileSync(confPath, JSON.stringify(conf, null, 2))
@@ -82,7 +80,19 @@ function main() {
     const packages = getPackages()
 
     updateAngularConfig(packages)
-    updateTsConfig(packages)
+    updateTsConfig("tsconfig.base.json", packages, "angular/")
+
+    for (const pkg of packages) {
+        const tsconfig = path.join(pkg.path, "tsconfig.cli.json")
+        if (!fs.existsSync(tsconfig)) {
+            fs.writeFileSync(tsconfig, JSON.stringify({ extends: "./tsconfig.json" }, null, 2))
+        }
+        updateTsConfig(
+            tsconfig,
+            packages.filter(v => v.name !== pkg.name),
+            "dist/angular/"
+        )
+    }
 }
 
 main()

@@ -2,6 +2,7 @@
     "name": "@{{ project_slug }}/{{ name }}",
     "version": "0.0.1",
     "sideEffects": false,
+    "main": "src/public-api.ts",
     "publishConfig": {
         "access": "public",
         "directory": "../../dist/angular/{{ name }}"

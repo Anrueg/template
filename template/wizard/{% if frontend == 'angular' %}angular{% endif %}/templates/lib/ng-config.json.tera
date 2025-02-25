@@ -18,7 +18,7 @@
           "tsConfig": "angular/{{ name }}/tsconfig.release.json"
         },
         "development": {
-          "tsConfig": "angular/{{ name }}/tsconfig.json"
+          "tsConfig": "angular/{{ name }}/tsconfig.cli.json"
         }
       },
       "defaultConfiguration": "development"

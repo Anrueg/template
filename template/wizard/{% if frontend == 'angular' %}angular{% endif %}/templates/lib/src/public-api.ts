@@ -1,1 +1,1 @@
-export * from "./lib.component.ts"
+export * from "./lib.component"

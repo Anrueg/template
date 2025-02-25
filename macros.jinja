@@ -10,7 +10,7 @@
 
 
 {% macro eslint_extensions(extra=None) -%}
-{{ '{' }}ts,tsx,json,jsonc,json5,yml,yaml,toml{% if extra %},{{ extra }}{% endif %}{{ '}' }}
+{{ '{' }}ts,tsx,json,jsonc,json5,yml,yaml,toml,md{% if extra %},{{ extra }}{% endif %}{{ '}' }}
 {%- endmacro %}
 
 
