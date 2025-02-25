@@ -5,5 +5,5 @@
     "publishConfig": {
         "access": "public",
         "directory": "../../dist/angular/{{ name }}"
-    },
+    }
 }

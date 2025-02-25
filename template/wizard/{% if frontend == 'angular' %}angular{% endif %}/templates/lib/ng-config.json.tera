@@ -12,7 +12,10 @@
       },
       "configurations": {
         "production": {
-          "tsConfig": "angular/{{ name }}/tsconfig.prod.json"
+          "tsConfig": "angular/{{ name }}/tsconfig.release.json"
+        },
+        "staging": {
+          "tsConfig": "angular/{{ name }}/tsconfig.release.json"
         },
         "development": {
           "tsConfig": "angular/{{ name }}/tsconfig.json"
