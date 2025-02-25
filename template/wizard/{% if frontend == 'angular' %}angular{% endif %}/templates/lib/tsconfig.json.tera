@@ -4,11 +4,14 @@
     "outDir": "./out-tsc/app"
   },
   "files": [
-    "src/main.ts"
+    "src/public-api.ts"
   ],
   "include": [
     "src/**/*.d.ts",
-    "src/environment/_*.ts",
     "../../dist/angular/**/*.d.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "compilationMode": "partial",
+    "generateCodeForLibraries": true,
+  }
 }

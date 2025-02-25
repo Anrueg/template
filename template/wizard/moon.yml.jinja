@@ -13,8 +13,10 @@ fileGroups:
   eslint:
     - "**/*.{{ eslint_extensions() }}"
     - "/*.{{ eslint_extensions() }}"
+    - "/angular/*.{{ eslint_extensions() }}"
     - "/.moon/**/*.{{ eslint_extensions() }}"
     - "!/.moon/cache/**/*"
+    - "!*/templates/**/*"
 
 
 {% macro generator_task(name, tpl, post, note) -%}

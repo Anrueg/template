@@ -38,8 +38,6 @@ _tasks:
       globals
       prettier
       typescript-eslint
-      @typescript-eslint/eslint-plugin
-      @typescript-eslint/parser
       eslint-plugin-prettier
       eslint-config-prettier
       eslint-plugin-unused-imports

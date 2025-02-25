@@ -2,8 +2,7 @@ import { includeIgnoreFile } from "@eslint/compat"
 import markdown from "@eslint/markdown"
 import jsStylistic from "@stylistic/eslint-plugin-js"
 import tsStylistic from "@stylistic/eslint-plugin-ts"
-import tsPlugin from "@typescript-eslint/eslint-plugin"
-import tsParser from "@typescript-eslint/parser"
+import tslint from "typescript-eslint"
 import type { Linter } from "eslint"
 import jsoncPlugin from "eslint-plugin-jsonc"
 import prettierPluginConfig from "eslint-plugin-prettier/recommended"
@@ -20,80 +19,109 @@ const gitignorePath = path.resolve(__dirname, ".gitignore")
 /* ! DO NOT EDIT ! */
 
 export default [
-    includeIgnoreFile(gitignorePath),
-    ...(jsoncPlugin.configs["flat/prettier"] as any),
-    ...yamlPlugin.configs["flat/prettier"],
-    ...tomlPlugin.configs["flat/standard"],
-    ...markdown.configs.recommended,
     {
         settings: {
             projectName: "{{ project_name }}",
             projectNs: "{{ project_slug }}",
             projectAbbrev: "{{ project_abbrev }}",
         }
-    },
-    {
-        files: ["**/*.ts", "**/*.tsx"],
-        plugins: {
-            "@stylistic/js": jsStylistic,
-            "@stylistic/ts": tsStylistic,
-            "@typescript-eslint": tsPlugin,
-            "unused-imports": unusedImportsPlugin
-        },
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                projectService: true,
-                tsconfigRootDir: import.meta.dirname,
-            }
-        },
-        rules: {
-            // COMMON
-            "arrow-body-style": ["error", "as-needed"],
-            "eqeqeq": ["error", "always", { "null": "ignore" }],
-            "yoda": ["error", "never", { exceptRange: true }],
-            "no-alert": "error",
-            "no-empty": "error",
-            "prefer-arrow-callback": "error",
-            "no-unused-vars": "off",
-            // "no-unused-vars": ["error", {
-            //     vars: "all",
-            //     args: "after-used",
-            //     argsIgnorePattern: "^_",
-            //     caughtErrors: "all",
-            //     destructuredArrayIgnorePattern: "^_",
-            //     ignoreRestSiblings: true,
-            //     ignoreClassWithStaticInitBlock: true
-            // }],
-
-            "unused-imports/no-unused-imports": "error",
-            "unused-imports/no-unused-vars": [
-                "error",
-                {
-                    vars: "all",
-                    args: "after-used",
-                    argsIgnorePattern: "^_",
-                    caughtErrors: "all",
-                    destructuredArrayIgnorePattern: "^_",
-                    ignoreRestSiblings: true,
-                    ignoreClassWithStaticInitBlock: true
-                },
+    } as any,
+    includeIgnoreFile(gitignorePath),
+    ...jsoncPlugin.configs["flat/prettier"],
+    ...yamlPlugin.configs["flat/prettier"],
+    ...tomlPlugin.configs["flat/standard"],
+    ...markdown.configs.recommended,
+    ...tslint.config(
+        {
+            name: "typescript",
+            extends: [
+                tslint.configs.strictTypeChecked,
+                tslint.configs.stylisticTypeChecked
             ],
+            files: ["**/*.ts", "**/*.tsx"],
+            plugins: {
+                "@stylistic/js": jsStylistic,
+                "@stylistic/ts": tsStylistic,
+                "unused-imports": unusedImportsPlugin
+            },
+            languageOptions: {
+                parserOptions: {
+                    projectService: true,
+                    // tsconfigRootDir: import.meta.dirname,
+                },
+            },
+            rules: {
+                // COMMON
+                "arrow-body-style": ["error", "as-needed"],
+                "eqeqeq": ["error", "always", { "null": "ignore" }],
+                "yoda": ["error", "never", { exceptRange: true }],
+                "no-alert": "error",
+                "no-empty": "error",
+                "prefer-arrow-callback": "error",
+                "no-unused-vars": "off",
+                // "no-unused-vars": ["error", {
+                //     vars: "all",
+                //     args: "after-used",
+                //     argsIgnorePattern: "^_",
+                //     caughtErrors: "all",
+                //     destructuredArrayIgnorePattern: "^_",
+                //     ignoreRestSiblings: true,
+                //     ignoreClassWithStaticInitBlock: true
+                // }],
 
-            // JAVASCRIPT
-            "@stylistic/js/max-len": ["warn", { code: {{ line_width }} }],
-            "@stylistic/js/quotes": ["error", "double", { "avoidEscape": true }],
+                "unused-imports/no-unused-imports": "error",
+                "unused-imports/no-unused-vars": [
+                    "error",
+                    {
+                        vars: "all",
+                        args: "after-used",
+                        argsIgnorePattern: "^_",
+                        caughtErrors: "all",
+                        destructuredArrayIgnorePattern: "^_",
+                        ignoreRestSiblings: true,
+                        ignoreClassWithStaticInitBlock: true
+                    },
+                ],
 
-            // TYPESCRIPT
-            "@stylistic/ts/quotes": ["error", "double", { "avoidEscape": true }],
-            "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
+                // JAVASCRIPT
+                "@stylistic/js/max-len": ["warn", { code: {{ line_width }} }],
+                "@stylistic/js/quotes": ["error", "double", { "avoidEscape": true }],
 
-            "@typescript-eslint/no-unused-vars": "off",
-            "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-non-null-assertion": "off",
-            "@typescript-eslint/no-for-in-array": "error"
+                // TYPESCRIPT
+                "@stylistic/ts/quotes": ["error", "double", { "avoidEscape": true }],
+                "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
+
+                "@typescript-eslint/no-unused-vars": "off",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+                "@typescript-eslint/no-for-in-array": "error",
+                "@typescript-eslint/no-extraneous-class": "off",
+                "@typescript-eslint/no-confusing-void-expression": [
+                    "error",
+                    {
+                        ignoreArrowShorthand: true,
+                        ignoreVoidOperator: true
+                    }
+                ]
+            }
         }
-    },
+    ),
+    // {
+    //     files: ["**/*.ts", "**/*.tsx"],
+    //     plugins: {
+    //         "@stylistic/js": jsStylistic,
+    //         "@stylistic/ts": tsStylistic,
+    //         "@typescript-eslint": tsPlugin,
+    //         "unused-imports": unusedImportsPlugin
+    //     },
+    //     languageOptions: {
+    //         parser: tsParser,
+    //         parserOptions: {
+    //             projectService: true,
+    //             tsconfigRootDir: import.meta.dirname,
+    //         }
+    //     },
+    // },
     {
         ...prettierPluginConfig,
         files: ["!**/*.toml"],
@@ -131,4 +159,4 @@ export default [
             ],
         },
     }
-] satisfies Linter.Config[]
+] as Linter.Config[]

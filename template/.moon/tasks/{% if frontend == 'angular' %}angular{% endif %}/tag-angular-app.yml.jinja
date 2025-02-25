@@ -1,5 +1,9 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  angular-app-task:
-    command: noop
+  start:
+    command: ng serve $projectName
+    preset: server
+    toolchain: {{ frontend_toolchain }}
+    options:
+      runFromWorkspaceRoot: true

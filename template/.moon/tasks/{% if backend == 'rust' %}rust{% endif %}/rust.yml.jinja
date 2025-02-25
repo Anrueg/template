@@ -17,8 +17,8 @@ tasks:
       - -Dwarnings
     toolchain: rust
     inputs:
-      - "$projectSource/**/*.rs"
-      - "$projectSource/Cargo.toml"
+      - "/$projectSource/**/*.rs"
+      - "/$projectSource/Cargo.toml"
       - "/Cargo.toml"
     options:
       runFromWorkspaceRoot: true
@@ -34,8 +34,8 @@ tasks:
   fmt:
     command: fmt -p $projectName -- --emit files
     inputs:
-      - "$projectSource/**/*.rs"
-      - "$projectSource/Cargo.toml"
+      - "/$projectSource/**/*.rs"
+      - "/$projectSource/Cargo.toml"
       - "/Cargo.toml"
     options:
       runFromWorkspaceRoot: true

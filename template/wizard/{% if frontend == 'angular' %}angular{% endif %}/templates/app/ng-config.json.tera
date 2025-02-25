@@ -47,6 +47,7 @@
                     {% if service_worker -%}
                     "serviceWorker": "angular/{{ name }}/ngsw-config.json",
                     {%- endif %}
+                    "tsConfig": "angular/{{ name }}/tsconfig.release.json",
                     "fileReplacements": [
                         {
                             "replace": "angular/{{ name }}/src/environment/active.ts",
@@ -55,6 +56,11 @@
                     ]
                 },
                 "staging": {
+                    "outputHashing": "all",
+                    {% if service_worker -%}
+                    "serviceWorker": "angular/{{ name }}/ngsw-config.json",
+                    {%- endif %}
+                    "tsConfig": "angular/{{ name }}/tsconfig.release.json",
                     "fileReplacements": [
                         {
                             "replace": "angular/{{ name }}/src/environment/active.ts",

@@ -9,7 +9,7 @@ import { provideServiceWorker } from "@angular/service-worker"
 
 import { provideNgIconsConfig } from "@ng-icons/core"
 
-import { EnableServiceWorker } from "./environment"
+import { SERVICE_WORKER_ENABLED } from "./environment"
 
 registerLocaleData(LocaleHU)
 
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
         provideAnimations(),
         {% if service_worker -%}
         provideServiceWorker("ngsw-worker.js", {
-            enabled: EnableServiceWorker,
+            enabled: SERVICE_WORKER_ENABLED,
             registrationStrategy: "registerImmediately"
         }),
         {%- endif %}

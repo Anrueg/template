@@ -1,4 +1,4 @@
-import { argv } from "bun"
+import { argv, type ShellError } from "bun"
 
 interface TaskDefinition {
     name: string
@@ -14,17 +14,17 @@ async function main(taskDef: TaskDefinition) {
             try {
                 await Promise.all(taskDef.on_failure.map(runTask))
             } catch (onFailExc: any) {
-                process.exit(onFailExc.exitCode || 1)
+                process.exit((onFailExc as ShellError).exitCode || 1)
             }
         }
-        process.exit(mainExc.exitCode)
+        process.exit((mainExc as ShellError).exitCode)
     }
 
     if (taskDef.on_success.length > 0) {
         try {
             await Promise.all(taskDef.on_success.map(runTask))
         } catch (onSuccessExc: any) {
-            process.exit(onSuccessExc.exitCode || 1)
+            process.exit((onSuccessExc as ShellError).exitCode || 1)
         }
     }
 }
@@ -44,15 +44,15 @@ function parseTaskList(value: string): string[] {
 function taskQName(task: string): string {
     const parts = task.split(":")
     if (parts.length === 1 || (parts.length === 2 && (parts[0] === "" || parts[0] === "~"))) {
-        return `${process.env["MOON_PROJECT_ID"]}:${task}`
+        return `${process.env["MOON_PROJECT_ID"] ?? "~"}:${task}`
     }
     return task
 }
 
 const taskDef: TaskDefinition = {
     name: taskQName(argv[2]),
-    on_success: parseTaskList(process.env["ON_SUCCESS"] || ""),
-    on_failure: parseTaskList(process.env["ON_FAILURE"] || "")
+    on_success: parseTaskList(process.env["ON_SUCCESS"] ?? ""),
+    on_failure: parseTaskList(process.env["ON_FAILURE"] ?? "")
 }
 
 if (!taskDef.name) {
