@@ -3,7 +3,7 @@ database:
   required: true
   type: str
   choices:
-    EdgeDB: edgedb
+    GEL: gel
     Postgres: postgres
     Skip: skip
 
@@ -20,7 +20,7 @@ database_port:
   required: true
   type: int
   default: |
-    {%- if database == 'edgedb' -%}5656{%- endif -%}
+    {%- if database == 'gel' -%}5656{%- endif -%}
     {%- if database == 'postgres' -%}5432{%- endif -%}
 
 database_user:
@@ -28,7 +28,7 @@ database_user:
   type: str
   help: "Databse user"
   default: |
-    {%- if database == 'edgedb' -%}edgedb{%- endif -%}
+    {%- if database == 'gel' -%}gel{%- endif -%}
     {%- if database == 'postgres' -%}postgres{%- endif -%}
   required: true
 

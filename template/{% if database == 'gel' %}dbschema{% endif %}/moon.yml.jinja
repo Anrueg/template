@@ -1,6 +1,6 @@
 $schema: "https://moonrepo.dev/schemas/project.json"
 
-language: edgedb
+language: gel
 
 project:
   name: dbschema
@@ -12,10 +12,10 @@ type: configuration
 
 fileGroups:
   sources:
-    - "**/*.esdl"
+    - "**/*.gel"
 
   migrations:
-    - migrations/*.edgeql"
+    - migrations/*.gel"
 
 tasks:
   migrate:
