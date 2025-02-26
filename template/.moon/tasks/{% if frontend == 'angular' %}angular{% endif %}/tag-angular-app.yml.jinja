@@ -2,8 +2,10 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
   start:
-    command: ng serve --configuration=$PROJECT_ENV
-    args: ["$projectName"]
+    command: ng serve
+    args:
+      - $projectName
+      - --configuration=$PROJECT_ENV
     preset: server
     toolchain: {{ frontend_toolchain }}
     deps:
@@ -13,5 +15,4 @@ tasks:
     options:
       runFromWorkspaceRoot: true
       runDepsInParallel: false
-      mergeArgs: prepend
 

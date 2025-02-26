@@ -1,3 +1,4 @@
+{% from "macros.jinja" import eslint_extensions, stylelint_extensions %}
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/angular/tasks.yml
 
@@ -21,16 +22,22 @@ tasks:
       runDepsInParallel: false
 
   build:
-    command: ng build --configuration=$PROJECT_ENV
-    args: ["$projectName"]
+    command: ng build
+    args:
+      - $projectName
+      - --configuration=$PROJECT_ENV
     toolchain: {{ frontend_toolchain }}
     deps:
       - "^:build"
       - "~:build.pre"
+    inputs:
+      - /angular/$projectName/**/*.{{ eslint_extensions() }}
+      - /angular/$projectName/**/*.{{ stylelint_extensions() }}
+    outputs:
+      - /dist/angular/$projectName
     options:
       runFromWorkspaceRoot: true
       runDepsInParallel: false
-      mergeArgs: prepend
 
   build.pre:
     command: noop
@@ -41,5 +48,7 @@ tasks:
   start.pre:
     command: noop
     toolchain: {{ frontend_toolchain }}
+    deps:
+      - "~:build.pre"
     options:
       internal: true
