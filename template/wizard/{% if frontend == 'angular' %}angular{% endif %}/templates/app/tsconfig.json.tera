@@ -1,14 +1,15 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/app"
+    "outDir": "../../dist/out-tsc",
+    "baseUrl": ".",
+    "rootDir": "."
   },
   "files": [
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts",
-    "../../dist/angular/**/*.d.ts"
+    "src/**/*.ts"
   ],
   "angularCompilerOptions": {
     "compilationMode": "full"

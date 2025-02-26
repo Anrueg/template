@@ -33,6 +33,7 @@ _tasks:
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
       rimraf
+      jiti
       eslint
       @eslint/compat
       @eslint/markdown

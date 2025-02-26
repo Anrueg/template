@@ -20,3 +20,26 @@ tasks:
     options:
       runDepsInParallel: false
 
+  build:
+    command: ng build --configuration=$PROJECT_ENV
+    args: ["$projectName"]
+    toolchain: {{ frontend_toolchain }}
+    deps:
+      - "^:build"
+      - "~:build.pre"
+    options:
+      runFromWorkspaceRoot: true
+      runDepsInParallel: false
+      mergeArgs: prepend
+
+  build.pre:
+    command: noop
+    toolchain: {{ frontend_toolchain }}
+    options:
+      internal: true
+
+  start.pre:
+    command: noop
+    toolchain: {{ frontend_toolchain }}
+    options:
+      internal: true

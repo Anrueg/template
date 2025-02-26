@@ -1,14 +1,12 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/app"
+    "outDir": "../../dist/out-tsc",
+    "baseUrl": ".",
+    "rootDir": "."
   },
   "files": [
     "src/public-api.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts",
-    "../../dist/angular/**/*.d.ts"
   ],
   "angularCompilerOptions": {
     "compilationMode": "partial",

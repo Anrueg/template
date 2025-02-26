@@ -22,7 +22,7 @@ fileGroups:
 {% macro generator_task(name, tpl, post, note) -%}
   "{{ name }}":
     description: "{{ note }}"
-    script: moon generate {{ tpl }}{% if post -%} && moon run {{ post }}{% endif %} && moon :format
+    script: moon generate {{ tpl }}{% if post -%} && moon run {{ post }}{% endif %} && moon :format --affected
     platform: system
     toolchain: system
     local: true
