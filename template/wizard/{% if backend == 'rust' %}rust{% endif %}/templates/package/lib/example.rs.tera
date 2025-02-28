@@ -1,0 +1,6 @@
+---
+skip: {{ type == "application" or preset == "config" }}
+---
+pub fun public_function() {
+    println!("Hello, world!");
+}

@@ -1,19 +1,24 @@
 import { registerLocaleData } from "@angular/common"
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from "@angular/common/http"
 import LocaleHU from "@angular/common/locales/hu"
-import { type ApplicationConfig, LOCALE_ID, provideExperimentalZonelessChangeDetection } from "@angular/core"
+import { enableProdMode, LOCALE_ID, provideExperimentalZonelessChangeDetection } from "@angular/core"
+import { bootstrapApplication } from "@angular/platform-browser"
 import { provideAnimations } from "@angular/platform-browser/animations"
-{% if service_worker -%}
 import { provideServiceWorker } from "@angular/service-worker"
-{%- endif %}
 
 import { provideNgIconsConfig } from "@ng-icons/core"
 
-import { SERVICE_WORKER_ENABLED } from "./environment"
+import { ENV, Environment, SERVICE_WORKER_ENABLED } from "./environment"
+import { ApplicationComponent } from "./main/app.component"
 
 registerLocaleData(LocaleHU)
 
-export const appConfig: ApplicationConfig = {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (ENV !== Environment.Development) {
+    enableProdMode()
+}
+
+bootstrapApplication(ApplicationComponent, {
     providers: [
         provideExperimentalZonelessChangeDetection(),
         { provide: LOCALE_ID, useValue: "hu" },
@@ -27,4 +32,4 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(withFetch(), withInterceptorsFromDi()),
         provideNgIconsConfig({ size: "inherit" })
     ]
-}
+}).catch((err: unknown) => console.error(err))

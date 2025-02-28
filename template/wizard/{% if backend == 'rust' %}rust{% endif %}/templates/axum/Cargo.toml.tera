@@ -1,0 +1,5 @@
+[package]
+name = "{{ name }}"
+
+[dependencies]
+{{ backend_ns ~ '_config' | slugify | replace(from="-", to="_") }} = { path = "../{{ backend_ns ~ '-config' | slugify }}" }

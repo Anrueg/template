@@ -1,0 +1,76 @@
+---
+skip: {{ type == "application" or preset != "config" }}
+---
+use derive_getters::Getters;
+use dotenv::dotenv;
+use envconfig::Envconfig;
+use listenfd::ListenFd;
+use miette::{IntoDiagnostic, Result};
+use std::net::Ipv4Addr;
+use strum::EnumString;
+use tokio::net::TcpListener;
+
+#[derive(Debug, PartialEq, EnumString)]
+pub enum Environment {
+    #[strum(ascii_case_insensitive)]
+    Production,
+
+    #[strum(ascii_case_insensitive)]
+    Staging,
+
+    #[strum(ascii_case_insensitive)]
+    Development,
+}
+
+#[derive(Debug, Envconfig, Getters)]
+pub struct Config {
+    #[envconfig(from = "PROJECT_ENV", default = "development")]
+    environment: Environment,
+
+    #[envconfig(from = "DATABASE_HOST", default = "localhost")]
+    database_host: String,
+
+    #[envconfig(from = "DATABASE_PORT", default = "5656")]
+    database_port: u16,
+
+    #[envconfig(from = "DATABASE_USER", default = "edgedb")]
+    database_user: String,
+
+    #[envconfig(from = "DATABASE_PASSWORD")]
+    database_password: Option<String>,
+    #[envconfig(from = "SERVER_ADDR", default = "0.0.0.0")]
+    server_addr: Ipv4Addr,
+
+    #[envconfig(from = "SERVER_PORT", default = "80")]
+    server_port: u16,
+
+    #[envconfig(from = "SERVER_USEFD", default = "-1")]
+    server_usefd: i16,
+}
+
+impl Config {
+    pub fn new() -> Self {
+        dotenv().ok();
+        Config::init_from_env().unwrap()
+    }
+
+    pub async fn server_listener(&self) -> Result<TcpListener> {
+        if self.server_usefd >= 0 {
+            let mut listenfd = ListenFd::from_env();
+            match listenfd.take_tcp_listener(0).into_diagnostic()? {
+                Some(listener) => TcpListener::from_std(listener).into_diagnostic(),
+                None => TcpListener::bind((self.server_addr, self.server_port)).await.into_diagnostic(),
+            }
+        } else {
+            TcpListener::bind((self.server_addr, self.server_port)).await.into_diagnostic()
+        }
+    }
+
+    // pub fn init_tracing() {}
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -19,48 +19,52 @@ fileGroups:
     - "!*/templates/**/*"
 
 
-{% macro generator_task(name, tpl, post, note) -%}
+{% macro generator_task(name, tpl, note) -%}
   "{{ name }}":
     description: "{{ note }}"
-    script: moon generate {{ tpl }}{% if post -%} && moon run {{ post }}{% endif %} && moon :format --affected
-    platform: system
+    script: moon generate {{ tpl }} && moon run wizard:sync
     toolchain: system
-    local: true
     options:
       runFromWorkspaceRoot: true
       interactive: true
+      cache: false
 {%- endmacro %}
 
 tasks:
   {% if frontend == 'angular' -%}
-  sync-angular:
+  sync.angular:
     description: Sync angular configs from project & moon configs
-    command: $taskToolchain wizard/angular/script/sync-config.ts
-    toolchain: "{{ frontend_toolchain }}"
+    command: {{ frontend_toolchain }} wizard/angular/scripts/sync-configs.ts
     inputs:
       - /angular/*/ng-config.json
-    outputs:
-      - /angular.json
-      - /tsconfig.base.json
+      - /rust/*/moon.yml
     options:
       runFromWorkspaceRoot: true
       mutex: wizard-sync-angular
+      internal: true
+      cache: false
 
-  {{ generator_task('ng-app', 'angular-app', 'wizard:sync-angular', 'Add angular app') }}
+  {{ generator_task('ng-app', 'angular-app', 'Add angular app') }}
 
-  {{ generator_task('ng-lib', 'angular-lib', 'wizard:sync-angular', 'Add angular lib') }}
+  {{ generator_task('ng-lib', 'angular-lib', 'Add angular lib') }}
   {%- endif %}
 
   {% if backend == 'rust' -%}
-  sync-rust:
+  sync.rust:
     description: Sync rust configs from project & moon configs
-    command: noop
+    command: {{ frontend_toolchain }} wizard/rust/scripts/sync-configs.ts
+    inputs:
+      - /Cargo.toml
+      - /rust/*/moon.yml
     options:
+      runFromWorkspaceRoot: true
       mutex: wizard-sync-rust
+      internal: true
+      cache: false
 
-  {{ generator_task('rust-app', 'rust-app', 'wizard:sync-rust', 'Add rust app') }}
-
-  {{ generator_task('rust-lib', 'rust-lib', 'wizard:sync-rust', 'Add rust lib') }}
+  {{ generator_task('rust-app', 'rust-package -- --type=application', 'Add rust app') }}
+  {{ generator_task('rust-lib', 'rust-package -- --type=library', 'Add rust app') }}
+  {{ generator_task('rust-axum', 'rust-package -- --type=application --preset=axum', 'Add rust app') }}
   {%- endif %}
 
   format:
@@ -69,24 +73,25 @@ tasks:
     options:
       runDepsInParallel: false
 
-  moon-sync:
+  sync.moon:
     command: moon sync projects
-    local: true
+    toolchain: system
     options:
       internal: true
+      cache: false
 
   sync:
-    command: moon :format
-    local: true
+    command: moon :format --affected
     deps:
       {% if frontend == 'angular' -%}
-      - sync-angular
+      - sync.angular
       {%- endif %}
-      {% if frontend == 'rust' -%}
-      - sync-rust
+      {% if backend == 'rust' -%}
+      - sync.rust
       {%- endif %}
-      - moon-sync
+      - sync.moon
     options:
-      runDepsInParallel: true
+      runDepsInParallel: false
       runFromWorkspaceRoot: true
       mutex: wizard-sync-all
+      cache: false

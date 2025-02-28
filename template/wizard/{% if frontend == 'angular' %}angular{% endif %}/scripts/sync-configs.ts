@@ -79,7 +79,15 @@ function main() {
     tsconfigUpdatePaths(
         "tsconfig.base.json",
         packages.reduce<Record<string, string>>((dst, pkg) => {
-            dst[`@${AngularNs}/${pkg.name}`] = `angular/${pkg.name}/src/public-api.ts`
+            dst[`@${AngularNs}/${pkg.name}`] = `angular/${pkg.name}/public-api.ts`
+
+            for (const mod of fs.readdirSync(pkg.path)) {
+                const publicApi = path.join(pkg.path, mod, "public-api.ts")
+                if (fs.existsSync(publicApi)) {
+                    dst[`@${AngularNs}/${pkg.name}/${mod}`] = `angular/${pkg.name}/${mod}/public-api.ts`
+                }
+            }
+
             return dst
         }, {})
     )

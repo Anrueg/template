@@ -64,6 +64,45 @@ export default [
             },
         }
     },
+    {
+        ...prettierPluginConfig,
+        name: "Prettier / common",
+        files: ["**/*.{% from "macros.jinja" import eslint_extensions %}{{ eslint_extensions() }}"],
+        ignores: ["**/*.toml"],
+        rules: {
+            ...prettierPluginConfig.rules,
+            "prettier/prettier": [
+                "error",
+                {
+                    semi: false,
+                    trailingComma: "none",
+                    arrowParens: "avoid",
+                    quoteProps: "consistent",
+                    bracketSpacing: true,
+                    bracketSameLine: true,
+                    htmlWhitespaceSensitivity: "ignore",
+                    embeddedLanguageFormatting: "auto",
+                    plugins: ["@trivago/prettier-plugin-sort-imports"],
+
+                    // IMPORT SORT
+                    importOrderSeparation: true,
+                    importOrderSortSpecifiers: true,
+                    importOrderCaseInsensitive: true,
+                    importOrderParserPlugins: ["typescript", "decorators-legacy"],
+                    importOrderImportAttributesKeyword: "with",
+                    importOrderGroupNamespaceSpecifiers: true,
+                    importOrder: [
+                        "^node:.*?",
+                        "^@angular/",
+                        "^rxjs",
+                        "<THIRD_PARTY_MODULES>",
+                        "^@some-fancy-name/*",
+                        "^[./]"
+                    ]
+                }
+            ]
+        }
+    },
     ...tslint
         .config({
             name: "Typescript / overrides",
@@ -145,45 +184,6 @@ export default [
             value.name = `${parts[0]} / ${parts[parts.length - 1]}`
             return value
         }),
-    {
-        ...prettierPluginConfig,
-        name: "Prettier / common",
-        files: ["**/*.{% from "macros.jinja" import eslint_extensions %}{{ eslint_extensions() }}"],
-        ignores: ["**/*.toml"],
-        rules: {
-            ...prettierPluginConfig.rules,
-            "prettier/prettier": [
-                "error",
-                {
-                    semi: false,
-                    trailingComma: "none",
-                    arrowParens: "avoid",
-                    quoteProps: "consistent",
-                    bracketSpacing: true,
-                    bracketSameLine: true,
-                    htmlWhitespaceSensitivity: "ignore",
-                    embeddedLanguageFormatting: "auto",
-                    plugins: ["@trivago/prettier-plugin-sort-imports"],
-
-                    // IMPORT SORT
-                    importOrderSeparation: true,
-                    importOrderSortSpecifiers: true,
-                    importOrderCaseInsensitive: true,
-                    importOrderParserPlugins: ["typescript", "decorators-legacy"],
-                    importOrderImportAttributesKeyword: "with",
-                    importOrderGroupNamespaceSpecifiers: true,
-                    importOrder: [
-                        "^node:.*?",
-                        "^@angular/",
-                        "^rxjs",
-                        "<THIRD_PARTY_MODULES>",
-                        "^@some-fancy-name/*",
-                        "^[./]"
-                    ]
-                }
-            ]
-        }
-    },
     {% if frontend == "angular" -%}
     {
         name: "Angular / common",

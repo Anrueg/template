@@ -5,3 +5,10 @@ backend:
   choices:
     Rust: rust
     Skip: skip
+
+backend_ns:
+  when: "{{ backend != 'skip' }}"
+  help: Backend package namespace ([ns]-package-name)
+  type: str
+  required: true
+  default: "{{ frontend_ns or project_abbrev }}"

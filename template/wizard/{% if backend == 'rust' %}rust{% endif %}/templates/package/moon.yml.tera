@@ -1,0 +1,31 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+id: "rust/{{ name | slugify }}"
+project:
+  name: "{{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
+  description: "Rust {{ type }}: {{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
+  metadata:
+    folder: "{{ backend_ns ~ '-' ~ name | slugify }}"
+    slug: "{{ name | slugify }}"
+    signal-source: .moon/cache/.changes/rust/{{ name | slugify }}/source
+    signal-config: .moon/cache/.changes/rust/{{ name | slugify }}/config
+
+type: {{ type }}
+stack: backend
+language: rust
+tags: [rust
+{%- if type == "application" -%},rust-app{%- endif -%}
+{%- if type == "library" -%},rust-lib{%- endif -%}
+{%- if type == "configuration" -%},rust-conf,rust-lib{%- endif -%}
+{%- if preset -%},rust-{{ preset }}{%- endif -%}
+]
+toolchain:
+  default: rust
+
+fileGroups:
+  sources:
+    - "**/*.rs"
+
+  configs:
+    - Cargo.toml
+    - /Cargo.toml

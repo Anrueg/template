@@ -1,0 +1,10 @@
+---
+skip: {{ type == "application" }}
+---
+{% if preset == "config" %}
+pub mod config;
+pub use config::*;
+{% else %}
+pub mod example;
+pub use example::*;
+{% endif %}

@@ -7,15 +7,15 @@
         }
     },
     "root": "angular/{{ name }}",
-    "sourceRoot": "angular/{{ name }}/src",
+    "sourceRoot": "angular/{{ name }}",
     "prefix": "{{ project_abbrev }}",
     "architect": {
         "build": {
             "builder": "@angular-devkit/build-angular:application",
             "options": {
                 "outputPath": "dist/angular/{{ name }}",
-                "index": "angular/{{ name }}/src/index.html",
-                "browser": "angular/{{ name }}/src/main.ts",
+                "index": "angular/{{ name }}/index.html",
+                "browser": "angular/{{ name }}/main.ts",
                 "tsConfig": "angular/{{ name }}/tsconfig.cli.json",
                 "inlineStyleLanguage": "scss",
                 "assets": [
@@ -25,7 +25,7 @@
                     }
                 ],
                 "styles": [
-                    "angular/{{ name }}/src/styles.scss"
+                    "angular/{{ name }}/styles.scss"
                 ],
                 "scripts": []
             },
@@ -50,8 +50,8 @@
                     "tsConfig": "angular/{{ name }}/tsconfig.release.json",
                     "fileReplacements": [
                         {
-                            "replace": "angular/{{ name }}/src/environment/active.ts",
-                            "with": "angular/{{ name }}/src/environment/_production.ts"
+                            "replace": "angular/{{ name }}/environment/active.ts",
+                            "with": "angular/{{ name }}/environment/_production.ts"
                         }
                     ]
                 },
@@ -63,16 +63,16 @@
                     "tsConfig": "angular/{{ name }}/tsconfig.release.json",
                     "fileReplacements": [
                         {
-                            "replace": "angular/{{ name }}/src/environment/active.ts",
-                            "with": "angular/{{ name }}/src/environment/_staging.ts"
+                            "replace": "angular/{{ name }}/environment/active.ts",
+                            "with": "angular/{{ name }}/environment/_staging.ts"
                         }
                     ]
                 },
                 "development": {
                     "fileReplacements": [
                         {
-                            "replace": "angular/{{ name }}/src/environment/active.ts",
-                            "with": "angular/{{ name }}/src/environment/_development.ts"
+                            "replace": "angular/{{ name }}/environment/active.ts",
+                            "with": "angular/{{ name }}/environment/_development.ts"
                         }
                     ],
                     "optimization": false,
@@ -112,7 +112,7 @@
                     }
                 ],
                 "styles": [
-                    "angular/{{ name }}/src/styles.scss"
+                    "angular/{{ name }}/styles.scss"
                 ],
                 "scripts": []
             }

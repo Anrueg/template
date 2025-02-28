@@ -8,6 +8,8 @@ version = "0.1.0"
 # TODO: after version 1.85: edition = "2024"
 edition = "2021"
 
+[workspace.lints]
+
 # Dependency management:
 #
 # in workspace Cargo.toml
@@ -18,7 +20,30 @@ edition = "2021"
 # [dependencies]
 # dotenv = { workspace = true }
 [workspace.dependencies]
-dotenv = "0.15.0"
+dotenv = "0.15"
+envconfig = "0.11"
+strum = { version = "0.27", features = [ "derive" ] }
+derive-getters = "0.5"
+bon = "3"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+tracing-opentelemetry = "0.29"
+thiserror = "1"
+miette = { version = "7", features = [ "fancy" ] }
+tokio = { version = "1", features = [ "rt-multi-thread" ] }
+serde = { version = "1", features = [ "derive" ] }
+serde_json = "1"
+axum = "0.8"
+listenfd = "1"
+
+# Auto reload
+# https://docs.rs/listenfd/latest/listenfd/
+# https://stackoverflow.com/questions/29461693/how-can-i-get-cargo-to-recompile-changed-files-automatically
+# https://lucumr.pocoo.org/2025/1/19/what-is-systemfd/
+
+# DI
+# https://crates.io/crates/more-di
+# https://crates.io/crates/shaku
 
 [profile.release]
 lto = true

@@ -1,0 +1,30 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: rust-package
+title: Rust package
+description: Add rust package
+destination: rust/{{ backend_ns | slug }}-[name | slugify]
+variables:
+  name:
+    type: "string"
+    required: true
+    default: ""
+    prompt: "Package name?"
+    order: 1
+
+  type:
+    type: "enum"
+    values:
+      - application
+      - library
+      - configuration
+
+  preset:
+    type: "enum"
+    default: common
+    values:
+      - common
+      - axum
+      - config
+      - macro

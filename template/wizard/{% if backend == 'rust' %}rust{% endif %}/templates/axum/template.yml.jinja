@@ -1,14 +1,14 @@
 $schema: "https://moonrepo.dev/schemas/template.json"
 
 extends: ["configs"]
-id: rust-app
-title: Rust application
-description: Add rust application
-destination: rust/[name]
+id: rust-axum
+title: Rust axum server
+description: Add rust axum server
+destination: rust/{{ backend_ns | slug }}-[name | slugify]
 variables:
   name:
     type: "string"
     required: true
-    default: "{{ project_slug }}"
+    default: "server"
     prompt: "Application name?"
     order: 1

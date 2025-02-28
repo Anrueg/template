@@ -1,0 +1,23 @@
+use {{ backend_ns ~ '_config' | slugify | replace(from="-", to="_") }}::Config;
+use axum::{routing::get, Router};
+use tokio::net::TcpListener;
+use listenfd::ListenFd;
+
+async fn start() {
+}
+
+async fn index() -> &'static str {
+    "Hello, World!"
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let config = Config::new();
+
+    let app = Router::new().route("/", get(index));
+
+    let listener = config.server_listener().await?;
+
+    axum::serve(listener, app).await?;
+    Ok(())
+}

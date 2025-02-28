@@ -12,7 +12,9 @@ database_host:
   help: "Databse host"
   required: true
   type: str
-  default: localhost
+  default: |
+    {%- if database == 'gel' -%}gel{%- endif -%}
+    {%- if database == 'postgres' -%}postgres{%- endif -%}
 
 database_port:
   when: "{{ databse != 'skip' }}"
@@ -37,4 +39,13 @@ database_password:
   type: str
   help: "Databse password"
   default: "{{ database_user }}"
+  required: true
+
+database_name:
+  when: "{{ databse != 'skip' }}"
+  type: str
+  help: "Databse name"
+  default: |
+    {%- if database == 'gel' -%}main{%- endif -%}
+    {%- if database == 'postgres' -%}{{ project_slug }}{%- endif -%}
   required: true

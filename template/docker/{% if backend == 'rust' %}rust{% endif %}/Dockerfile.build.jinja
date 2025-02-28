@@ -1,0 +1,13 @@
+FROM rust:alpine
+
+RUN apk add --no-cache musl-dev
+RUN cargo install --locked systemfd cargo-watch
+
+COPY Cargo.toml Cargo.lock /workspace/
+COPY rust/ /workspace/rust/
+
+VOLUME [ "/binaries" ]
+WORKDIR /workspace
+ARG PROFILE=dev
+# TODO: replace --target-dir with --artifact-dir when stable
+CMD [ "cargo", "watch", "--poll", "--watch", "/.rust-source-changed", "--", "cargo", "build", "--bins", "--profile=dev", "--target-dir", "/binaries" ]

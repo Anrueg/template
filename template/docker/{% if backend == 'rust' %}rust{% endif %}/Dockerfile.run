@@ -1,0 +1,3 @@
+FROM rust:alpine
+
+CMD ["tail", "-f", "/dev/null"]

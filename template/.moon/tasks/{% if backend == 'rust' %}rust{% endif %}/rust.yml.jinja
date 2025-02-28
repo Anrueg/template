@@ -8,6 +8,7 @@ tasks:
     local: true
     options:
       runFromWorkspaceRoot: true
+      outputStyle: buffer-only-failure
 
   clippy:
     command: clippy -p $projectName -q
@@ -24,6 +25,7 @@ tasks:
       runFromWorkspaceRoot: true
       mergeArgs: prepend
       internal: true
+      outputStyle: buffer-only-failure
 
   clippy-fix:
     extends: clippy
@@ -40,16 +42,19 @@ tasks:
     options:
       runFromWorkspaceRoot: true
       internal: true
+      outputStyle: buffer-only-failure
 
   lint:
     command: noop
     deps: ["~:clippy", "~:eslint"]
     options:
       runDepsInParallel: false
+      outputStyle: buffer-only-failure
 
   format:
     command: noop
     deps: ["~:fmt", "~:clippy-fix", "~:eslint-fix"]
     options:
       runDepsInParallel: false
+      outputStyle: buffer-only-failure
 

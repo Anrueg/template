@@ -28,10 +28,9 @@ typescript:
     syncProjectReferencesToPaths: false
     includeProjectReferenceSources: false
 
-{% if backend == 'rust' -%}
 rust:
     version: "stable"
     syncToolchainConfig: true
     bins:
-        - 'cargo-nextest'
-{% endif %}
+        - cargo-nextest
+        - watchexec-cli

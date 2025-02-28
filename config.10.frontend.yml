@@ -18,4 +18,4 @@ frontend_ns:
   help: Frontend package namespace (@namespace/*)
   type: str
   required: true
-  default: "{{ project_slug }}"
+  default: "{{ project_abbrev }}"

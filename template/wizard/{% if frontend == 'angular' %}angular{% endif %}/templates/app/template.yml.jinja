@@ -9,16 +9,9 @@ variables:
   name:
     type: "string"
     required: true
-    default: "{{ project_slug }}"
+    default: "app"
     prompt: "Application name?"
     order: 1
-
-  # prefix:
-  #   type: "string"
-  #   required: true
-  #   default: "{{ project_abbrev }}"
-  #   prompt: "Selector prefix?"
-  #   order: 2
 
   service_worker:
     type: "boolean"

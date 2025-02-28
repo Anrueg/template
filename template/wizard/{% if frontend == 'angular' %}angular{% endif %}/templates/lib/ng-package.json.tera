@@ -4,7 +4,7 @@
   "inlineStyleLanguage": "scss",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public-api.ts",
+    "entryFile": "public-api.ts",
     "styleIncludePaths": [
         "../"
     ]

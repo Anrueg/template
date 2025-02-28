@@ -1,34 +1,22 @@
 $schema: "https://moonrepo.dev/schemas/project.json"
 
-id: "angular/{{ name }}"
-
+id: "angular/{{ name | slugify }}"
 project:
-  name: "{{ name }}"
-  description: "Angular applicaton: {{ name }}"
+  name: "{{ name | slugify }}"
+  description: "Angular applicaton: {{ name | slugify }}"
+  metadata:
+    folder: "{{ name | slugify }}"
+    slug: "{{ name | slugify }}"
+    signal-source: ".moon/cache/.changes/angular/{{ name | slugify }}/source"
+    signal-config: ".moon/cache/.changes/angular/{{ name | slugify }}/config"
 
 type: application
 stack: frontend
 language: typescript
 tags: [angular, angular-app, scss]
-
-fileGroups:
-  sources:
-    - "src/**/*.{ts,tsx}"
-
-  assets:
-    - "assets/**/*"
-
-  configs:
-    - eslint.config.ts
-    - jest.config.ts
-    - ngsw-config.json
-    - tsconfig.json
-    - tsconfig.*.json
-    - package.json
-    - ng-config.json
-
-  compiled:
-    - /dist/angular/{{ name }}
-
 toolchain:
   default: {{ frontend_toolchain }}
+
+fileGroups:
+  compiled:
+    - /dist/angular/{{ name }}

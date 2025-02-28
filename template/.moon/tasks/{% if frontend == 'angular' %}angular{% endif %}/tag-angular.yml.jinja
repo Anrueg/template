@@ -2,6 +2,20 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/angular/tasks.yml
 
+fileGroups:
+  sources:
+    - "src/**/*.{ts,tsx,json,sass,scss,css}"
+
+  configs:
+    - /eslint.config.base.ts
+    - /eslint.config.ts
+    - ngsw-config.json
+    - tsconfig.json
+    - tsconfig.*.json
+    - package.json
+    - ng-config.json
+    - version.json
+
 tasks:
   clean:
     script: {{ frontend_toolchain }} rimraf dist/angular/$projectName && {{ frontend_toolchain }} ng cache clean

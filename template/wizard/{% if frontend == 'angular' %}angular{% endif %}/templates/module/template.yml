@@ -1,0 +1,18 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: angular-module
+title: Angular module
+description: Add angular module
+destination: angular/[folder]/[name]
+variables:
+  folder:
+    type: "string"
+    required: true
+
+  name:
+    type: "string"
+    required: true
+    default: "app"
+    prompt: "Application name?"
+    order: 1
