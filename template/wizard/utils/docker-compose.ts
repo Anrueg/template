@@ -68,6 +68,21 @@ export function addVolumes(document: Document, volumes: string[]) {
     rootVols.flow = allNull
 }
 
+export function addVolumeToService(document: Document, service: string, volume: string) {
+    let volumes = document.getIn(["services", service, "volumes"]) as YAMLSeq<Scalar<string>> | null
+
+    if (volumes == null) {
+        volumes = document.createNode([])
+        document.setIn(["services", service, "volumes"], volumes)
+    }
+
+    if (volumes.items.some(v => v.value === volume)) {
+        return
+    }
+
+    volumes.add(document.createNode(volume))
+}
+
 export function removeServices(document: Document, test: (kv: Pair) => boolean) {
     const services = document.get("services") as YAMLMap | null
     if (services != null) {

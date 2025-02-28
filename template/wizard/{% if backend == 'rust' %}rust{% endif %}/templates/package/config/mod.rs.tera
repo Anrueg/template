@@ -1,0 +1,6 @@
+---
+skip: {{ type == "application" or preset != "config" }}
+---
+mod config;
+
+pub use config::*;

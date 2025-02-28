@@ -1,6 +1,6 @@
 ---
 skip: {{ type == "application" or preset == "config" }}
 ---
-pub fun public_function() {
+pub fn public_function() {
     println!("Hello, world!");
 }
