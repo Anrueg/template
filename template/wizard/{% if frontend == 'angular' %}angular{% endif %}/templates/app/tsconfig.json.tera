@@ -6,10 +6,10 @@
     "rootDir": "."
   },
   "files": [
-    "src/main.ts"
+    "./main.ts"
   ],
   "include": [
-    "src/**/*.ts"
+    "./**/*.ts"
   ],
   "angularCompilerOptions": {
     "compilationMode": "full"

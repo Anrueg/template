@@ -105,6 +105,7 @@ tasks:
   watcher.config:
     extends: watcher.base
     deps:
+      - ^:watcher.config
       - target: ~:watcher.windows
         args: |
           --watch @root(configs)
@@ -114,6 +115,7 @@ tasks:
   watcher.source:
     extends: watcher.base
     deps:
+      - ^:watcher.source
       - target: ~:watcher.windows
         args: |
           --watch @root(sources)

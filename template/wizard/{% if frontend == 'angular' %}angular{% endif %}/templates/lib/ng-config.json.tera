@@ -1,6 +1,11 @@
 {
   "$schema": "../../wizard/angular/ng-config.schema.json",
   "projectType": "library",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
   "root": "angular/{{ name }}",
   "sourceRoot": "angular/{{ name }}/src",
   "prefix": "{{ project_abbrev }}",

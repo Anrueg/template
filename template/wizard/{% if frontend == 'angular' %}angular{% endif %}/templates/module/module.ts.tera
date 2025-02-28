@@ -1,0 +1,10 @@
+{% set module_name = name | pascal_case %}
+---
+to: {{ name }}.module.ts
+---
+import { NgModule, Type } from "@angular/core"
+
+const items: Array<Type<any>> = []
+
+@NgModule({ imports: items, exports: items })
+export class {{ module_name }}Module {}

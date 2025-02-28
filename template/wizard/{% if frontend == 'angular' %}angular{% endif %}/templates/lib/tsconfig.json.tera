@@ -6,7 +6,11 @@
     "rootDir": "."
   },
   "files": [
-    "public-api.ts"
+    "./public-api.ts",
+    "./*/public-api.ts"
+  ],
+  "include": [
+    "**/*.ts"
   ],
   "angularCompilerOptions": {
     "compilationMode": "partial",

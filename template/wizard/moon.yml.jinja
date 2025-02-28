@@ -8,8 +8,22 @@ language: typescript
 project:
   name: "Wizard"
   description: "Code generation templates"
+  metadata:
+    signal-source: .moon/cache/.changes/tools/source
+    signal-config: .moon/cache/.changes/tools/config
 
 fileGroups:
+  sources:
+    - "**/*"
+
+  configs:
+    - /.dockerignore
+    - /.editorconfig
+    - /.env
+    - /.gitignore
+    - /.browserslistrc
+    - /*.{toml,ts,json}
+
   eslint:
     - "**/*.{{ eslint_extensions() }}"
     - "/*.{{ eslint_extensions() }}"

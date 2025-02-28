@@ -6,3 +6,14 @@ language: typescript
 project:
   name: "{{ project_name }} tools"
   description: "{{ project_name }} tools"
+  metadata:
+    signal-source: .moon/cache/.changes/tools/source
+    signal-config: .moon/cache/.changes/tools/config
+
+fileGroups:
+  sources:
+    - "**/*"
+
+  configs:
+    - tsconfig.json
+    - moon.yml

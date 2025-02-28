@@ -1,6 +1,14 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/rust/tasks.yml
 
+fileGroups:
+  sources:
+    - "**/*.rs"
+
+  configs:
+    - Cargo.toml
+    - /Cargo.toml
+
 tasks:
   clean:
     command: cargo clean -p $projectName

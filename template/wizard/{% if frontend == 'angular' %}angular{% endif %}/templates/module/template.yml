@@ -4,15 +4,10 @@ extends: ["configs"]
 id: angular-module
 title: Angular module
 description: Add angular module
-destination: angular/[folder]/[name]
+destination: "[name]"
 variables:
-  folder:
-    type: "string"
-    required: true
-
   name:
     type: "string"
     required: true
-    default: "app"
-    prompt: "Application name?"
+    prompt: "Module name?"
     order: 1

@@ -176,6 +176,13 @@ export default [
                         ignoreArrowShorthand: true,
                         ignoreVoidOperator: true
                     }
+                ],
+                "@typescript-eslint/array-type": [
+                    "error",
+                    {
+                        default: "array-simple",
+                        readonly: "generic"
+                    }
                 ]
             }
         })

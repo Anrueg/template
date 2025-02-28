@@ -4,20 +4,3 @@ x-environment: &environment
   DATABASE_PORT:
   DATABASE_USER:
   DATABASE_PASSWORD:
-
-services:
-  {% if backend == "rust" -%}
-  rust-builder:
-    build:
-      context: .
-      dockerfile: docker/{{ backend }}/Dockerfile.build
-    environment:
-      <<: *environment
-      SERVER_USEFD: 1
-    volumes:
-      - rust-binaries:/binaries:rw
-      - ./.moon/cache/.rust-source-changed:/.rust-source-changed:ro
-      - ./rust:/workspace/rust:ro
-  {%- endif %}
-
-volumes: { rust-binaries }

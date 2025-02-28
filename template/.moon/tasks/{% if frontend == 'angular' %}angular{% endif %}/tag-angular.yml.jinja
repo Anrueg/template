@@ -4,16 +4,15 @@ extends: file://../../../wizard/angular/tasks.yml
 
 fileGroups:
   sources:
-    - "src/**/*.{ts,tsx,json,sass,scss,css}"
+    - "**/*.{ts,tsx,json,sass,scss,css,yml}"
 
   configs:
-    - /eslint.config.base.ts
-    - /eslint.config.ts
+    - moon.yml
+    - ng-config.json
     - ngsw-config.json
+    - package.json
     - tsconfig.json
     - tsconfig.*.json
-    - package.json
-    - ng-config.json
     - version.json
 
 tasks:

@@ -23,74 +23,77 @@ _tasks:
 
   - git init --initial-branch={{ default_branch }}
 
-  # - command: >
-  #     {{ frontend_toolchain }} add -d
-  #     @types/{{ frontend_toolchain }}
-  #     rimraf
-  #     touch
-  #     jiti
-  #     eslint
-  #     @eslint/compat
-  #     @eslint/markdown
-  #     globals
-  #     prettier
-  #     typescript-eslint
-  #     eslint-plugin-prettier
-  #     eslint-config-prettier
-  #     eslint-plugin-unused-imports
-  #     @trivago/prettier-plugin-sort-imports
-  #     @stylistic/eslint-plugin-ts
-  #     @stylistic/eslint-plugin-js
-  #     eslint-plugin-jsonc
-  #     eslint-plugin-yml
-  #     eslint-plugin-toml
-  #     stylelint
-  #     stylelint-config-standard-scss
-  #     stylelint-prettier
-  #     @types/lodash-es
-  #     && {{ frontend_toolchain }} add
-  #     lodash-es
-  #   when: "{{ frontend != 'skip' }}"
+  - command: >
+      {{ frontend_toolchain }} add -d
+      @types/{{ frontend_toolchain }}
+      rimraf
+      touch
+      jiti
+      eslint
+      @eslint/compat
+      @eslint/markdown
+      globals
+      prettier
+      typescript-eslint
+      eslint-plugin-prettier
+      eslint-config-prettier
+      eslint-plugin-unused-imports
+      @trivago/prettier-plugin-sort-imports
+      @stylistic/eslint-plugin-ts
+      @stylistic/eslint-plugin-js
+      eslint-plugin-jsonc
+      eslint-plugin-yml
+      eslint-plugin-toml
+      stylelint
+      stylelint-config-standard-scss
+      stylelint-prettier
+      @types/lodash-es
+      && {{ frontend_toolchain }} add
+      lodash-es
+    when: "{{ frontend != 'skip' }}"
 
-  # - command: >
-  #     {{ frontend_toolchain }} add -d
-  #     @angular-eslint/eslint-plugin
-  #     @angular-eslint/eslint-plugin-template
-  #     typescript
-  #     @angular/cli
-  #     @angular/compiler-cli
-  #     @angular-devkit/build-angular
-  #     ng-packagr
-  #     yaml
-  #     && {{ frontend_toolchain }} add
-  #     @angular/animations
-  #     @angular/common
-  #     @angular/compiler
-  #     @angular/core
-  #     @angular/forms
-  #     @angular/platform-browser
-  #     @angular/platform-browser-dynamic
-  #     @angular/router
-  #     @angular/service-worker
-  #     rxjs
-  #     tslib
-  #     @ng-icons/core
-  #   when: "{{ frontend == 'angular' }}"
+  - command: >
+      {{ frontend_toolchain }} add -d
+      @angular-eslint/eslint-plugin
+      @angular-eslint/eslint-plugin-template
+      typescript
+      @angular/cli
+      @angular/compiler-cli
+      @angular-devkit/build-angular
+      ng-packagr
+      yaml
+      && {{ frontend_toolchain }} add
+      @angular/animations
+      @angular/common
+      @angular/compiler
+      @angular/core
+      @angular/forms
+      @angular/platform-browser
+      @angular/platform-browser-dynamic
+      @angular/router
+      @angular/service-worker
+      rxjs
+      tslib
+      @ng-icons/core
+    when: "{{ frontend == 'angular' }}"
 
-  # - command: >
-  #     {{ frontend_toolchain }} add -d
-  #     @ltd/j-toml
-  #     touch
-  #   when: "{{ backend == 'rust' }}"
+  - command: >
+      {{ frontend_toolchain }} add -d
+      @ltd/j-toml
+      touch
+    when: "{{ backend == 'rust' }}"
 
   - command: moon generate rust-package --force -- --name=config --type=configuration --preset=config
     when: "{{ backend == 'rust' }}"
 
-  - moon wizard:sync
-
   - >
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
+
+  - moon wizard:sync
+
+  - >
+    git add . && (git diff-index --quiet HEAD || git commit -m "chore: update project")
 
   # TODO ONLY ON UPGRADE
   # - command: "{{ frontend_toolchain }} install --force --no-frozen-lockfile"
