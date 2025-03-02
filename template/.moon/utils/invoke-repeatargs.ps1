@@ -38,11 +38,11 @@ function Invoke-RepeatArgs {
             $result += $arg
         }
 
-        Write-Output "'$arg' repeatState=$repeatState, repeatArg=$repeatArg"
+        # Write-Output "'$arg' repeatState=$repeatState, repeatArg=$repeatArg"
     }
 
     Write-Output ($command + " " + ($result -join " "))
-    # return Invoke-Expression ($command + " " + ($result -join " "))
+    return Invoke-Expression ($command + " " + ($result -join " "))
 }
 
 Invoke-RepeatArgs $args

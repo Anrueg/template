@@ -4,7 +4,7 @@ extends: ["configs"]
 id: rust-package
 title: Rust package
 description: Add rust package
-destination: rust/{{ backend_ns | slug }}-[name | slugify]
+destination: rust/[name | slugify]
 variables:
   name:
     type: "string"

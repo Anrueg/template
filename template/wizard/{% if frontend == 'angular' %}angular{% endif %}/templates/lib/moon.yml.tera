@@ -5,10 +5,10 @@ project:
   name: "{{ name | slugify }}"
   description: "Angular library: {{ name | slugify }}"
   metadata:
-    folder: "{{ name | slugify }}"
-    slug: "{{ name | slugify }}"
-    signal-source: ".moon/cache/.changes/angular/{{ name | slugify }}/source"
-    signal-config: ".moon/cache/.changes/angular/{{ name | slugify }}/config"
+    slug: angular-{{ name | slugify }}
+
+    watcher.sources.globs: ["**/*.{ts,tsx,css,scss,sass}"]
+    watcher.configs.globs: ["**/*.{json,yml}"]
 
 type: library
 stack: frontend

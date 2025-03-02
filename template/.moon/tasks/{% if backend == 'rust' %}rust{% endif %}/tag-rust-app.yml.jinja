@@ -1,36 +1,16 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  start.notifier.pre:
-    script: |
-      {{ frontend_toolchain }} rimraf @meta(signal-source)
-      & {{ frontend_toolchain }} rimraf @meta(signal-config)
-    options:
-      cache: false
-      runFromWorkspaceRoot: true
-      internal: true
-      outputStyle: buffer-only-failure
-
-  start.notifier:
-    command: watch --watch Cargo.toml --watch rust/ -- {{ frontend_toolchain }} touch .moon/cache/.rust-source-changed
-    toolchain: rust
-    preset: server
-    deps: [~:start.notifier.pre]
-    options:
-      runFromWorkspaceRoot: true
-      internal: true
-      mutex: rust-source-notifier
-
   start.builder:
     script: docker compose up rust-builder --build --no-log-prefix
-    preset: server
-    deps: [~:start.notifier]
+    preset: watcher
+    deps: [wizard:watcher]
     options:
       runFromWorkspaceRoot: true
       internal: true
 
   start:
-    command: docker compose up @meta(compose) --build --no-log-prefix
-    preset: server
+    command: docker compose up @meta(slug) --build --no-log-prefix
+    preset: watcher
     deps: [~:start.builder]
 

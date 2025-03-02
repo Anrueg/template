@@ -18,21 +18,23 @@ fileGroups:
 tasks:
   clean:
     script: {{ frontend_toolchain }} rimraf dist/angular/$projectName && {{ frontend_toolchain }} ng cache clean
-    local: true
     options:
       runFromWorkspaceRoot: true
+      cache: false
 
   lint:
     command: noop
     deps: ["~:eslint", "~:stylelint"]
     options:
       runDepsInParallel: false
+      cache: false
 
   format:
     command: noop
     deps: ["~:eslint-fix", "~:stylelint-fix"]
     options:
       runDepsInParallel: false
+      cache: false
 
   build:
     command: ng build
@@ -48,6 +50,7 @@ tasks:
       - /angular/$projectName/**/*.{{ stylelint_extensions() }}
     outputs:
       - /dist/angular/$projectName
+      - /.angular
     options:
       runFromWorkspaceRoot: true
       runDepsInParallel: false
@@ -55,13 +58,13 @@ tasks:
   build.pre:
     command: noop
     toolchain: {{ frontend_toolchain }}
+    deps: [wizard:sync]
     options:
       internal: true
 
   start.pre:
     command: noop
     toolchain: {{ frontend_toolchain }}
-    deps:
-      - "~:build.pre"
+    deps: [~:build.pre, wiazrd:watcher]
     options:
       internal: true

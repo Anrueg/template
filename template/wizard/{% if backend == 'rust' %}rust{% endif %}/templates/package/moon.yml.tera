@@ -5,10 +5,10 @@ project:
   name: "{{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
   description: "Rust {{ type }}: {{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
   metadata:
-    folder: "{{ backend_ns ~ '-' ~ name | slugify }}"
-    slug: "{{ name | slugify }}"
-    signal-source: .moon/cache/.changes/rust/{{ name | slugify }}/source
-    signal-config: .moon/cache/.changes/rust/{{ name | slugify }}/config
+    slug: "rust-{{ name | slugify }}"
+
+    watcher.sources.globs: ["**/*.rs"]
+    watcher.configs.globs: ["Cargo.toml", "/Cargo.toml"]
 
 type: {{ type }}
 stack: backend
@@ -21,11 +21,3 @@ tags: [rust
 ]
 toolchain:
   default: rust
-
-fileGroups:
-  sources:
-    - "**/*.rs"
-
-  configs:
-    - Cargo.toml
-    - /Cargo.toml

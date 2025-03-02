@@ -1,13 +1,33 @@
-FROM rust:alpine
-
+FROM rust:alpine AS base
+ENV CARGO_TARGET_DIR /binaries
 RUN apk add --no-cache musl-dev
-RUN cargo install --locked systemfd cargo-watch
+RUN cargo install --locked watchexec-cli cargo-chef
 
-COPY Cargo.toml Cargo.lock /workspace/
-COPY rust/ /workspace/rust/
 
-VOLUME [ "/binaries" ]
+FROM base AS recipe
 WORKDIR /workspace
-ARG PROFILE=dev
+ADD Cargo.toml Cargo.lock /workspace/
+ADD .cargo /workspace/.cargo/
+ADD rust /workspace/rust/
+RUN cargo chef prepare --recipe-path recipe.json
+
+# Build profile, can be production / staging / development
+ARG PROFILE development
+FROM recipe AS builder
+WORKDIR /workspace
+ADD Cargo.toml Cargo.lock /workspace/
+ADD .cargo /workspace/.cargo/
+ADD rust /workspace/rust/
+COPY --from=recipe /workspace/recipe.json /workspace/recipe.json
+RUN cargo chef cook --profile=${PROFILE} --recipe-path recipe.json
+ENV PROFILE ${PROFILE}
+
+
+FROM builder
+WORKDIR /workspace
+VOLUME [ "/binaries" ]
+
+COPY Cargo.toml Cargo.lock .cargo /workspace/
+
 # TODO: replace --target-dir with --artifact-dir when stable
-CMD [ "cargo", "watch", "--poll", "--watch", "/.rust-source-changed", "--", "cargo", "build", "--bins", "--profile=dev", "--target-dir", "/binaries" ]
+CMD [ "watchexec", "--poll=100ms", "--watch=/watcher", "--on-busy-update=restart", "--print-events", "--color=always", "--timings", "cargo", "build", "--bins", "--profile=${PROFILE}", "--target-dir=${CARGO_TARGET_DIR}" ]

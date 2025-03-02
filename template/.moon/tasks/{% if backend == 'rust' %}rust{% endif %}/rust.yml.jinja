@@ -1,22 +1,14 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 extends: file://../../../wizard/rust/tasks.yml
 
-fileGroups:
-  sources:
-    - "**/*.rs"
-
-  configs:
-    - Cargo.toml
-    - /Cargo.toml
-
 tasks:
   clean:
     command: cargo clean -p $projectName
     toolchain: rust
-    local: true
     options:
       runFromWorkspaceRoot: true
       outputStyle: buffer-only-failure
+      cache: false
 
   clippy:
     command: clippy -p $projectName -q
@@ -24,16 +16,16 @@ tasks:
       - --
       - --no-deps
       - -Dwarnings
-    toolchain: rust
     inputs:
-      - "/$projectSource/**/*.rs"
-      - "/$projectSource/Cargo.toml"
       - "/Cargo.toml"
+      - "/**/Cargo.toml"
+      - "/**/*.rs"
+    toolchain: rust
     options:
       runFromWorkspaceRoot: true
+      outputStyle: buffer-only-failure
       mergeArgs: prepend
       internal: true
-      outputStyle: buffer-only-failure
 
   clippy-fix:
     extends: clippy
@@ -44,13 +36,13 @@ tasks:
   fmt:
     command: fmt -p $projectName -- --emit files
     inputs:
-      - "/$projectSource/**/*.rs"
-      - "/$projectSource/Cargo.toml"
       - "/Cargo.toml"
+      - "/**/Cargo.toml"
+      - "/**/*.rs"
     options:
       runFromWorkspaceRoot: true
-      internal: true
       outputStyle: buffer-only-failure
+      internal: true
 
   lint:
     command: noop
@@ -58,6 +50,7 @@ tasks:
     options:
       runDepsInParallel: false
       outputStyle: buffer-only-failure
+      cache: false
 
   format:
     command: noop
@@ -65,4 +58,19 @@ tasks:
     options:
       runDepsInParallel: false
       outputStyle: buffer-only-failure
+      cache: false
+
+#   cargo-recipe:
+#     command: chef prepare --recipe-path cargo-recipe.json
+#     toolchain: rust
+#     inputs:
+#       - rust/**/*
+#       - .cargo/**/*
+#       - Cargo.toml
+#       - Cargo.lock
+#     outputs:
+#       - cargo-recipe.json
+#     options:
+#       runFromWorkspaceRoot: true
+#       mutex: cargo-recipe
 

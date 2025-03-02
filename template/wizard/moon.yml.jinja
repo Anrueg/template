@@ -8,22 +8,8 @@ language: typescript
 project:
   name: "Wizard"
   description: "Code generation templates"
-  metadata:
-    signal-source: .moon/cache/.changes/tools/source
-    signal-config: .moon/cache/.changes/tools/config
 
 fileGroups:
-  sources:
-    - "**/*"
-
-  configs:
-    - /.dockerignore
-    - /.editorconfig
-    - /.env
-    - /.gitignore
-    - /.browserslistrc
-    - /*.{toml,ts,json}
-
   eslint:
     - "**/*.{{ eslint_extensions() }}"
     - "/*.{{ eslint_extensions() }}"
@@ -51,7 +37,10 @@ tasks:
     command: {{ frontend_toolchain }} wizard/angular/scripts/sync-configs.ts
     inputs:
       - /angular/*/ng-config.json
-      - /rust/*/moon.yml
+      - /angular/*/moon.yml
+      - /wizard/angular/scripts/sync-configs.ts
+      - /wizard/moon.yml
+      - "@group(moon-utils)"
     options:
       runFromWorkspaceRoot: true
       mutex: wizard-sync-angular
@@ -70,6 +59,10 @@ tasks:
     inputs:
       - /Cargo.toml
       - /rust/*/moon.yml
+      - /rust/*/Cargo.toml
+      - /wizard/rust/scripts/sync-configs.ts
+      - /wizard/moon.yml
+      - "@group(moon-utils)"
     options:
       runFromWorkspaceRoot: true
       mutex: wizard-sync-rust
@@ -86,6 +79,7 @@ tasks:
     deps: ["~:eslint-fix", "~:stylelint-fix"]
     options:
       runDepsInParallel: false
+      cache: false
 
   sync.moon:
     command: moon sync projects
@@ -93,6 +87,7 @@ tasks:
     options:
       internal: true
       cache: false
+      runFromWorkspaceRoot: true
 
   sync:
     command: moon :format --affected
@@ -109,3 +104,17 @@ tasks:
       runFromWorkspaceRoot: true
       mutex: wizard-sync-all
       cache: false
+
+  watcher:
+    command: bun .moon/utils/watcher.ts
+    toolchain: bun
+    preset: watcher
+    deps: [~:sync]
+    options:
+      runFromWorkspaceRoot: true
+      mutex: watcher
+      internal: true
+
+  start:
+    preset: server
+    deps: [~:watcher]

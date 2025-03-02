@@ -1,0 +1,5 @@
+{% for k, v in _copier_answers.items() %}
+{%- if not k.startswith('_') -%}
+export const {{ k }} = {{ v | to_json }} as const
+{% endif -%}
+{% endfor %}

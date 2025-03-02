@@ -26,8 +26,6 @@ _tasks:
   - command: >
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
-      rimraf
-      touch
       jiti
       eslint
       @eslint/compat
@@ -61,7 +59,6 @@ _tasks:
       @angular/compiler-cli
       @angular-devkit/build-angular
       ng-packagr
-      yaml
       && {{ frontend_toolchain }} add
       @angular/animations
       @angular/common
@@ -81,7 +78,13 @@ _tasks:
       {{ frontend_toolchain }} add -d
       @ltd/j-toml
       touch
-    when: "{{ backend == 'rust' }}"
+      @types/touch
+      mkdirp
+      rimraf
+      chokidar
+      minimatch
+      ignore
+      yaml
 
   - command: moon generate rust-package --force -- --name=config --type=configuration --preset=config
     when: "{{ backend == 'rust' }}"
@@ -90,7 +93,7 @@ _tasks:
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
 
-  - moon wizard:sync
+  - moon wizard:sync -u
 
   - >
     git add . && (git diff-index --quiet HEAD || git commit -m "chore: update project")

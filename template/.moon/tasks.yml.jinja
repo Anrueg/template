@@ -16,6 +16,9 @@ fileGroups:
   stylelint:
     - "**/*.{{ stylelint_extensions() }}"
 
+  moon-utils:
+    - /.moon/utils/**/*
+
 tasks:
   runx:
     command: "$taskToolchain $workspaceRoot/.moon/utils/task-runner.ts"
@@ -35,9 +38,9 @@ tasks:
       - --cache-location=$workspaceRoot/.moon/cache/.eslintcache
     args:
       - "@files(eslint)"
-    toolchain: {{ frontend_toolchain }}
     inputs:
       - "@group(eslint)"
+    toolchain: {{ frontend_toolchain }}
     options:
       mergeArgs: prepend
       internal: true
@@ -66,67 +69,3 @@ tasks:
     extends: stylelint
     args:
       - --fix=strict
-
-  watcher.base:
-    toolchain: rust
-    preset: watcher
-    options:
-      internal: true
-      cache: false
-      outputStyle: buffer-only-failure
-      runFromWorkspaceRoot: true
-
-  watcher.pre:
-    extends: watcher.base
-    script: |
-      {{ frontend_toolchain }} rimraf @meta(signal-source)
-      && {{ frontend_toolchain }} rimraf @meta(signal-config)
-    preset: null
-
-  watcher.windows:
-    extends: watcher.base
-    command: |
-      powershell -File .moon/utils/invoke-repeatargs.ps1
-      watchexec
-      --debounce=2
-      --print-events
-      --quiet
-    toolchain: system
-    deps: [~:watcher.pre]
-    options:
-      os: ["windows"]
-
-  watcher.unix:
-    extends: watcher.base
-    deps: [~:watcher.pre]
-    options:
-      os: ["linux", "macos"]
-
-  watcher.config:
-    extends: watcher.base
-    deps:
-      - ^:watcher.config
-      - target: ~:watcher.windows
-        args: |
-          --watch @root(configs)
-          *-- --filter= @group(configs) --*
-          {{ frontend_toolchain }} touch @meta(signal-config)
-
-  watcher.source:
-    extends: watcher.base
-    deps:
-      - ^:watcher.source
-      - target: ~:watcher.windows
-        args: |
-          --watch @root(sources)
-          *-- --filter= @group(sources) --*
-          {{ frontend_toolchain }} touch @meta(signal-source)
-
-
-  watcher.all:
-    extends: watcher.base
-    deps: [~:watcher.config, ~:watcher.source]
-    options:
-      internal: false
-
-

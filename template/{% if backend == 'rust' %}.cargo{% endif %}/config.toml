@@ -1,0 +1,21 @@
+# https://doc.rust-lang.org/cargo/reference/config.html
+
+[build]
+target-dir = "dist/rust"
+
+[profile.development]
+inherits = "dev"
+
+[profile.release]
+lto = true
+debug = true
+debug-assertions = false
+split-debuginfo = "packed"
+panic = "abort"
+
+[profile.production]
+inherits = "release"
+
+[profile.staging]
+inherits = "production"
+panic = "unwind"

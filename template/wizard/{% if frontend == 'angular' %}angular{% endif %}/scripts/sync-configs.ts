@@ -1,21 +1,18 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { parse } from "yaml"
+import { answers, moon, unixPath } from "@workspace/moon"
 
-import * as moon from "../../utils/moon"
+const { frontend_toolchain: PackageManager, frontend_ns: AngularNs } = answers
 
-const CopierConfig = parse(fs.readFileSync(".copier-answers.yml", "utf-8")) as Record<string, string>
-const { frontend_toolchain: PackageManager, frontend_ns: AngularNs } = CopierConfig
-
-interface AngularProject extends moon.Project {
+interface AngularPackage extends moon.Package {
     ngConfig: Record<string, any>
 }
 
-function getProjects(): AngularProject[] {
-    const result: AngularProject[] = []
+function getPackages(): AngularPackage[] {
+    const result: AngularPackage[] = []
 
-    for (const project of moon.projects({ folder: "./angular" })) {
+    for (const project of moon.packages({ folder: "./angular" })) {
         const configPath = path.join(project.path, "ng-config.json")
 
         if (fs.existsSync(configPath)) {
@@ -31,7 +28,7 @@ function getProjects(): AngularProject[] {
     return result
 }
 
-function updateAngularConfig(packages: AngularProject[]) {
+function updateAngularConfig(packages: AngularPackage[]) {
     const result = {
         $schema: "./node_modules/@angular/cli/lib/config/schema.json",
         version: 1,
@@ -43,7 +40,7 @@ function updateAngularConfig(packages: AngularProject[]) {
     } as const
 
     for (const pkg of packages) {
-        result.projects[pkg.details.name] = pkg.ngConfig
+        result.projects[pkg.project.name] = pkg.ngConfig
     }
 
     fs.writeFileSync("angular.json", JSON.stringify(result, null, 2))
@@ -71,18 +68,18 @@ function tsconfigUpdatePaths(confPath: string, paths: Record<string, string>) {
 }
 
 function main() {
-    const packages = getProjects()
+    const packages = getPackages()
 
     updateAngularConfig(packages)
     tsconfigUpdatePaths(
         "tsconfig.base.json",
         packages.reduce<Record<string, string>>((dst, pkg) => {
-            dst[`@${AngularNs}/${pkg.details.name}`] = `${pkg.path}/public-api.ts`
+            dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`${pkg.path}/public-api.ts`)
 
             for (const mod of fs.readdirSync(pkg.path)) {
                 const publicApi = path.join(pkg.path, mod, "public-api.ts")
                 if (fs.existsSync(publicApi)) {
-                    dst[`@${AngularNs}/${pkg.details.name}/${mod}`] = `${pkg.path}/${mod}/public-api.ts`
+                    dst[`@${AngularNs}/${pkg.project.name}/${mod}`] = unixPath(`${pkg.path}/${mod}/public-api.ts`)
                 }
             }
 
@@ -96,9 +93,9 @@ function main() {
             path.join(pkg.path, "tsconfig.cli.json"),
             packages
                 .filter(v => v.type !== "application")
-                .filter(v => v.details.name !== pkg.details.name)
+                .filter(v => v.project.name !== pkg.project.name)
                 .reduce<Record<string, string>>((dst, pkg) => {
-                    dst[`@${AngularNs}/${pkg.details.name}`] = `dist/angular/${pkg.details.name}`
+                    dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
                     return dst
                 }, {})
         )

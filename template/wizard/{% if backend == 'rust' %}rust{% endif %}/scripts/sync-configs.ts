@@ -1,11 +1,10 @@
 import fs from "node:fs"
 import path from "node:path"
 
+import * as mkdirp from "mkdirp"
 import { inline, parse as parseToml, Section, stringify as stringifyToml } from "@ltd/j-toml"
+import { compose, moon, unixPath } from "@workspace/moon"
 import { Document, Scalar, YAMLMap } from "yaml"
-
-import * as compose from "../../utils/docker-compose"
-import * as moon from "../../utils/moon"
 
 interface WorkspaceCargo {
     workspace: CargoToml
@@ -38,8 +37,8 @@ edition = { workspace = true }
 [dependencies]
 dotenv = { workspace = true }
 */
-function updateToml(project: moon.Project, mutate: (cfg: CargoToml) => void) {
-    const cargoPath = path.join(project.path, "Cargo.toml")
+function updateToml(pkg: moon.Package, mutate: (cfg: CargoToml) => void) {
+    const cargoPath = path.join(pkg.path, "Cargo.toml")
     if (!fs.existsSync(cargoPath)) {
         return
     }
@@ -56,7 +55,7 @@ function updateToml(project: moon.Project, mutate: (cfg: CargoToml) => void) {
     )
 }
 
-function updateCompose(file: string, projects: moon.Project[]) {
+function updateCompose(file: string, packages: moon.Package[]) {
     if (!fs.existsSync(file)) {
         return
     }
@@ -64,12 +63,12 @@ function updateCompose(file: string, projects: moon.Project[]) {
     const document = compose.load(file)
     const exists: string[] = []
 
-    for (const project of projects) {
-        if (project.type !== "application") {
+    for (const pkg of packages) {
+        if (pkg.type !== "application") {
             continue
         }
 
-        const svcName = addService(document, project)
+        const svcName = addService(document, pkg)
         if (!exists.includes(svcName)) {
             exists.push(svcName)
         }
@@ -92,12 +91,13 @@ function updateCompose(file: string, projects: moon.Project[]) {
     compose.save(document, file)
 }
 
-function addService(document: Document, project: moon.Project) {
-    const svcName = `rust-${project.details.metadata?.slug ?? project.id.split("/").join("-")}`
+function addService(document: Document, pkg: moon.Package) {
+    const svcName = pkg.project.metadata!.slug!
 
     document.setIn(["services", svcName, "build", "context"], ".")
     document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.run")
-    document.setIn(["services", svcName, "command"], svcName)
+    document.setIn(["services", svcName, "command"], pkg.project.name)
+    document.setIn(["services", svcName, "restart"], "unless-stopped")
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
     if (globalEnv != null) {
@@ -116,27 +116,30 @@ function addBuilder(document: Document) {
     const svcName = "rust-builder"
     document.setIn(["services", svcName, "build", "context"], ".")
     document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.build")
+    document.setIn(["services", svcName, "build", "args", "PROFILE"], "$PROJECT_ENV")
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
     if (globalEnv != null) {
         compose.addMerge(document, ["services", svcName, "environment"], globalEnv)
     }
 
+    mkdirp.sync("./.moon/cache/watcher/rust")
+
     compose.addVolumes(document, ["rust-binaries"])
     compose.addVolumeToService(document, svcName, "rust-binaries:/binaries:rw")
     compose.addVolumeToService(document, svcName, "./rust:/workspace/rust:ro")
-    compose.addVolumeToService(document, svcName, "./.moon/cache/.changes/rust:/.changes:ro")
+    compose.addVolumeToService(document, svcName, "./.moon/cache/watcher/rust:/watcher:ro")
 }
 
 function main() {
-    const projects = moon.projects({ folder: "./rust" })
+    const packages = moon.packages({ folder: "./rust" })
     const cargoToml = parseToml(fs.readFileSync("Cargo.toml", "utf-8")) as WorkspaceCargo
     const workspace = cargoToml.workspace
 
-    for (const project of projects) {
-        updateToml(project, config => {
+    for (const pkg of packages) {
+        updateToml(pkg, config => {
             config.package ??= Section({})
-            config.package["name"] = project.details.name
+            config.package["name"] = pkg.project.name
             // config.package["autolib"] ??= false
             // config.package["autobins"] ??= false
 
@@ -144,34 +147,32 @@ function main() {
                 config.package[key] = inline({ workspace: true })
             }
 
-            if (project.type === "application") {
+            if (pkg.type === "application") {
                 config.bin ??= []
-                let section = config.bin.find(bin => bin["name"] === project.details.name)
+                let section = config.bin.find(bin => bin["name"] === pkg.project.name)
                 if (section == null) {
                     section = Section({} as Record<string, any>)
                     config.bin.push(section)
                 }
-                section["name"] = project.details.name
+                section["name"] = pkg.project.name
                 section["path"] = "main.rs"
                 section["doctest"] = true
             }
 
-            if (project.type === "library" || project.type === "configuration") {
+            if (pkg.type === "library" || pkg.type === "configuration") {
                 const section = (config.lib ??= Section({} as Record<string, any>))
-                section["name"] = project.details.name
+                section["name"] = pkg.project.name
                 section["path"] = "lib.rs"
                 section["doctest"] = true
             }
 
             config.dependencies ??= Section({})
-            for (const other of projects) {
-                if (other.id === project.id || other.type !== "configuration") {
+            for (const other of packages) {
+                if (other.id === pkg.id || other.type !== "configuration") {
                     continue
                 }
-                const folder = other.details.metadata?.folder
-                if (folder != null) {
-                    config.dependencies[other.details.name] = inline({ path: `../${folder}` })
-                }
+
+                config.dependencies[other.project.name] = inline({ path: unixPath(path.relative(pkg.path, other.id)) })
             }
 
             for (const key of Object.keys(workspace.dependencies ?? {})) {
@@ -182,7 +183,7 @@ function main() {
         })
     }
 
-    updateCompose("docker-compose.yml", projects)
+    updateCompose("docker-compose.yml", packages)
 }
 
 main()

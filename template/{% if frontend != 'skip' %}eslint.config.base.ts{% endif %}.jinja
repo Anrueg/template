@@ -130,7 +130,6 @@ export default [
                 "eqeqeq": ["error", "always", { null: "ignore" }],
                 "yoda": ["error", "never", { exceptRange: true }],
                 "no-alert": "error",
-                "no-empty": "error",
                 "prefer-arrow-callback": "error",
                 "no-unused-vars": "off",
                 // "no-unused-vars": ["error", {
@@ -182,6 +181,19 @@ export default [
                     {
                         default: "array-simple",
                         readonly: "generic"
+                    }
+                ],
+                "@typescript-eslint/prefer-optional-chain": [
+                    "error",
+                    {
+                        allowPotentiallyUnsafeFixesThatModifyTheReturnTypeIKnowWhatImDoing: false,
+                        requireNullish: true
+                    }
+                ],
+                "no-empty": [
+                    "error",
+                    {
+                        allowEmptyCatch: true
                     }
                 ]
             }

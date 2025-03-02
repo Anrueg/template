@@ -54,6 +54,7 @@ export function addVolumes(document: Document, volumes: string[]) {
     let rootVols = document.get("volumes") as YAMLMap | null
     if (rootVols == null) {
         rootVols = document.createNode({})
+        document.set("volumes", rootVols)
     }
 
     for (const v of volumes) {
@@ -89,9 +90,3 @@ export function removeServices(document: Document, test: (kv: Pair) => boolean) 
         services.items = services.items.filter(kv => !test(kv))
     }
 }
-
-// export interface Service {
-//     name: string
-//     dockerfile: string
-
-// }
