@@ -106,9 +106,9 @@ tasks:
       cache: false
 
   watcher:
-    command: bun .moon/utils/watcher.ts
-    toolchain: bun
-    preset: watcher
+    command: {{ frontend_toolchain }} .moon/utils/watcher.ts
+    toolchain: system
+    preset: server
     deps: [~:sync]
     options:
       runFromWorkspaceRoot: true

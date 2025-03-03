@@ -13,7 +13,7 @@ project:
 type: {{ type }}
 stack: backend
 language: rust
-tags: [rust
+tags: [rust,docker
 {%- if type == "application" -%},rust-app{%- endif -%}
 {%- if type == "library" -%},rust-lib{%- endif -%}
 {%- if type == "configuration" -%},rust-conf,rust-lib{%- endif -%}

@@ -1,0 +1,3 @@
+# syntax = edrevo/dockerfile-plus
+
+INCLUDE+ docker/Dockerfile.base

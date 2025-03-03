@@ -1,0 +1,35 @@
+$schema: "https://moonrepo.dev/schemas/tasks.json"
+
+tasks:
+  compose:
+    command: docker compose
+    toolchain: system
+    deps: [wizard:sync]
+    options:
+      runFromWorkspaceRoot: true
+      internal: true
+
+  compose.up:
+    extends: compose
+    args: [up, --build, --no-log-prefix, --menu=0]
+    preset: server
+    options:
+      # XXX: required for prefixing output with project-name:task-name
+      cache: true
+
+  # compose.up2:
+  #   command: bun ./.moon/utils/docker-compose-up.ts
+  #   toolchain: bun
+  #   preset: server
+  #   options:
+  #     runFromWorkspaceRoot: true
+
+  # shell:
+  #   extends: compose
+  #   deps:
+  #     - target: ~:compose.up
+  #       args: ["@meta(slug)"]
+  #   args: [exec, "@meta(slug)", sh, -l]
+  #   preset: watcher
+  #   options:
+  #     internal: false

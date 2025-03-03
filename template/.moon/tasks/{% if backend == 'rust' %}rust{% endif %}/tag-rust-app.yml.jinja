@@ -1,16 +1,11 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  start.builder:
-    script: docker compose up rust-builder --build --no-log-prefix
-    preset: watcher
-    deps: [wizard:watcher]
-    options:
-      runFromWorkspaceRoot: true
-      internal: true
+  .runner:
+    extends: compose.up
+    args: ["@meta(slug)"]
+    preset: server
 
   start:
-    command: docker compose up @meta(slug) --build --no-log-prefix
-    preset: watcher
-    deps: [~:start.builder]
+    deps: [builder, .runner]
 

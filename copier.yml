@@ -16,6 +16,9 @@ _jinja_extensions:
 
 _skip_if_exists:
   - eslint.config.ts
+  - .env.production
+  - .env.staging
+  - .env.development
 
 _tasks:
   # - command: powershell -c "irm https://moonrepo.dev/install/moon.ps1 | iex"

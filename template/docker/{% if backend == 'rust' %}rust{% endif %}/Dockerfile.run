@@ -1,3 +1,15 @@
+# syntax = edrevo/dockerfile-plus
+
+# TODO:
+# INCLUDE+ docker/rust/Dockerfile.base
+
 FROM rust:alpine
 
-CMD ["tail", "-f", "/dev/null"]
+RUN apk add --no-cache musl-dev
+RUN cargo install --locked watchexec-cli
+
+ADD /docker/rust/entrypoint /entrypoint
+RUN chmod a+x /entrypoint
+VOLUME [ "/binaries" ]
+EXPOSE 80
+ENTRYPOINT [ "/entrypoint" ]

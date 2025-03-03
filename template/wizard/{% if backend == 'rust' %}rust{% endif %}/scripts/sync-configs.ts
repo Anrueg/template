@@ -97,7 +97,6 @@ function addService(document: Document, pkg: moon.Package) {
     document.setIn(["services", svcName, "build", "context"], ".")
     document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.run")
     document.setIn(["services", svcName, "command"], pkg.project.name)
-    document.setIn(["services", svcName, "restart"], "unless-stopped")
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
     if (globalEnv != null) {

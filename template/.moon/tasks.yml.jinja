@@ -1,13 +1,14 @@
 {%- from 'macros.jinja' import eslint_extensions, stylelint_extensions -%}
-
+{%- set env_files = [".env.common", ".env", ".moon/.env.answers"] -%}
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 taskOptions:
   windowsShell: pwsh
   inferInputs: true
   envFile:
-    - /.env
-    - /.moon/.env.answers
+    {%- for n in env_files %}
+    - /{{ n }}
+    {%- endfor %}
 
 fileGroups:
   eslint:

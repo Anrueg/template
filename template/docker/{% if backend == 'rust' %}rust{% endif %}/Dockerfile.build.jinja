@@ -1,3 +1,5 @@
+# syntax = edrevo/dockerfile-plus
+
 FROM rust:alpine AS base
 ENV CARGO_TARGET_DIR /binaries
 RUN apk add --no-cache musl-dev
@@ -30,4 +32,4 @@ VOLUME [ "/binaries" ]
 COPY Cargo.toml Cargo.lock .cargo /workspace/
 
 # TODO: replace --target-dir with --artifact-dir when stable
-CMD [ "watchexec", "--poll=100ms", "--watch=/watcher", "--on-busy-update=restart", "--print-events", "--color=always", "--timings", "cargo", "build", "--bins", "--profile=${PROFILE}", "--target-dir=${CARGO_TARGET_DIR}" ]
+CMD [ "watchexec", "--poll=100ms", "--watch=/watcher", "--on-busy-update=restart", "--print-events", "--color=always", "--timings", "--no-discover-ignore", "cargo", "build", "--bins", "--profile=${PROFILE}", "--target-dir=${CARGO_TARGET_DIR}" ]
