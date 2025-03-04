@@ -21,6 +21,15 @@ _skip_if_exists:
   - .env.development
 
 _tasks:
+  # - command: powershell -c "irm https://moonrepo.dev/install/proto.ps1 | iex"
+  #   when: "{{ _copier_conf.os == 'windows' }}"
+
+  # - command: echo "Provide the OneDrive folder when using OneDrive for Documents syncing"
+  #   when: "{{ _copier_conf.os == 'windows' }}"
+
+  # - command: powershell -c "$env:USERPROFILE\\.proto\\bin\\proto.exe setup"
+  #   when: "{{ _copier_conf.os == 'windows' }}"
+
   # - command: powershell -c "irm https://moonrepo.dev/install/moon.ps1 | iex"
   #   when: "{{ _copier_conf.os == 'windows' }}"
 
@@ -88,6 +97,7 @@ _tasks:
       minimatch
       ignore
       yaml
+      cross-env
 
   - command: moon generate rust-package --force -- --name=config --type=configuration --preset=config
     when: "{{ backend == 'rust' }}"

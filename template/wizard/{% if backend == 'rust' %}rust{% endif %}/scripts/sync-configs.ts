@@ -3,7 +3,7 @@ import path from "node:path"
 
 import * as mkdirp from "mkdirp"
 import { inline, parse as parseToml, Section, stringify as stringifyToml } from "@ltd/j-toml"
-import { compose, moon, unixPath } from "@workspace/moon"
+import { compose, moon, unixPath, PortAssigner } from "@workspace/moon"
 import { Document, Scalar, YAMLMap } from "yaml"
 
 interface WorkspaceCargo {
@@ -55,7 +55,7 @@ function updateToml(pkg: moon.Package, mutate: (cfg: CargoToml) => void) {
     )
 }
 
-function updateCompose(file: string, packages: moon.Package[]) {
+function updateCompose(file: string, packages: moon.Package[], portAssigner: PortAssigner) {
     if (!fs.existsSync(file)) {
         return
     }
@@ -68,7 +68,7 @@ function updateCompose(file: string, packages: moon.Package[]) {
             continue
         }
 
-        const svcName = addService(document, pkg)
+        const svcName = addService(document, pkg, portAssigner)
         if (!exists.includes(svcName)) {
             exists.push(svcName)
         }
@@ -91,12 +91,14 @@ function updateCompose(file: string, packages: moon.Package[]) {
     compose.save(document, file)
 }
 
-function addService(document: Document, pkg: moon.Package) {
+function addService(document: Document, pkg: moon.Package, portAssigner: PortAssigner) {
     const svcName = pkg.project.metadata!.slug!
 
     document.setIn(["services", svcName, "build", "context"], ".")
     document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.run")
     document.setIn(["services", svcName, "command"], pkg.project.name)
+
+    compose.setPortmap(document, svcName, portAssigner.next(), 80)
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
     if (globalEnv != null) {
@@ -115,7 +117,7 @@ function addBuilder(document: Document) {
     const svcName = "rust-builder"
     document.setIn(["services", svcName, "build", "context"], ".")
     document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.build")
-    document.setIn(["services", svcName, "build", "args", "PROFILE"], "$PROJECT_ENV")
+    document.setIn(["services", svcName, "build", "args", "PROFILE"], "$ENVIRONMENT")
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
     if (globalEnv != null) {
@@ -182,7 +184,8 @@ function main() {
         })
     }
 
-    updateCompose("docker-compose.yml", packages)
+    const portAssigner = new PortAssigner(8000)
+    updateCompose("docker-compose.yml", packages, portAssigner)
 }
 
 main()

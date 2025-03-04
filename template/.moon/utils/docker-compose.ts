@@ -90,3 +90,27 @@ export function removeServices(document: Document, test: (kv: Pair) => boolean) 
         services.items = services.items.filter(kv => !test(kv))
     }
 }
+
+export function setPortmap(document: Document, service: string, host: number, exposed: number | null) {
+    let ports = document.getIn(["services", service, "ports"]) as YAMLSeq<Scalar<string>> | null
+    if (ports == null) {
+        if (exposed == null) {
+            return
+        }
+        ports = document.createNode([])
+        document.setIn(["services", service, "ports"], ports)
+    } else {
+        if (exposed == null) {
+            ports.items = ports.items.filter(v => !v.value.startsWith(`${host}:`))
+            return
+        }
+    }
+
+    ports.flow = false
+    const exists = ports.items.find(v => v.value.startsWith(`${host}:`))
+    if (exists == null) {
+        ports.add(document.createNode(`${host}:${exposed}`))
+    } else {
+        exists.value = `${host}:${exposed}`
+    }
+}

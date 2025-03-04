@@ -1,4 +1,4 @@
 {
-    "name": "@{{ project_slug }}/{{ name }}",
+    "name": "@{{ frontend_ns }}/{{ name }}",
     "version": "0.0.1"
 }

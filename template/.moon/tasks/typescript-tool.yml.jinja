@@ -1,0 +1,12 @@
+tasks:
+  lint:
+    deps: ["~:eslint", "~:stylelint"]
+    options:
+      runDepsInParallel: false
+      cache: false
+
+  format:
+    deps: ["~:eslint-fix", "~:stylelint-fix"]
+    options:
+      runDepsInParallel: false
+      cache: false

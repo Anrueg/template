@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import fs from "node:fs"
 import path from "node:path"
 
-import { answers, moon, unixPath } from "@workspace/moon"
+import { answers, moon, PortAssigner, unixPath } from "@workspace/moon"
 
 const { frontend_toolchain: PackageManager, frontend_ns: AngularNs } = answers
 
@@ -28,7 +29,7 @@ function getPackages(): AngularPackage[] {
     return result
 }
 
-function updateAngularConfig(packages: AngularPackage[]) {
+function updateAngularConfig(packages: AngularPackage[], portAssigner: PortAssigner) {
     const result = {
         $schema: "./node_modules/@angular/cli/lib/config/schema.json",
         version: 1,
@@ -40,6 +41,11 @@ function updateAngularConfig(packages: AngularPackage[]) {
     } as const
 
     for (const pkg of packages) {
+        const config = pkg.ngConfig
+        config["architect"] ??= {}
+        config["architect"].serve ??= {}
+        config["architect"].serve.options ??= {}
+        config["architect"].serve.options.port ??= portAssigner.next()
         result.projects[pkg.project.name] = pkg.ngConfig
     }
 
@@ -68,9 +74,10 @@ function tsconfigUpdatePaths(confPath: string, paths: Record<string, string>) {
 }
 
 function main() {
-    const packages = getPackages()
+    const packages = getPackages().sort((a, b) => a.id.localeCompare(b.id))
+    const portAssigner = new PortAssigner(4200)
 
-    updateAngularConfig(packages)
+    updateAngularConfig(packages, portAssigner)
     tsconfigUpdatePaths(
         "tsconfig.base.json",
         packages.reduce<Record<string, string>>((dst, pkg) => {

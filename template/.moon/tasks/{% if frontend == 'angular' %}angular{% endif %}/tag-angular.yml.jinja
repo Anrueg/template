@@ -40,7 +40,7 @@ tasks:
     command: ng build
     args:
       - $projectName
-      - --configuration=$PROJECT_ENV
+      - --configuration=$ENVIRONMENT
     toolchain: {{ frontend_toolchain }}
     deps:
       - "^:build"
@@ -63,8 +63,7 @@ tasks:
       internal: true
 
   start.pre:
-    command: noop
-    toolchain: {{ frontend_toolchain }}
-    deps: [~:build.pre, wiazrd:watcher]
+    preset: server
+    deps: [~:build.pre, wizard:watcher]
     options:
       internal: true

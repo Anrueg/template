@@ -13,6 +13,7 @@ fileGroups:
   eslint:
     - "**/*.{{ eslint_extensions() }}"
     - "/*.{{ eslint_extensions() }}"
+    # Angular config files, outside angular package, like: /angular/tsconfig.base.json
     - "/angular/*.{{ eslint_extensions() }}"
     - "/.moon/**/*.{{ eslint_extensions() }}"
     - "!/.moon/cache/**/*"

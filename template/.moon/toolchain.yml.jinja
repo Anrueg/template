@@ -2,11 +2,14 @@ $schema: "https://moonrepo.dev/schemas/toolchain.json"
 
 {% if frontend_toolchain == "bun" -%}
 bun:
-    version: latest
-    dependencyVersionFormat: workspace
-    inferTasksFromScripts: false
-    rootPackageOnly: true
-    syncProjectWorkspaceDependencies: true
+  version: latest
+  dependencyVersionFormat: workspace
+  inferTasksFromScripts: false
+  rootPackageOnly: true
+  syncProjectWorkspaceDependencies: true
+  installArgs:
+    - --env-file=.env.answers
+    - --env-file=.env
 {%- endif  %}
 
 node:
@@ -15,6 +18,9 @@ node:
   inferTasksFromScripts: false
   rootPackageOnly: true
   syncProjectWorkspaceDependencies: true
+  binExecArgs:
+    - --env-file=.env.answers
+    - --env-file=.env
   {{ frontend_toolchain }}:
     version: latest
 

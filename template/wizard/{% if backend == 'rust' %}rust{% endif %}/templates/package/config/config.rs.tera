@@ -24,7 +24,7 @@ pub enum Environment {
 
 #[derive(Debug, Envconfig, Getters)]
 pub struct Config {
-    #[envconfig(from = "PROJECT_ENV", default = "development")]
+    #[envconfig(from = "ENVIRONMENT", default = "development")]
     environment: Environment,
 
     #[envconfig(from = "DATABASE_HOST", default = "localhost")]

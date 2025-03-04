@@ -36,3 +36,7 @@ line_width:
   type: int
   help: "Line width"
   default: 120
+# port_prefix:
+#   type: int
+#   help: "Port prefix, eg.: [prefix]00, [prefix]01"
+#   default: 42
