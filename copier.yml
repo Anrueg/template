@@ -99,7 +99,7 @@ _tasks:
       yaml
       cross-env
 
-  - command: moon generate rust-package --force -- --name=config --type=configuration --preset=config
+  - command: moon generate rust-package --force -- --name=initd --type=configuration --preset=initd
     when: "{{ backend == 'rust' }}"
 
   # TODO: remove BEGIN

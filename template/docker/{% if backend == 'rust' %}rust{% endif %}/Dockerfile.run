@@ -8,8 +8,9 @@ FROM rust:alpine
 RUN apk add --no-cache musl-dev
 RUN cargo install --locked watchexec-cli
 
+ENV LISTEN 0.0.0.0:80
+
 ADD /docker/rust/entrypoint /entrypoint
 RUN chmod a+x /entrypoint
 VOLUME [ "/binaries" ]
-EXPOSE 80
 ENTRYPOINT [ "/entrypoint" ]

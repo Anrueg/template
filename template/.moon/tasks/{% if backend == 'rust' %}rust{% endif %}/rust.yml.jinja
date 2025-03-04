@@ -10,27 +10,27 @@ tasks:
       cache: false
 
   clippy:
-    command: cargo clippy --no-deps -p $projectName
+    command: cargo clippy --no-deps -p $projectName -q
+    toolchain: rust
     inputs:
       - "/Cargo.toml"
       - "/**/Cargo.toml"
       - "/**/*.rs"
-    toolchain: rust
     options:
       runFromWorkspaceRoot: true
-      mergeArgs: prepend
       internal: true
       mutex: clippy
-  clippy-fix:
-    extends: clippy
 
+  clippy.fix:
+    extends: clippy
     args:
       - --fix
       - --allow-dirty
 
   fmt:
     command: fmt -p $projectName -- --emit files
-    deps: [~:clippy-fix]
+    toolchain: rust
+    deps: [~:clippy.fix]
     inputs:
       - "/Cargo.toml"
       - "/**/Cargo.toml"
@@ -41,18 +41,20 @@ tasks:
       mutex: rustfmt
 
   lint:
-    command: noop
-    deps: ["~:clippy", "~:eslint"]
+    extends: eslint
+    toolchain: {{ frontend_toolchain }}
+    deps: ["~:clippy"]
     options:
-      runDepsInParallel: false
       cache: false
+      internal: false
 
   format:
-    command: noop
-    deps: ["~:fmt", "~:eslint-fix"]
+    extends: eslint.fix
+    toolchain: {{ frontend_toolchain }}
+    deps: ["~:fmt"]
     options:
-      runDepsInParallel: false
       cache: false
+      internal: false
 
 #   cargo-recipe:
 #     command: chef prepare --recipe-path cargo-recipe.json

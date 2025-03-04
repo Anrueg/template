@@ -1,10 +1,12 @@
 ---
 skip: {{ type == "application" }}
 ---
-{% if preset == "config" %}
+{% if preset == "initd" %}
+mod component;
 mod config;
 
 pub mod prelude {
+    pub use crate::component::*;
     pub use crate::config::*;
 }
 {% else %}

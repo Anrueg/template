@@ -2,18 +2,21 @@
 skip: {{ type != "application" }}
 ---
 {% if preset == "axum" %}
-use {{ backend_ns ~ '_config' | slugify | replace(from="-", to="_") }}::Config;
+use {{ backend_ns ~ '_initd' | slugify | replace(from="-", to="_") }}::Config;
 use axum::{routing::get, Router};
 
 async fn index() -> &'static str {
     "Hello, World!"
 }
 
+// TODO: handle my own logic, in docker there is no .env file
+// #[dotenvy::load]
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = Config::new();
     let app = Router::new().route("/", get(index));
-    let listener = config.server_listener().await?;
+    let listener = config.listen().build().await?;
+    println!("Listen on {listener:?}");
     axum::serve(listener, app).await?;
     Ok(())
 }

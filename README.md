@@ -23,5 +23,5 @@ pip install copier jinja2_slug
 
 
 ```bash
-copier copy . ../test-app --trust --overwrite --defaults
+copier copy . ../test-app --trust --overwrite --data-file .\test-answers.yml
 ```

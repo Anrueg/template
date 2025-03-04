@@ -1,0 +1,94 @@
+use derivative::Derivative;
+use derive_getters::Getters;
+use envconfig::Envconfig;
+use listenfd::ListenFd;
+use miette::IntoDiagnostic;
+use std::net::SocketAddr;
+use strum::EnumString;
+use tokio::net::TcpListener;
+
+#[derive(Debug, PartialEq, EnumString)]
+pub enum Environment {
+    #[strum(ascii_case_insensitive)]
+    Production,
+
+    #[strum(ascii_case_insensitive)]
+    Staging,
+
+    #[strum(ascii_case_insensitive)]
+    Development,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum ListenerFactory {
+    Bind(SocketAddr),
+    Fd(usize),
+}
+
+impl std::str::FromStr for ListenerFactory {
+    type Err = miette::Report;
+
+    fn from_str(s: &str) -> miette::Result<Self> {
+        match s.parse::<SocketAddr>() {
+            Ok(addr) => Ok(ListenerFactory::Bind(addr)),
+            Err(_) => Ok(ListenerFactory::Fd(
+                s.parse().map_err(|_| miette::miette!("This value '{s}' is not a valid socket or file descriptor"))?,
+            )),
+        }
+    }
+}
+
+impl ListenerFactory {
+    pub async fn build(&self) -> miette::Result<TcpListener> {
+        match self {
+            ListenerFactory::Bind(addr) => TcpListener::bind(addr).await.into_diagnostic(),
+            ListenerFactory::Fd(fd) => match ListenFd::from_env().take_tcp_listener(*fd).into_diagnostic()? {
+                Some(listener) => TcpListener::from_std(listener).into_diagnostic(),
+                None => TcpListener::bind(("0.0.0.0", 80)).await.into_diagnostic(),
+            },
+        }
+    }
+}
+
+#[derive(Derivative, Envconfig, Getters)]
+#[derivative(Debug)]
+pub struct Database {
+    #[envconfig(from = "DATABASE_HOST", default = "localhost")]
+    host: String,
+
+    #[envconfig(from = "DATABASE_PORT", default = "5656")]
+    port: u16,
+
+    #[envconfig(from = "DATABASE_USER", default = "edgedb")]
+    user: String,
+
+    #[envconfig(from = "DATABASE_PASSWORD")]
+    #[derivative(Debug = "ignore")]
+    password: Option<String>,
+}
+
+#[derive(Debug, Envconfig, Getters)]
+pub struct Config {
+    #[envconfig(from = "ENVIRONMENT", default = "development")]
+    environment: Environment,
+
+    #[envconfig(nested)]
+    database: Database,
+
+    #[envconfig(from = "LISTEN", default = "0.0.0.0:80")]
+    listen: ListenerFactory,
+}
+
+impl Config {
+    pub fn new() -> Self {
+        Config::init_from_env().unwrap()
+    }
+
+    // pub fn init_tracing() {}
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self::new()
+    }
+}

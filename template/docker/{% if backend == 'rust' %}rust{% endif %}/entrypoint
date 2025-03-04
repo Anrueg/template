@@ -2,8 +2,6 @@
 set -eou pipefail
 
 export PATH="$PATH:/binaries/$ENVIRONMENT"
-export SERVER_FD=1
-export DEBUGGER_FD=2
 
 watchexec \
     --poll 100ms \
@@ -12,6 +10,7 @@ watchexec \
     --filter "/binaries/$ENVIRONMENT/$1" \
     --no-discover-ignore \
     --debounce 100ms \
-    --socket 0.0.0.0:80 \
+    --socket "$LISTEN" \
+    --env "LISTEN=0" \
     --color always \
     --restart "$@"

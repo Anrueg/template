@@ -23,17 +23,17 @@ tasks:
       cache: false
 
   lint:
-    command: noop
-    deps: ["~:eslint", "~:stylelint"]
+    extends: eslint
+    deps: ["~:stylelint"]
     options:
-      runDepsInParallel: false
+      internal: false
       cache: false
 
   format:
-    command: noop
-    deps: ["~:eslint-fix", "~:stylelint-fix"]
+    extends: eslint.fix
+    deps: ["~:stylelint.fix"]
     options:
-      runDepsInParallel: false
+      internal: false
       cache: false
 
   build:
