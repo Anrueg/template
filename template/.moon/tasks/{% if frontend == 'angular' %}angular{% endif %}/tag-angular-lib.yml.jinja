@@ -1,7 +1,7 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  .runner:
+  builder:
     extends: build
     args: [--watch]
     preset: server
@@ -13,8 +13,7 @@ tasks:
     deps:
       - ^:start
       - ~:start.pre
-      - ~:.runner
+      - ~:builder
     options:
       runFromWorkspaceRoot: true
       runDepsInParallel: false
-

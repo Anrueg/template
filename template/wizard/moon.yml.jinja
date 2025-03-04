@@ -21,11 +21,20 @@ fileGroups:
 
 
 {% macro generator_task(name, tpl, note) -%}
-  "{{ name }}":
-    description: "{{ note }}"
-    script: moon generate {{ tpl }} && moon run wizard:sync
+  "{{ name }}.pre":
+    command: moon generate {{ tpl }}
     toolchain: system
     options:
+      runFromWorkspaceRoot: true
+      interactive: true
+      cache: false
+      internal: true
+
+  "{{ name }}":
+    description: "{{ note }}"
+    deps: ["{{ name }}.pre", "wizard:sync"]
+    options:
+      runDepsInParallel: false
       runFromWorkspaceRoot: true
       interactive: true
       cache: false
@@ -33,7 +42,7 @@ fileGroups:
 
 tasks:
   {% if frontend == 'angular' -%}
-  sync.angular:
+  sync.angular.do:
     description: Sync angular configs from project & moon configs
     command: {{ frontend_toolchain }} wizard/angular/scripts/sync-configs.ts
     inputs:
@@ -48,13 +57,20 @@ tasks:
       internal: true
       cache: false
 
+  sync.angular:
+    command: moon "#angular:format"
+    deps: [sync.angular.do]
+    options:
+      runDepsInParallel: false
+      shell: false
+
   {{ generator_task('ng-app', 'angular-app', 'Add angular app') }}
 
   {{ generator_task('ng-lib', 'angular-lib', 'Add angular lib') }}
   {%- endif %}
 
   {% if backend == 'rust' -%}
-  sync.rust:
+  sync.rust.do:
     description: Sync rust configs from project & moon configs
     command: {{ frontend_toolchain }} wizard/rust/scripts/sync-configs.ts
     inputs:
@@ -70,13 +86,21 @@ tasks:
       internal: true
       cache: false
 
+  sync.rust:
+    command: moon "#rust:format"
+    deps: [sync.rust.do]
+    options:
+      runDepsInParallel: false
+      shell: false
+
   {{ generator_task('rust-app', 'rust-package -- --type=application', 'Add rust app') }}
+
   {{ generator_task('rust-lib', 'rust-package -- --type=library', 'Add rust app') }}
+
   {{ generator_task('rust-axum', 'rust-package -- --type=application --preset=axum', 'Add rust app') }}
   {%- endif %}
 
   format:
-    command: noop
     deps: ["~:eslint-fix", "~:stylelint-fix"]
     options:
       runDepsInParallel: false
@@ -91,7 +115,6 @@ tasks:
       runFromWorkspaceRoot: true
 
   sync:
-    command: moon :format --affected
     deps:
       {% if frontend == 'angular' -%}
       - sync.angular

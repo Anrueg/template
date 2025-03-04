@@ -22,6 +22,8 @@ pub enum Environment {
     Development,
 }
 
+// TODO: maybe use Schematic
+
 #[derive(Debug, Envconfig, Getters)]
 pub struct Config {
     #[envconfig(from = "ENVIRONMENT", default = "development")]

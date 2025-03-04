@@ -7,15 +7,10 @@ tasks:
     toolchain: rust
     options:
       runFromWorkspaceRoot: true
-      outputStyle: buffer-only-failure
       cache: false
 
   clippy:
-    command: clippy -p $projectName -q
-    args:
-      - --
-      - --no-deps
-      - -Dwarnings
+    command: cargo clippy --no-deps -p $projectName
     inputs:
       - "/Cargo.toml"
       - "/**/Cargo.toml"
@@ -23,41 +18,40 @@ tasks:
     toolchain: rust
     options:
       runFromWorkspaceRoot: true
-      outputStyle: buffer-only-failure
       mergeArgs: prepend
       internal: true
-
+      mutex: clippy
   clippy-fix:
     extends: clippy
+
     args:
       - --fix
       - --allow-dirty
 
   fmt:
     command: fmt -p $projectName -- --emit files
+    deps: [~:clippy-fix]
     inputs:
       - "/Cargo.toml"
       - "/**/Cargo.toml"
       - "/**/*.rs"
     options:
       runFromWorkspaceRoot: true
-      outputStyle: buffer-only-failure
       internal: true
+      mutex: rustfmt
 
   lint:
     command: noop
     deps: ["~:clippy", "~:eslint"]
     options:
       runDepsInParallel: false
-      outputStyle: buffer-only-failure
       cache: false
 
   format:
     command: noop
-    deps: ["~:fmt", "~:clippy-fix", "~:eslint-fix"]
+    deps: ["~:fmt", "~:eslint-fix"]
     options:
       runDepsInParallel: false
-      outputStyle: buffer-only-failure
       cache: false
 
 #   cargo-recipe:

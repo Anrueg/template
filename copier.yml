@@ -102,11 +102,30 @@ _tasks:
   - command: moon generate rust-package --force -- --name=config --type=configuration --preset=config
     when: "{{ backend == 'rust' }}"
 
+  # TODO: remove BEGIN
+  - command: moon generate rust-package --force -- --name=common --type=library
+    when: "{{ backend == 'rust' }}"
+
+  - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
+    when: "{{ backend == 'rust' }}"
+
+  - command: moon generate rust-package --force -- --name=task-runner --type=application
+    when: "{{ backend == 'rust' }}"
+
+  - command: moon generate angular-lib --force -- --name=common
+    when: "{{ frontend == 'angular' }}"
+
+  - command: moon generate angular-app --force -- --name=app --service_worker
+    when: "{{ frontend == 'angular' }}"
+  # TODO: remove END
+
   - >
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
 
-  - moon wizard:sync -u
+  - moon clean
+  - moon wizard:sync
+  - moon :format
 
   - >
     git add . && (git diff-index --quiet HEAD || git commit -m "chore: update project")
