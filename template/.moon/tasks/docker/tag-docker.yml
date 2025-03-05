@@ -13,9 +13,6 @@ tasks:
     extends: compose
     args: [up, --build, --no-log-prefix, --menu=0]
     preset: server
-    options:
-      # XXX: required for prefixing output with project-name:task-name
-      cache: true
 
   # compose.up2:
   #   command: bun ./.moon/utils/docker-compose-up.ts

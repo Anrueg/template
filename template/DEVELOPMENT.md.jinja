@@ -1,9 +1,12 @@
 # Development
 
 {% if database == 'edgedb' %}
-## Edgedb Usage
+## GEL Usage
 
-- create migration `edgedb migration create`
-- apply migration `edgedb migrate`
+### Migrations
+
+Write yout own schemas then run `{{ frontend_toolchain }} migrate`.
+
+If create more migrations without data migrations and not commited yet, squah migrations with: `gel migration create --squash`
 
 {% endif %}

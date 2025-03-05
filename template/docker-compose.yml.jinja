@@ -1,6 +1,28 @@
 x-environment: &environment
   ENVIRONMENT:
-  DATABASE_HOST:
-  DATABASE_PORT:
-  DATABASE_USER:
-  DATABASE_PASSWORD:
+  DATABASE_DSN:
+
+services:
+  {% if database == 'gel' -%}
+  {{ database_host }}:
+    build:
+      context: .
+      dockerfile: docker/gel/Dockerfile
+    environment:
+      GEL_SERVER_SECURITY: insecure_dev_mode
+      GEL_SERVER_DEFAULT_AUTH_METHOD: Trust
+      GEL_SERVER_ADMIN_UI: enabled
+      GEL_SERVER_USER: "{{ database_user }}"
+      GEL_SERVER_PASSWORD: "{{ database_password }}"
+      GEL_SERVER_DEFAULT_BRANCH: "{{ database_name }}"
+
+      # valid values are: trace, debug, info, warning, error
+      GEL_DOCKER_LOG_LEVEL: debug
+    ports:
+      - "{{ database_port }}:5656"
+    volumes:
+      - gel:/data
+      - ./dbschema:/dbschema
+  {%- endif %}
+
+volumes: { gel }

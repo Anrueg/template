@@ -19,8 +19,8 @@ projects:
   {% if backend == 'rust' or fluvio_enabled -%}
   - rust/*/moon.yml
   {%- endif %}
-  {% if database == 'edgedb' -%}
-  - dbschema/moon.yml
+  {% if database == 'gel' -%}
+  - gel/moon.yml
   {%- endif %}
   {% if tools_add -%}
   - tools/moon.yml

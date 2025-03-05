@@ -114,15 +114,47 @@ tasks:
       cache: false
       runFromWorkspaceRoot: true
 
+  sync.scripts:
+    command: {{ frontend_toolchain }} wizard/merge-scripts.ts package.json scripts.yml
+    toolchain: {{ frontend_toolchain }}
+    inputs:
+      - /package.json
+      - /scripts.yml
+    outputs:
+      - /package.json
+    options:
+      runFromWorkspaceRoot: true
+
+  sync.scripts.watch:
+    command: >-
+      watchexec
+      --watch-non-recursive=.
+      --watch=scripts.yml
+      --filter=scripts.yml
+      --debounce 200ms
+      --color always
+      --restart
+      moon wizard:sync.scripts
+    toolchain: rust
+    preset: server
+    options:
+      runFromWorkspaceRoot: true
+      internal: true
+
   sync:
     deps:
       {% if frontend == 'angular' -%}
       - sync.angular
       {%- endif %}
+      {% if database == 'gel' -%}
+      - gel:link
+      - gel:format
+      {%- endif %}
       {% if backend == 'rust' -%}
       - sync.rust
       {%- endif %}
       - sync.moon
+      - sync.scripts
     options:
       runDepsInParallel: false
       runFromWorkspaceRoot: true
@@ -141,4 +173,4 @@ tasks:
 
   start:
     preset: server
-    deps: [~:watcher]
+    deps: [~:watcher, ~:sync.scripts.watch]

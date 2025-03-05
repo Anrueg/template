@@ -1,0 +1,6 @@
+{% if database == 'gel' -%}
+migrate: >-
+  gel migration apply
+  && gel migration create
+  && gel migration apply
+{%- endif %}

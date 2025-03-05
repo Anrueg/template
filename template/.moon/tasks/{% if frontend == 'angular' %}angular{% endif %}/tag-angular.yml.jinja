@@ -27,14 +27,12 @@ tasks:
     deps: ["~:stylelint"]
     options:
       internal: false
-      cache: false
 
   format:
     extends: eslint.fix
     deps: ["~:stylelint.fix"]
     options:
       internal: false
-      cache: false
 
   build:
     command: ng build

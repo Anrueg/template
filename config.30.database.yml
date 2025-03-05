@@ -30,7 +30,7 @@ database_user:
   type: str
   help: "Databse user"
   default: |
-    {%- if database == 'gel' -%}gel{%- endif -%}
+    {%- if database == 'gel' -%}admin{%- endif -%}
     {%- if database == 'postgres' -%}postgres{%- endif -%}
   required: true
 

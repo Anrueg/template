@@ -1,0 +1,103 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+id: gel
+language: gel
+project:
+  name: gel
+  description: "Database schema"
+
+stack: backend
+tags: [database, model, docker]
+type: configuration
+
+toolchain:
+  default: system
+
+tasks:
+  migrate.create:
+    command: gel migration apply && gel migration create
+    inputs:
+      - "**/*.gel"
+    outputs:
+      - "**/migrations/*.edgeql"
+    options:
+      runFromWorkspaceRoot: true
+      interactive: true
+      internal: true
+      cache: true
+
+  migrate:
+    command: gel migration apply
+    deps: [migrate.create]
+    options:
+      runFromWorkspaceRoot: true
+      interactive: true
+      cache: false
+
+  .runner:
+    extends: compose.up
+    args: ["{{ database_host }}"]
+    preset: server
+    #options:
+    #  cache: false
+
+  start:
+    deps: [.runner]
+
+  link.start:
+    command: docker compose up "{{ database_host }}" -d --build --no-log-prefix --menu=0
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: buffer
+      internal: true
+      cache: false
+
+  link.register:
+    command: >-
+      gel instance link --non-interactive --trust-tls-cert --overwrite
+      --dsn="gel://${DATABASE_USER}:${DATABSE_PASSWORD}@localhost:${DATABSE_PORT}/${DATABASE_NAME}" "${PROJECT_SLUG}"
+    toolchain: system
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: buffer
+      retryCount: 30
+      internal: true
+      cache: false
+
+  link.init:
+    command: >-
+      gel project init --non-interactive --server-instance="${PROJECT_SLUG}" --link --database="${DATABASE_NAME}"
+      || Invoke-Command -ScriptBlock { Exit 0 }
+    toolchain: system
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: buffer
+      internal: true
+      os: windows
+      cache: false
+
+  link.clean:
+    command: docker compose stop "{{ database_host }}"
+    toolchain: system
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: buffer
+      internal: true
+      cache: false
+
+  link:
+    deps: [link.start, link.register, link.init, link.clean]
+    inputs:
+      - /.env.answers
+    options:
+      runFromWorkspaceRoot: true
+      runDepsInParallel: false
+      outputStyle: buffer
+      internal: true
+
+  format:
+    extends: eslint.fix
+    options:
+      internal: false
+
+

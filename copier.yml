@@ -9,6 +9,11 @@ _message_before_copy: |
   You'll be asked a series of questions whose answers will be used to
   generate a tailored project for you.
 
+_message_after_copy: |
+  To start working on your project, run:
+
+      moon :start
+
 _subdirectory: template
 
 _jinja_extensions:
@@ -19,6 +24,8 @@ _skip_if_exists:
   - .env.production
   - .env.staging
   - .env.development
+  - gel/default.gel
+  - package.json
 
 _tasks:
   # - command: powershell -c "irm https://moonrepo.dev/install/proto.ps1 | iex"
@@ -33,9 +40,16 @@ _tasks:
   # - command: powershell -c "irm https://moonrepo.dev/install/moon.ps1 | iex"
   #   when: "{{ _copier_conf.os == 'windows' }}"
 
+  - command:
+      - powershell
+      - -c
+      - >-
+        "$(iwr https://www.geldata.com/ps1 -useb)".Replace("--no-wait-for-exit-prompt", "--no-wait-for-exit-prompt -y -q") | iex
+    when: "{{ database == 'gel' and _copier_conf.os == 'windows' }}"
+
   - git init --initial-branch={{ default_branch }}
 
-  - command: >
+  - command: >-
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
       jiti
@@ -62,7 +76,7 @@ _tasks:
       lodash-es
     when: "{{ frontend != 'skip' }}"
 
-  - command: >
+  - command: >-
       {{ frontend_toolchain }} add -d
       @angular-eslint/eslint-plugin
       @angular-eslint/eslint-plugin-template
@@ -86,7 +100,7 @@ _tasks:
       @ng-icons/core
     when: "{{ frontend == 'angular' }}"
 
-  - command: >
+  - command: >-
       {{ frontend_toolchain }} add -d
       @ltd/j-toml
       touch
@@ -119,7 +133,7 @@ _tasks:
     when: "{{ frontend == 'angular' }}"
   # TODO: remove END
 
-  - >
+  - >-
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
 
@@ -127,7 +141,7 @@ _tasks:
   - moon wizard:sync
   - moon :format
 
-  - >
+  - >-
     git add . && (git diff-index --quiet HEAD || git commit -m "chore: update project")
 
   # TODO ONLY ON UPGRADE
