@@ -8,9 +8,11 @@
         }
     },
 
+    "css.validate": false,
+    "less.validate": false,
     "scss.validate": false,
-    "stylelint.validate": ["scss"],
-    "[scss]": {
+    "stylelint.validate": ["scss", "css", "postcss", "tailwindcss"],
+    "[scss][css][postcss][tailwindcss]": {
         "editor.defaultFormatter": "stylelint.vscode-stylelint",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
@@ -56,7 +58,8 @@
         "*.gel": "gel",
         "*.tera": "tera",
         "tsconfig.cli.json": "tsconfig",
-        "tsconfig.release.json": "tsconfig"
+        "tsconfig.release.json": "tsconfig",
+        "eslint.config.base.ts": "eslint"
     },
 
     "material-icon-theme.files.customClones":[
@@ -171,11 +174,16 @@
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
       "*.component.ts": "${basename}.html, ${basename}.spec.ts, ${basename}.sass, ${basename}.scss, ${basename}.css, ${basename}.less, $(capture).stories.ts, $(capture).story.ts, $(capture).stories.mdx",
-      "package.json": "*.code-workspace, .browserslist*, .circleci*, .commitlint*, .cspell*, .cursorrules, .cz-config.js, .czrc, .dlint.json, .dprint.json*, .editorconfig, .eslint*, .firebase*, .flowconfig, .github*, .gitlab*, .gitmojirc.json, .gitpod*, .huskyrc*, .jslint*, .knip.*, .lintstagedrc*, .ls-lint.yml, .markdownlint*, .node-version, .nodemon*, .npm*, .nvmrc, .pm2*, .pnp.*, .pnpm*, .prettier*, .pylintrc, .release-please*.json, .releaserc*, .ruff.toml, .sentry*, .shellcheckrc, .simple-git-hooks*, .stackblitz*, .styleci*, .stylelint*, .tazerc*, .textlint*, .tool-versions, .travis*, .versionrc*, .vscode*, .watchman*, .xo-config*, .yamllint*, .yarnrc*, Procfile, apollo.config.*, appveyor*, azure-pipelines*, biome.json*, bower.json, build.config.*, bun.lock, bun.lockb, bunfig.toml, colada.options.ts, commitlint*, crowdin*, cspell*, dangerfile*, dlint.json, dprint.json*, ec.config.*, electron-builder.*, eslint*, firebase.json, grunt*, gulp*, jenkins*, knip.*, lerna*, lint-staged*, nest-cli.*, netlify*, nixpacks*, nodemon*, npm-shrinkwrap.json, nx.*, package-lock.json, package.nls*.json, phpcs.xml, pm2.*, pnpm*, prettier*, pullapprove*, pyrightconfig.json, release-please*.json, release-tasks.sh, release.config.*, renovate*, rolldown.config.*, rollup.config.*, rspack*, ruff.toml, sentry.*.config.ts, simple-git-hooks*, sonar-project.properties, stylelint*, tsdown.config.*, tslint*, tsup.config.*, turbo*, typedoc*, unlighthouse*, vercel*, vetur.config.*, webpack*, workspace.json, wrangler.*, xo.config.*, yarn*, .syncpackrc.yml, .syncpackrc.yaml, angular.json, moon.yml, ng-config.json, ng-package.json, ngsw-config.json, version.ts, version.json, scripts.yml",
+      "package.json": "*.code-workspace, .browserslist*, .circleci*, .commitlint*, .cspell*, .cursorrules, .cz-config.js, .czrc, .dlint.json, .dprint.json*, .editorconfig, .eslint*, .firebase*, .flowconfig, .github*, .gitlab*, .gitmojirc.json, .gitpod*, .huskyrc*, .jslint*, .knip.*, .lintstagedrc*, .ls-lint.yml, .markdownlint*, .node-version, .nodemon*, .npm*, .nvmrc, .pm2*, .pnp.*, .pnpm*, .prettier*, .pylintrc, .release-please*.json, .releaserc*, .ruff.toml, .sentry*, .shellcheckrc, .simple-git-hooks*, .stackblitz*, .styleci*, .stylelint*, .tazerc*, .textlint*, .tool-versions, .travis*, .versionrc*, .vscode*, .watchman*, .xo-config*, .yamllint*, .yarnrc*, Procfile, apollo.config.*, appveyor*, azure-pipelines*, biome.json*, bower.json, build.config.*, bun.lock, bun.lockb, bunfig.toml, colada.options.ts, commitlint*, crowdin*, cspell*, dangerfile*, dlint.json, dprint.json*, ec.config.*, electron-builder.*, eslint*, firebase.json, grunt*, gulp*, jenkins*, knip.*, lerna*, lint-staged*, nest-cli.*, netlify*, nixpacks*, nodemon*, npm-shrinkwrap.json, nx.*, package-lock.json, package.nls*.json, phpcs.xml, pm2.*, pnpm*, prettier*, pullapprove*, pyrightconfig.json, release-please*.json, release-tasks.sh, release.config.*, renovate*, rolldown.config.*, rollup.config.*, rspack*, ruff.toml, sentry.*.config.ts, simple-git-hooks*, sonar-project.properties, stylelint*, tsdown.config.*, tslint*, tsup.config.*, turbo*, typedoc*, unlighthouse*, vercel*, vetur.config.*, webpack*, workspace.json, wrangler.*, xo.config.*, yarn*, .syncpackrc.yml, .syncpackrc.yaml, angular.json, moon.yml, ng-config.json, ng-package.json, ngsw-config.json, version.ts, version.json, scripts.yml, .postcssrc.json",
       "docker-compose.yml": ".dockerignore, Dockerfile*",
       "README*": "AUTHORS, Authors, BACKERS*, Backers*, CHANGELOG*, CITATION*, CODEOWNERS, CODE_OF_CONDUCT*, CONTRIBUTING*, CONTRIBUTORS, COPYING*, CREDITS, Changelog*, Citation*, Code_Of_Conduct*, Codeowners, Contributing*, Contributors, Copying*, Credits, GOVERNANCE.MD, Governance.md, HISTORY.MD, History.md, LICENSE*, License*, MAINTAINERS, Maintainers, README-*, README_*, RELEASE_NOTES*, ROADMAP.MD, Readme-*, Readme_*, Release_Notes*, Roadmap.md, SECURITY.MD, SPONSORS*, Security.md, Sponsors*, authors, backers*, changelog*, citation*, code_of_conduct*, codeowners, contributing*, contributors, copying*, credits, governance.md, history.md, license*, maintainers, readme-*, readme_*, release_notes*, roadmap.md, security.md, sponsors*, DEVELOPMENT.md",
       ".gitignore": ".gitattributes, .gitmodules, .gitmessage, .lfsconfig, .mailmap, .git-blame*",
       ".env": "*.env, .env.*, .envrc, env.d.ts, .prototools",
       "Cargo.toml": "Cargo.lock, rustfmt.toml, rust-toolchain.toml, cargo-recipe.json, moon.yml, clippy.toml"
+    },
+
+    "emmet.includeLanguages": {
+      "postcss": "css"
+      {%- if frontend_style_framework == 'tailwind' -%},"*.css": "tailwindcss"{%- endif -%}
     }
 }

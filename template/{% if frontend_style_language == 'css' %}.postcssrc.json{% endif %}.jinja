@@ -1,0 +1,17 @@
+{
+  "plugins": {
+    "postcss-advanced-variables": {},
+    "postcss-custom-media": {},
+    "postcss-custom-selectors": {},
+    "@csstools/postcss-conditional-values": {},
+    "@csstools/postcss-nested-calc": {},
+    {% if frontend_style_framework == 'tailwind' -%}
+    "@tailwindcss/postcss": {},
+    {%- endif %}
+    "postcss-nesting": {},
+    "postcss-preset-env": {"autoprefixer": {}},
+    "cssnano": {
+        "preset": "advanced"
+    }
+  }
+}

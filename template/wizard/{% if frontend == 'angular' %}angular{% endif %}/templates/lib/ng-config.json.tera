@@ -3,7 +3,7 @@
   "projectType": "library",
   "schematics": {
     "@schematics/angular:component": {
-      "style": "scss"
+      "style": "{{ frontend_style_language }}"
     }
   },
   "root": "angular/{{ name }}",

@@ -17,6 +17,12 @@
         {%- if database == 'gel' -%},
         "magicstack.edgedb"
         {%- endif -%}
+        {%- if frontend_style_language == 'css' -%},
+        "csstools.postcss"
+        {%- endif -%}
+        {%- if frontend_style_framework == 'tailwind' -%},
+        "bradlc.vscode-tailwindcss"
+        {%- endif -%}
 
     ]
 }

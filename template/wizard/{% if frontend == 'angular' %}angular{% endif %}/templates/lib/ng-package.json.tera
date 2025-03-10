@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/angular/{{ name }}",
-  "inlineStyleLanguage": "scss",
+  "inlineStyleLanguage": "{{ frontend_style_language }}",
   "deleteDestPath": false,
   "lib": {
     "entryFile": "public-api.ts",

@@ -3,7 +3,7 @@
     "projectType": "application",
     "schematics": {
         "@schematics/angular:component": {
-            "style": "scss"
+            "style": "{{ frontend_style_language }}"
         }
     },
     "root": "angular/{{ name }}",
@@ -17,7 +17,7 @@
                 "index": "angular/{{ name }}/index.html",
                 "browser": "angular/{{ name }}/main.ts",
                 "tsConfig": "angular/{{ name }}/tsconfig.cli.json",
-                "inlineStyleLanguage": "scss",
+                "inlineStyleLanguage": "{{ frontend_style_language }}",
                 "assets": [
                     {
                         "glob": "**/*",
@@ -25,7 +25,7 @@
                     }
                 ],
                 "styles": [
-                    "angular/{{ name }}/styles.scss"
+                    "angular/{{ name }}/styles.{{ frontend_style_language }}"
                 ],
                 "scripts": []
             },
@@ -107,7 +107,7 @@
             "builder": "@angular-devkit/build-angular:karma",
             "options": {
                 "tsConfig": "tsconfig.spec.json",
-                "inlineStyleLanguage": "scss",
+                "inlineStyleLanguage": "{{ frontend_style_language }}",
                 "assets": [
                     {
                         "glob": "**/*",
@@ -115,7 +115,7 @@
                     }
                 ],
                 "styles": [
-                    "angular/{{ name }}/styles.scss"
+                    "angular/{{ name }}/styles.{{ frontend_style_language }}"
                 ],
                 "scripts": []
             }

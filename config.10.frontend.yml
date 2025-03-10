@@ -19,3 +19,21 @@ frontend_ns:
   type: str
   required: true
   default: "{{ project_abbrev }}"
+
+frontend_style_language:
+  when: "{{ frontend != 'skip' }}"
+  help: "Frontend style"
+  required: true
+  type: str
+  choices:
+    CSS: css
+    SCSS: scss
+
+frontend_style_framework:
+  when: "{{ frontend_style_language == 'css' }}"
+  help: "Frontend style framework"
+  required: true
+  type: str
+  choices:
+    Tailwind: tailwind
+    Skip: skip

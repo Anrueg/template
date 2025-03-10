@@ -102,6 +102,28 @@ _tasks:
 
   - command: >-
       {{ frontend_toolchain }} add -d
+      postcss
+      postcss-preset-env
+      postcss-nesting
+      postcss-advanced-variables
+      postcss-custom-media
+      postcss-custom-selectors
+      @csstools/postcss-nested-calc
+      @csstools/postcss-conditional-values
+      cssnano
+      cssnano-preset-advanced
+      stylelint-config-standard
+    when: "{{ frontend_style_language == 'css' }}"
+
+  - command: >-
+      {{ frontend_toolchain }} add -d
+      tailwindcss
+      @tailwindcss/postcss
+      stylelint-config-tailwindcss
+    when: "{{ frontend_style_framework == 'tailwind' }}"
+
+  - command: >-
+      {{ frontend_toolchain }} add -d
       @ltd/j-toml
       touch
       @types/touch

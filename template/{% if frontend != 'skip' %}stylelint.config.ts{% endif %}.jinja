@@ -1,9 +1,26 @@
 import type { Config } from "stylelint"
 
 export default {
-    extends: ["stylelint-config-standard-scss", "stylelint-prettier/recommended"],
+    extends: [
+        {% if frontend_style_language == 'scss' -%}
+        "stylelint-config-standard-scss",
+        {%- endif %}
+        {% if frontend_style_language == 'css' -%}
+        "stylelint-config-standard",
+        {%- endif %}
+        {% if frontend_style_framework == 'tailwind' -%}
+        "stylelint-config-tailwindcss",
+        {%- endif %}
+        "stylelint-prettier/recommended"
+    ],
     rules: {
         "no-empty-source": null,
+        "at-rule-no-deprecated": [
+            true,
+            {
+                ignoreAtRules: ["apply"]
+            }
+        ],
         "prettier/prettier": [
             true,
             {
