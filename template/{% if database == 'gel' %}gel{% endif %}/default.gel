@@ -1,3 +1,8 @@
+# Use a simpler algorithm for resolving the scope of object names.
+# This behavior will become the default in Gel 7.0.
+# See: https://docs.geldata.com/reference/edgeql/path_resolution#new-path-scoping
+using future simple_scoping;
+
 # https://docs.edgedb.com/database/reference/sdl
 
 module default {

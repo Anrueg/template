@@ -1,4 +1,6 @@
 x-environment: &environment
+  PROJECT_NAME: "{{ project_name }}"
+  PROJECT_SLUG: "{{ project_slug }}"
   ENVIRONMENT:
   DATABASE_DSN:
 
@@ -15,9 +17,10 @@ services:
       GEL_SERVER_USER: "{{ database_user }}"
       GEL_SERVER_PASSWORD: "{{ database_password }}"
       GEL_SERVER_DEFAULT_BRANCH: "{{ database_name }}"
+      GEL_SERVER_INSTANCE_NAME: "$PROJECT_SLUG"
 
       # valid values are: trace, debug, info, warning, error
-      GEL_DOCKER_LOG_LEVEL: debug
+      GEL_DOCKER_LOG_LEVEL: info
     ports:
       - "{{ database_port }}:5656"
     volumes:
