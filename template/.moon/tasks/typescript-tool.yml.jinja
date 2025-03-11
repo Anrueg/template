@@ -1,12 +1,12 @@
 tasks:
   lint:
-    deps: ["~:eslint", "~:stylelint"]
+    deps: ["~:eslint"]
     options:
       runDepsInParallel: false
       cache: false
 
   format:
-    deps: ["~:eslint.fix", "~:stylelint.fix"]
+    deps: ["~:eslint.fix"]
     options:
       runDepsInParallel: false
       cache: false
