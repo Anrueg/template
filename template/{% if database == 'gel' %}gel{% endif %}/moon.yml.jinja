@@ -34,15 +34,13 @@ tasks:
       interactive: true
       cache: false
 
-  .runner:
-    extends: compose.up
-    args: ["{{ database_host }}"]
-    preset: server
-    #options:
-    #  cache: false
+  # .runner:
+  #   extends: compose.up
+  #   args: ["{{ database_host }}"]
+  #   preset: server
 
-  start:
-    deps: [.runner]
+  # start:
+  #   deps: [.runner]
 
   link.start:
     command: docker compose up "{{ database_host }}" -d --build --no-log-prefix --menu=0
@@ -76,28 +74,20 @@ tasks:
       os: windows
       cache: false
 
-  link.clean:
-    command: docker compose stop "{{ database_host }}"
-    toolchain: system
-    options:
-      runFromWorkspaceRoot: true
-      outputStyle: buffer
-      internal: true
-      cache: false
-
-  link:
-    deps: [link.start, link.register, link.init, link.clean]
-    inputs:
-      - /.env.answers
+  .runner:
+    command: {{ frontend_toolchain }} .moon/utils/docker-compose-logs.ts "{{ database_host }}"
+    deps: [link.start, link.register, link.init]
+    preset: watcher
     options:
       runFromWorkspaceRoot: true
       runDepsInParallel: false
-      outputStyle: buffer
       internal: true
+      shell: false
+
+  start:
+    deps: [.runner]
 
   format:
     extends: eslint.fix
     options:
       internal: false
-
-

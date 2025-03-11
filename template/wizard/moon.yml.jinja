@@ -147,7 +147,6 @@ tasks:
       - sync.angular
       {%- endif %}
       {% if database == 'gel' -%}
-      - gel:link
       - gel:format
       {%- endif %}
       {% if backend == 'rust' -%}

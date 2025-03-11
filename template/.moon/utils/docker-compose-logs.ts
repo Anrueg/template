@@ -5,12 +5,7 @@ import { argv, stderr, stdout } from "bun"
 const [_bun, _script, serviceName] = argv
 const cancel = new AbortController()
 
-async function up() {
-    const result = await Bun.$`docker compose up -d --build --no-log-prefix ${serviceName}`.nothrow()
-    if (result.exitCode !== 0) {
-        await tearDown(result.exitCode)
-    }
-
+async function logs() {
     const logs = Bun.spawn(["docker", "compose", "logs", "--follow", "--no-log-prefix", serviceName], {
         cwd: process.cwd(),
         signal: cancel.signal,
@@ -41,4 +36,4 @@ process.on("SIGINT", async () => {
     await tearDown(1)
 })
 
-await up()
+await logs()

@@ -142,12 +142,6 @@ _tasks:
   - command: moon generate rust-package --force -- --name=initd --type=configuration --preset=initd
     when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
-  - command: moon generate rust-package -- --name=server --type=application --preset=axum
-    when: "{{ backend == 'rust' and backend_type == 'app' }}"
-
-  - command: moon generate rust-package -- --name={{ project_slug }} --type=library
-    when: "{{ backend == 'rust' and backend_type == 'lib' }}"
-
   # TODO: remove BEGIN
   # - command: moon generate rust-package --force -- --name=common --type=library
   #   when: "{{ backend == 'rust' }}"

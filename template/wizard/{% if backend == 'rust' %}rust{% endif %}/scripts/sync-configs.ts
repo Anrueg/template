@@ -155,14 +155,12 @@ function main() {
                     section = Section({} as Record<string, any>)
                     config.bin.push(section)
                 }
-                section["name"] = pkg.project.name
                 section["path"] = "main.rs"
                 section["doctest"] = true
             }
 
             if (pkg.type === "library" || pkg.type === "configuration") {
                 const section = (config.lib ??= Section({} as Record<string, any>))
-                section["name"] = pkg.project.name
                 section["path"] = "lib.rs"
                 section["doctest"] = true
             }

@@ -2,8 +2,8 @@ $schema: "https://moonrepo.dev/schemas/project.json"
 
 id: "rust/{{ name | slugify }}"
 project:
-  name: "{{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
-  description: "Rust {{ type }}: {{ backend_ns ~ '-' ~ name | slugify | replace(from="-", to="_") }}"
+  name: "{{ backend_ns ~ '-' ~ name | slugify }}"
+  description: "Rust {{ type }}: {{ backend_ns ~ '-' ~ name | slugify }}"
   metadata:
     slug: "rust-{{ name | slugify }}"
 
