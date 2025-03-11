@@ -7,10 +7,10 @@
         "stylelint.vscode-stylelint"
         {%- endif -%}
         {%- if frontend == 'angular' -%},
-        "angular.ng-template"
+        "angular.ng-template",
+        "ghaschel.vscode-angular-html"
         {%- endif -%}
         {%- if backend == 'rust' -%},
-        "dustypomerleau.rust-syntax",
         "rust-lang.rust-analyzer",
         "tamasfe.even-better-toml"
         {%- endif -%}
@@ -23,6 +23,5 @@
         {%- if frontend_style_framework == 'tailwind' -%},
         "bradlc.vscode-tailwindcss"
         {%- endif -%}
-
     ]
 }

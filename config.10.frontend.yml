@@ -7,11 +7,19 @@ frontend:
     Skip: skip
 
 frontend_toolchain:
-  when: "{{ frontend != 'skip' }}"
   help: "Frontend toolchain"
   required: true
   type: str
   choices: [bun]
+
+frontend_type:
+  when: "{{ frontend != 'skip' }}"
+  help: "Frontend primary target"
+  required: true
+  type: str
+  choices:
+    Application: app
+    Library: lib
 
 frontend_ns:
   when: "{{ frontend != 'skip' }}"

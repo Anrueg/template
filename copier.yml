@@ -12,7 +12,7 @@ _message_before_copy: |
 _message_after_copy: |
   To start working on your project, run:
 
-      moon :start
+      bun start
 
 _subdirectory: template
 
@@ -52,6 +52,16 @@ _tasks:
   - command: >-
       {{ frontend_toolchain }} add -d
       @types/{{ frontend_toolchain }}
+      @ltd/j-toml
+      touch
+      @types/touch
+      mkdirp
+      rimraf
+      chokidar
+      minimatch
+      ignore
+      yaml
+      cross-env
       jiti
       eslint
       @eslint/compat
@@ -68,8 +78,10 @@ _tasks:
       eslint-plugin-jsonc
       eslint-plugin-yml
       eslint-plugin-toml
+
+  - command: >-
+      {{ frontend_toolchain }} add -d
       stylelint
-      stylelint-config-standard-scss
       stylelint-prettier
       @types/lodash-es
       && {{ frontend_toolchain }} add
@@ -117,42 +129,40 @@ _tasks:
 
   - command: >-
       {{ frontend_toolchain }} add -d
+      stylelint-config-standard-scss
+    when: "{{ frontend_style_language == 'scss' }}"
+
+  - command: >-
+      {{ frontend_toolchain }} add -d
       tailwindcss
       @tailwindcss/postcss
       stylelint-config-tailwindcss
     when: "{{ frontend_style_framework == 'tailwind' }}"
 
-  - command: >-
-      {{ frontend_toolchain }} add -d
-      @ltd/j-toml
-      touch
-      @types/touch
-      mkdirp
-      rimraf
-      chokidar
-      minimatch
-      ignore
-      yaml
-      cross-env
-
   - command: moon generate rust-package --force -- --name=initd --type=configuration --preset=initd
-    when: "{{ backend == 'rust' }}"
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
+
+  - command: moon generate rust-package -- --name=server --type=application --preset=axum
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
+
+  - command: moon generate rust-package -- --name={{ project_slug }} --type=library
+    when: "{{ backend == 'rust' and backend_type == 'lib' }}"
 
   # TODO: remove BEGIN
-  - command: moon generate rust-package --force -- --name=common --type=library
-    when: "{{ backend == 'rust' }}"
+  # - command: moon generate rust-package --force -- --name=common --type=library
+  #   when: "{{ backend == 'rust' }}"
 
-  - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
-    when: "{{ backend == 'rust' }}"
+  # - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
+  #   when: "{{ backend == 'rust' }}"
 
-  - command: moon generate rust-package --force -- --name=task-runner --type=application
-    when: "{{ backend == 'rust' }}"
+  # - command: moon generate rust-package --force -- --name=task-runner --type=application
+  #   when: "{{ backend == 'rust' }}"
 
-  - command: moon generate angular-lib --force -- --name=common
-    when: "{{ frontend == 'angular' }}"
+  # - command: moon generate angular-lib --force -- --name=common
+  #   when: "{{ frontend == 'angular' }}"
 
-  - command: moon generate angular-app --force -- --name=app --service_worker
-    when: "{{ frontend == 'angular' }}"
+  # - command: moon generate angular-app --force -- --name=app --service_worker
+  #   when: "{{ frontend == 'angular' }}"
   # TODO: remove END
 
   - >-

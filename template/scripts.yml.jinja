@@ -1,3 +1,23 @@
+start: >-
+  cross-env
+  ENVIRONMENT=development
+  moon :start
+
+build:development: >-
+  cross-env
+  ENVIRONMENT=development
+  moon :build
+
+build:production: >-
+  cross-env
+  ENVIRONMENT=production
+  moon :build
+
+build:staging: >-
+  cross-env
+  ENVIRONMENT=staging
+  moon :build
+
 {% if database == 'gel' -%}
 migrate: >-
   gel migration apply

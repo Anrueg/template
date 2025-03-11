@@ -6,6 +6,15 @@ backend:
     Rust: rust
     Skip: skip
 
+backend_type:
+  when: "{{ backend != 'skip' }}"
+  help: "Backend primary target"
+  required: true
+  type: str
+  choices:
+    Application: app
+    Library: lib
+
 backend_ns:
   when: "{{ backend != 'skip' }}"
   help: Backend package namespace ([ns]-package-name)

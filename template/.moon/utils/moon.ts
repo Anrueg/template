@@ -38,6 +38,10 @@ export function packages(query: PackageQuery) {
 }
 
 function byFolder(folder: string): Package[] {
+    if (!fs.existsSync(folder)) {
+        return []
+    }
+
     const result = []
     for (const entry of fs.readdirSync(folder)) {
         const packagePath = path.join(folder, entry)

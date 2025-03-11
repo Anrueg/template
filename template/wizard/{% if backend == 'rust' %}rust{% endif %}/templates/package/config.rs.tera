@@ -1,3 +1,6 @@
+---
+skip: {{ type == "application" or preset != "config" }}
+---
 use derivative::Derivative;
 use derive_getters::Getters;
 use envconfig::Envconfig;

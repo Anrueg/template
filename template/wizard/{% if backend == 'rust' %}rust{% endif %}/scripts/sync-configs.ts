@@ -3,7 +3,7 @@ import path from "node:path"
 
 import * as mkdirp from "mkdirp"
 import { inline, parse as parseToml, Section, stringify as stringifyToml } from "@ltd/j-toml"
-import { compose, moon, unixPath, PortAssigner } from "@workspace/moon"
+import { compose, moon, unixPath, PortAssigner, answers } from "@workspace/moon"
 import { Document, Scalar, YAMLMap } from "yaml"
 
 interface WorkspaceCargo {
