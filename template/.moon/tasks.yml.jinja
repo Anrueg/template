@@ -32,7 +32,6 @@ tasks:
 
   eslint:
     command:
-      - {{ frontend_toolchain }}
       - eslint
       - --no-error-on-unmatched-pattern
       - --exit-on-fatal-error
@@ -55,7 +54,6 @@ tasks:
 
   stylelint:
     command:
-      - {{ frontend_toolchain }}
       - stylelint
       - --allow-empty-input
     args:
@@ -64,6 +62,7 @@ tasks:
       - "@group(stylelint)"
     toolchain: {{ frontend_toolchain }}
     options:
+      mergeArgs: prepend
       internal: true
 
   stylelint.fix:

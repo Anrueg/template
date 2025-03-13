@@ -60,10 +60,10 @@ function updateAngularConfig(packages: AngularPackage[], serverPort: PortAssigne
                 open: false
             }
 
-            // const stylesPath = path.join(pkg.path, `styles.${answers.frontend_style_language}`)
-            // if (fs.existsSync(stylesPath)) {
-            //     options.styles = [unixPath(stylesPath)]
-            // }
+            const stylesPath = path.join(pkg.path, `styles.${answers.frontend_style_language}`)
+            if (fs.existsSync(stylesPath)) {
+                options.styles = [unixPath(stylesPath)]
+            }
 
             const configurations = {
                 production: {
