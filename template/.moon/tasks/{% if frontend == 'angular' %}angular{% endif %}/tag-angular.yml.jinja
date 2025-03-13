@@ -35,7 +35,7 @@ tasks:
       internal: false
 
   build:
-    command: ng build
+    command: {{ frontend_toolchain }} ng build
     args:
       - $projectName
       - --configuration=$ENVIRONMENT
@@ -65,3 +65,16 @@ tasks:
     deps: [~:build.pre, wizard:watcher]
     options:
       internal: true
+
+  {% if storybook -%}
+  storybook:
+    command: {{ frontend_toolchain }} ng run $projectName:storybook:$ENVIRONMENT
+    toolchain: {{ frontend_toolchain }}
+    preset: server
+    deps:
+      - ^:storybook
+      - ~:start.pre
+    options:
+      runFromWorkspaceRoot: true
+      runDepsInParallel: false
+  {% endif %}

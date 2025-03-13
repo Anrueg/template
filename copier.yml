@@ -139,24 +139,51 @@ _tasks:
       stylelint-config-tailwindcss
     when: "{{ frontend_style_framework == 'tailwind' }}"
 
+  # https://storybook.js.org/docs/configure/integration/frameworks-feature-support
+  - command: >-
+      {{ frontend_toolchain }} add -d
+      @storybook/angular
+      @storybook/addon-essentials
+      @storybook/addon-interactions
+      @storybook/addon-themes
+      @storybook/addon-a11y
+      @storybook/test-runner
+      @storybook/test
+      @compodoc/compodoc
+      msw-storybook-addon
+      msw
+      eslint-plugin-storybook
+      @storybook/react-vite
+      @storybook/builder-vite
+      vite
+    when: "{{ storybook }}"
+
   - command: moon generate rust-package --force -- --name=initd --type=configuration --preset=initd
     when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
   # TODO: remove BEGIN
-  # - command: moon generate rust-package --force -- --name=common --type=library
-  #   when: "{{ backend == 'rust' }}"
+  - command: moon generate rust-package --force -- --name=common --type=library
+    when: "{{ backend == 'rust' }}"
 
-  # - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
-  #   when: "{{ backend == 'rust' }}"
+  - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
+    when: "{{ backend == 'rust' }}"
 
-  # - command: moon generate rust-package --force -- --name=task-runner --type=application
-  #   when: "{{ backend == 'rust' }}"
+  - command: moon generate rust-package --force -- --name=task-runner --type=application
+    when: "{{ backend == 'rust' }}"
 
-  # - command: moon generate angular-lib --force -- --name=common
-  #   when: "{{ frontend == 'angular' }}"
+  - command: moon generate angular-lib --force -- --name=common
+    when: "{{ frontend == 'angular' }}"
 
-  # - command: moon generate angular-app --force -- --name=app --service_worker
-  #   when: "{{ frontend == 'angular' }}"
+  - command: moon generate angular-app --force -- --name=app --service_worker
+    when: "{{ frontend == 'angular' }}"
+
+  - command: moon generate angular-storybook --force
+    working_directory: angular/app
+    when: "{{ frontend == 'angular' }}"
+
+  - command: moon generate angular-storybook --force
+    working_directory: angular/common
+    when: "{{ frontend == 'angular' }}"
   # TODO: remove END
 
   - >-

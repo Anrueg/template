@@ -1,0 +1,7 @@
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+extends: ["configs"]
+id: angular-storybook
+title: Angular storybook
+description: Add storybook to angular pacakge
+destination: "."

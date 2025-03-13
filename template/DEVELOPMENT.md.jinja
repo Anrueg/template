@@ -1,6 +1,6 @@
 # Development
 
-{% if database == 'edgedb' %}
+{% if database == 'edgedb' -%}
 ## GEL Usage
 
 ### Migrations
@@ -9,4 +9,21 @@ Write yout own schemas then run `{{ frontend_toolchain }} migrate`.
 
 <!-- If create more migrations without data migrations and not commited yet, squah migrations with: `gel migration create --squash` -->
 
-{% endif %}
+{%- endif %}
+
+{% if database == 'edgedb' -%}
+## Storybook
+
+Run all storybooks:
+
+```bash
+{{ frontend_toolchain }} ss
+```
+
+Run specific storybook:
+
+```bash
+moon [project]:storybook
+```
+
+{%- endif %}

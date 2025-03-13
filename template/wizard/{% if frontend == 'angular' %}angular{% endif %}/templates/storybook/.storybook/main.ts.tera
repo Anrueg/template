@@ -1,0 +1,12 @@
+import type { StorybookConfig } from "@storybook/angular"
+
+export default {
+    framework: "@storybook/angular",
+    stories: ["../**/*.mdx", "../**/*.stories.@(ts|tsx)", "../**/*.story.@(ts|tsx)"],
+    addons: [
+        "@storybook/addon-essentials",
+        "@storybook/addon-interactions",
+        "@storybook/addon-themes",
+        "@storybook/addon-a11y"
+    ]
+} satisfies StorybookConfig

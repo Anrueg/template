@@ -1,5 +1,5 @@
 ---
-skip: {{ type == "application" or preset != "config" }}
+skip: {{ type == "application" or preset != "initd" }}
 ---
 use derivative::Derivative;
 use derive_getters::Getters;

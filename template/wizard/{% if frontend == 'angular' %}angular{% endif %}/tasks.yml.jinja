@@ -3,7 +3,8 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 {%- macro task(name, tpl, note) -%}
   "{{ name }}":
     description: "{{ note }}"
-    script: moon generate {{ tpl }} && moon wizard:sync --affected
+    command: moon generate {{ tpl }} && moon wizard:sync --affected
+    toolchain: system
     options:
       interactive: true
       cache: false
@@ -17,3 +18,5 @@ tasks:
   {{ task('add-pipe', 'angular-pipe', 'Add pipe') }}
 
   {{ task('add-module', 'angular-module', 'Add module') }}
+
+  {{ task('add-storybook', 'angular-storybook', 'Add storybook') }}

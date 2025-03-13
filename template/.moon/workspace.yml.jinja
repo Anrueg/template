@@ -12,19 +12,24 @@ $schema: "https://moonrepo.dev/schemas/workspace.json"
 # path to the project folder as the map value. File paths are relative from the workspace root,
 # and cannot reference projects located outside the workspace boundary.
 projects:
-  - wizard/moon.yml
-  {% if frontend == 'angular' -%}
-  - angular/*/moon.yml
-  {%- endif %}
-  {% if backend == 'rust' or fluvio_enabled -%}
-  - rust/*/moon.yml
-  {%- endif %}
-  {% if database == 'gel' -%}
-  - gel/moon.yml
-  {%- endif %}
-  {% if tools_add -%}
-  - tools/moon.yml
-  {%- endif %}
+  globs:
+    {% if frontend == 'angular' -%}
+    - angular/*/moon.yml
+    {%- endif %}
+    {% if backend == 'rust' -%}
+    - rust/*/moon.yml
+    {%- endif %}
+  sources:
+    wizard: wizard
+    {% if storybook -%}
+    storybook: .storybook
+    {%- endif %}
+    {% if database == 'gel' -%}
+    gel: gel
+    {%- endif %}
+    {% if tools_add -%}
+    tools: tools
+    {%- endif %}
 
 vcs:
   manager: git

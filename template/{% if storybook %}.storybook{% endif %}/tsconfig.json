@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./**/*.stories.*", "./**/*.story.*", "./**/*.ts"],
+  "files": ["./typings.d.ts"]
+}

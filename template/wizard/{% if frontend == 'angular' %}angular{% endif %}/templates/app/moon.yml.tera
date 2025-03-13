@@ -13,7 +13,7 @@ project:
 type: application
 stack: frontend
 language: typescript
-tags: [angular, angular-app, scss]
+tags: [angular, angular-app, storybook]
 toolchain:
   default: {{ frontend_toolchain }}
 

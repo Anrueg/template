@@ -9,6 +9,7 @@ import tsStylistic from "@stylistic/eslint-plugin-ts"
 import type { Linter } from "eslint"
 import jsoncPlugin from "eslint-plugin-jsonc"
 import prettierPluginConfig from "eslint-plugin-prettier/recommended"
+import storybook from "eslint-plugin-storybook"
 import tomlPlugin from "eslint-plugin-toml"
 import unusedImportsPlugin from "eslint-plugin-unused-imports"
 import yamlPlugin from "eslint-plugin-yml"
@@ -200,7 +201,17 @@ export default [
                     "error",
                     {
                         allowNumber: true,
-                        allowBoolean: true
+                        allowBoolean: true,
+                        // Tricky, maybe a bug, but without this option, not accept this:
+                        // const key: "key-name1" | "key-name2" = "key-name1"
+                        // const tpl = `something: ${key}`
+                        allowNever: true
+                    }
+                ],
+                "@typescript-eslint/no-unnecessary-condition": [
+                    "error",
+                    {
+                        allowConstantLoopConditions: "only-allowed-literals"
                     }
                 ]
             }
@@ -210,6 +221,38 @@ export default [
             value.name = `${parts[0]} / ${parts[parts.length - 1]}`
             return value
         }),
+    {% if storybook -%}
+    {
+        name: "Storybook / ignore",
+        ignores: ["!.storybook"]
+    },
+    ...storybook.configs["flat/recommended"].filter(v => v.name !== "storybook:recommended:main-rules").map(v => {
+        const name = (name => {
+            switch (name) {
+                case "storybook:recommended:setup":
+                    return "Storybook / setup"
+                case "storybook:recommended:stories-rules":
+                    return "Storybook / stories"
+                case "storybook:recommended:main-rules":
+                    return "Storybook / main"
+            }
+            return name
+        })(v.name)
+        return { ...v, name }
+    }),
+    {
+        name: "Storybook / main",
+        files: ["**/.storybook/main.@(js|cjs|mjs|ts)"],
+        rules: {
+            "storybook/no-uninstalled-addons": [
+                "error",
+                {
+                    packageJsonLocation: path.join(__dirname, "package.json")
+                }
+            ]
+        },
+    },
+    {%- endif %}
     {% if frontend == "angular" -%}
     {
         name: "Angular / common",

@@ -5,6 +5,7 @@ skip: {{ type == "application" }}
 mod component;
 mod config;
 
+#[allow(unused_imports)]
 pub mod prelude {
     pub use crate::component::*;
     pub use crate::config::*;

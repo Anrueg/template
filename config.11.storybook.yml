@@ -1,0 +1,6 @@
+storybook:
+  when: "{{ frontend != 'skip' }}"
+  help: "Add storybook?"
+  required: true
+  type: bool
+  default: true

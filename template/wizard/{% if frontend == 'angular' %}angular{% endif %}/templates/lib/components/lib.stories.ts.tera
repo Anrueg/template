@@ -1,0 +1,9 @@
+import type { Meta, StoryObj } from "@storybook/angular"
+
+import { {{ name | title }}Component } from "./lib.component"
+
+export default { component: {{ name | title }}Component } satisfies Meta<{{ name | title }}Component>
+
+type Story = StoryObj<{{ name | title }}Component>
+
+export const Default: Story = {}

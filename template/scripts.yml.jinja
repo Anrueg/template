@@ -23,3 +23,8 @@ migrate: >-
   gel migration apply
   && (gel migration create && gel migration apply) || exit 0
 {%- endif %}
+
+{% if storybook -%}
+ss: >-
+  moon :storybook
+{%- endif %}

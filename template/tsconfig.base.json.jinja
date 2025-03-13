@@ -20,6 +20,9 @@
     "baseUrl": ".",
     "paths": {
         "@workspace/moon": [".moon/utils"]
+        {%- if storybook -%},
+        "@workspace/storybook": [".storybook/index.ts"]
+        {%- endif %}
     }
   },
   "exclude": [

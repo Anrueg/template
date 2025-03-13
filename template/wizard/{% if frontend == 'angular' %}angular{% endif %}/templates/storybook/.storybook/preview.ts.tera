@@ -1,0 +1,23 @@
+import { setCompodocJson } from "@storybook/addon-docs/angular"
+import { withThemeByClassName } from "@storybook/addon-themes"
+import type { Preview } from "@storybook/angular"
+
+import docJson from "../documentation.json"
+
+setCompodocJson(docJson)
+
+export default {
+    tags: ["autodocs"],
+    parameters: {
+        layout: "centered"
+    },
+    decorators: [
+        withThemeByClassName({
+            themes: {
+                light: "light",
+                dark: "dark"
+            },
+            defaultTheme: "light"
+        })
+    ]
+} satisfies Preview

@@ -4,7 +4,7 @@ import path from "node:path"
 
 import { answers, moon, PortAssigner, unixPath } from "@workspace/moon"
 
-const { frontend_toolchain: PackageManager, frontend_ns: AngularNs } = answers
+const { frontend_toolchain: PackageManager, frontend_ns: AngularNs, storybook: UseStorybook } = answers
 
 interface AngularPackage extends moon.Package {
     ngConfig: Record<string, any>
@@ -29,7 +29,7 @@ function getPackages(): AngularPackage[] {
     return result
 }
 
-function updateAngularConfig(packages: AngularPackage[], portAssigner: PortAssigner) {
+function updateAngularConfig(packages: AngularPackage[], serverPort: PortAssigner, storybookPort: PortAssigner) {
     const result = {
         $schema: "./node_modules/@angular/cli/lib/config/schema.json",
         version: 1,
@@ -45,7 +45,56 @@ function updateAngularConfig(packages: AngularPackage[], portAssigner: PortAssig
         config["architect"] ??= {}
         config["architect"].serve ??= {}
         config["architect"].serve.options ??= {}
-        config["architect"].serve.options.port ??= portAssigner.next()
+        config["architect"].serve.options.port ??= serverPort.next()
+
+        const storybookFolder = path.join(pkg.path, ".storybook")
+        const hasStorybookFolder = fs.existsSync(storybookFolder)
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (UseStorybook && hasStorybookFolder) {
+            const options = {
+                configDir: unixPath(storybookFolder),
+                compodoc: true,
+                compodocArgs: ["-e", "json", "-d", unixPath(pkg.path)],
+                experimentalZoneless: true,
+                loglevel: "info",
+                open: false
+            }
+
+            // const stylesPath = path.join(pkg.path, `styles.${answers.frontend_style_language}`)
+            // if (fs.existsSync(stylesPath)) {
+            //     options.styles = [unixPath(stylesPath)]
+            // }
+
+            const configurations = {
+                production: {
+                    browserTarget: `${pkg.project.name}:build:production`,
+                    enableProdMode: true
+                },
+                staging: {
+                    browserTarget: `${pkg.project.name}:build:staging`,
+                    enableProdMode: true
+                },
+                development: {
+                    browserTarget: `${pkg.project.name}:build:development`,
+                    enableProdMode: false
+                }
+            }
+
+            config["architect"]["storybook"] = {
+                builder: "@storybook/angular:start-storybook",
+                defaultConfiguration: "development",
+                options: { ...options, port: storybookPort.next(), host: "0.0.0.0" },
+                configurations: configurations
+            }
+
+            config["architect"]["storybook-build"] = {
+                builder: "@storybook/angular:start-storybook",
+                defaultConfiguration: "development",
+                options: { ...options },
+                configurations: configurations
+            }
+        }
+
         result.projects[pkg.project.name] = pkg.ngConfig
     }
 
@@ -75,9 +124,10 @@ function tsconfigUpdatePaths(confPath: string, paths: Record<string, string>) {
 
 function main() {
     const packages = getPackages().sort((a, b) => a.id.localeCompare(b.id))
-    const portAssigner = new PortAssigner(4200)
+    const serverPort = new PortAssigner(4200)
+    const storybookPort = new PortAssigner(7001)
 
-    updateAngularConfig(packages, portAssigner)
+    updateAngularConfig(packages, serverPort, storybookPort)
     tsconfigUpdatePaths(
         "tsconfig.base.json",
         packages.reduce<Record<string, string>>((dst, pkg) => {

@@ -20,8 +20,8 @@ fileGroups:
     - "!*/templates/**/*"
 
 
-{% macro generator_task(name, tpl, note) -%}
-  "{{ name }}.pre":
+{% macro generator_task(name, tpl, note, post = None) -%}
+  "{{ name }}.gen":
     command: moon generate {{ tpl }}
     toolchain: system
     options:
@@ -30,9 +30,23 @@ fileGroups:
       cache: false
       internal: true
 
+  {% if post -%}
+  "{{ name }}.post"
+    command: >-
+      {{ post }}
+    toolchain: system
+    options:
+      runFromWorkspaceRoot: true
+      interactive: true
+      cache: false
+      internal: true
+  {%- endif %}
+
   "{{ name }}":
     description: "{{ note }}"
-    deps: ["{{ name }}.pre", "wizard:sync"]
+    command: moon wizard:sync
+    toolchain: system
+    deps: ["{{ name }}.gen"{% if post %}, "{{ name }}.post"{% endif %}]
     options:
       runDepsInParallel: false
       runFromWorkspaceRoot: true
@@ -48,6 +62,7 @@ tasks:
     inputs:
       - /angular/*/ng-config.json
       - /angular/*/moon.yml
+      - /angular/*/.storybook/**/*
       - /wizard/angular/scripts/sync-configs.ts
       - /wizard/moon.yml
       - "@group(moon-utils)"
@@ -63,6 +78,7 @@ tasks:
     options:
       runDepsInParallel: false
       shell: false
+      cache: false
 
   {{ generator_task('ng-app', 'angular-app', 'Add angular app') }}
 
@@ -92,12 +108,32 @@ tasks:
     options:
       runDepsInParallel: false
       shell: false
+      cache: false
 
   {{ generator_task('rust-app', 'rust-package -- --type=application', 'Add rust app') }}
 
   {{ generator_task('rust-lib', 'rust-package -- --type=library', 'Add rust app') }}
 
   {{ generator_task('rust-axum', 'rust-package -- --type=application --preset=axum', 'Add rust app') }}
+  {%- endif %}
+
+  {% if storybook -%}
+  sync.storybook:
+    description: Sync storybook configs from project & moon configs
+    command: {{ frontend_toolchain }} wizard/storybook/scripts/sync.ts
+    toolchain: {{ frontend_toolchain }}
+    inputs:
+      - /angular.json
+      - /**/moon.yml
+      - /wizard/storybook/scripts/sync.ts
+      - /wizard/moon.yml
+      - "@group(moon-utils)"
+    outputs:
+      - /**/.storybook/refs.json
+    options:
+      runFromWorkspaceRoot: true
+      mutex: wizard-sync-storybook
+      internal: true
   {%- endif %}
 
   format:
@@ -152,8 +188,12 @@ tasks:
       {% if backend == 'rust' -%}
       - sync.rust
       {%- endif %}
+      {% if storybook -%}
+      - sync.storybook
+      {%- endif %}
       - sync.moon
       - sync.scripts
+      - ~:format
     options:
       runDepsInParallel: false
       runFromWorkspaceRoot: true

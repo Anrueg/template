@@ -150,11 +150,12 @@ function main() {
 
             if (pkg.type === "application") {
                 config.bin ??= []
-                let section = config.bin.find(bin => bin["name"] === pkg.project.name)
+                let section = config.bin.find(bin => bin["path"] === "main.rs")
                 if (section == null) {
                     section = Section({} as Record<string, any>)
                     config.bin.push(section)
                 }
+                section["name"] = pkg.project.name.replace(/-/g, "_")
                 section["path"] = "main.rs"
                 section["doctest"] = true
             }

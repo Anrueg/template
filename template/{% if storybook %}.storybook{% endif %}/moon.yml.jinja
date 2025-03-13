@@ -1,0 +1,43 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+id: storybook
+language: typescript
+stack: frontend
+type: automation
+tags: [docs]
+project:
+  name: storybook
+  description: "Composite storybook"
+
+toolchain:
+  default: system
+
+tasks:
+  lint:
+    extends: eslint
+    deps: ["~:stylelint"]
+    options:
+      internal: false
+
+  format:
+    extends: eslint.fix
+    deps: ["~:stylelint.fix"]
+    options:
+      internal: false
+
+  .runner:
+    command: {{ frontend_toolchain }} --bun storybook dev --host=0.0.0.0 --port=7000  --loglevel=info
+    toolchain: {{ frontend_toolchain }}
+    deps: [wizard:sync, "#storybook:storybook"]
+    preset: watcher
+    options:
+      internal: false
+      runFromWorkspaceRoot: true
+
+  storybook:
+    preset: watcher
+    deps: [.runner]
+
+  start:
+    preset: watcher
+    deps: [.runner]
