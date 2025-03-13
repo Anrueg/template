@@ -1,5 +1,4 @@
 import { type StorybookConfig } from "@storybook/react-vite"
-import { fetch } from "bun"
 import { type StorybookConfigRaw } from "storybook/internal/types"
 import { mergeConfig, type ProxyOptions } from "vite"
 
