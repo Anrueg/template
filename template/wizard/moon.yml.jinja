@@ -44,7 +44,7 @@ fileGroups:
 
   "{{ name }}":
     description: "{{ note }}"
-    command: moon wizard:sync
+    command: moon run wizard:sync
     toolchain: system
     deps: ["{{ name }}.gen"{% if post %}, "{{ name }}.post"{% endif %}]
     options:
@@ -73,7 +73,7 @@ tasks:
       cache: false
 
   sync.angular:
-    command: moon "#angular:format"
+    command: moon run "#angular:format"
     deps: [sync.angular.do]
     options:
       runDepsInParallel: false
@@ -103,7 +103,7 @@ tasks:
       cache: false
 
   sync.rust:
-    command: moon "#rust:format"
+    command: moon run "#rust:format"
     deps: [sync.rust.do]
     options:
       runDepsInParallel: false
@@ -142,6 +142,14 @@ tasks:
       runDepsInParallel: false
       cache: false
 
+  sync.setup:
+    command: moon setup
+    toolchain: system
+    options:
+      internal: true
+      cache: false
+      runFromWorkspaceRoot: true
+
   sync.moon:
     command: moon sync projects
     toolchain: system
@@ -179,6 +187,7 @@ tasks:
 
   sync:
     deps:
+      - sync.setup
       {% if frontend == 'angular' -%}
       - sync.angular
       {%- endif %}

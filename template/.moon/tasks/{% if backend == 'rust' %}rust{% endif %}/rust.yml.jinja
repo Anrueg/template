@@ -78,3 +78,12 @@ tasks:
     options:
       mutex: rust-builder
       internal: true
+
+  test:
+    command: cargo nextest run --package=$projectName --profile=${ENVIRONMENT}
+    toolchain: rust
+    options:
+      runFromWorkspaceRoot: true
+      mutex: rust-test
+      cache: false
+

@@ -21,19 +21,26 @@ node:
   {{ frontend_toolchain }}:
     version: latest
 
-typescript:
-    createMissingConfig: true
-    projectConfigFileName: tsconfig.json
-    rootConfigFileName: tsconfig.projects.json
-    rootOptionsConfigFileName: tsconfig.base.json
-    routeOutDirToCache: false
-    syncProjectReferences: false
-    syncProjectReferencesToPaths: false
-    includeProjectReferenceSources: false
+# typescript:
+#     createMissingConfig: true
+#     projectConfigFileName: tsconfig.json
+#     rootConfigFileName: tsconfig.projects.json
+#     rootOptionsConfigFileName: tsconfig.base.json
+#     routeOutDirToCache: false
+#     syncProjectReferences: false
+#     syncProjectReferencesToPaths: false
+#     includeProjectReferenceSources: false
 
 rust:
-    version: "stable"
+    version: "1.85"
     syncToolchainConfig: false
+    components:
+      - rustc
+      - cargo
+      - rustfmt
+      - rust-docs
+      - rust-analyzer
+      - clippy
     bins:
         - cargo-nextest
         - watchexec-cli

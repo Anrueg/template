@@ -83,10 +83,8 @@ _tasks:
       {{ frontend_toolchain }} add -d
       stylelint
       stylelint-prettier
-      @types/lodash-es
-      && {{ frontend_toolchain }} add
-      lodash-es
-    when: "{{ frontend != 'skip' }}"
+      @happy-dom/global-registrator
+    when: "{{ frontend != 'skip' or storybook }}"
 
   - command: >-
       {{ frontend_toolchain }} add -d
@@ -163,13 +161,13 @@ _tasks:
 
   # TODO: remove BEGIN
   - command: moon generate rust-package --force -- --name=common --type=library
-    when: "{{ backend == 'rust' }}"
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
   - command: moon generate rust-package --force -- --name=server --type=application --preset=axum
-    when: "{{ backend == 'rust' }}"
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
   - command: moon generate rust-package --force -- --name=task-runner --type=application
-    when: "{{ backend == 'rust' }}"
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
   - command: moon generate angular-lib --force -- --name=common
     when: "{{ frontend == 'angular' }}"

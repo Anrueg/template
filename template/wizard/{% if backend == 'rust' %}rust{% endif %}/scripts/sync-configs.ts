@@ -3,7 +3,7 @@ import path from "node:path"
 
 import * as mkdirp from "mkdirp"
 import { inline, parse as parseToml, Section, stringify as stringifyToml } from "@ltd/j-toml"
-import { compose, moon, unixPath, PortAssigner, answers } from "@workspace/moon"
+import { compose, moon, PortAssigner, unixPath } from "@workspace/moon"
 import { Document, Scalar, YAMLMap } from "yaml"
 
 interface WorkspaceCargo {
@@ -175,8 +175,28 @@ function main() {
                 config.dependencies[other.project.name] = inline({ path: unixPath(path.relative(pkg.path, other.id)) })
             }
 
+            const deps: string[] = []
             for (const key of Object.keys(workspace.dependencies ?? {})) {
                 config.dependencies[key] = inline({ workspace: true })
+                deps.push(key)
+            }
+
+            const remove = Object.keys(config.dependencies).filter(dep => {
+                const value = config.dependencies![dep]
+                if (typeof value === "string") {
+                    return false
+                }
+
+                if (value.workspace !== true) {
+                    return false
+                }
+
+                return !deps.includes(dep)
+            })
+
+            for (const key of remove) {
+                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                delete config.dependencies[key]
             }
 
             config.lints ??= Section({ workspace: true })

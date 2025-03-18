@@ -28,7 +28,11 @@ function packages() {
     return [...angularPackages()]
 }
 
-function angularPackages() {
+function angularPackages(): StorybookPackage[] {
+    if (!fs.existsSync("angular.json")) {
+        return []
+    }
+
     const angular = JSON.parse(fs.readFileSync("angular.json", "utf-8"))
     const projects = angular.projects
 
