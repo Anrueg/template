@@ -1,0 +1,36 @@
+$schema: "https://moonrepo.dev/schemas/tasks.json"
+
+# TODO: wasm-pack --profiling in production
+# TODO: --target=bundler / web
+
+tasks:
+  build:
+    command: >-
+      wasm-pack build
+        --reference-types
+        --target=bundler
+        --profiling
+        --out-dir="$workspaceRoot/dist/wasm/$project"
+        $projectRoot
+    toolchain: rust
+    options:
+      runFromWorkspaceRoot: true
+
+  start:
+    command: >-
+      watchexec
+      --watch="$workspaceRoot/.moon/cache/watcher"
+      --filter="/**/$project/sources.signal"
+      --ignore-nothing
+      --restart
+      wasm-pack build
+        --reference-types
+        --target=bundler
+        --dev
+        --out-dir="$workspaceRoot/dist/wasm/$project"
+        $projectRoot
+    preset: server
+    toolchain: rust
+    deps: [wizard:watcher]
+    options:
+      runFromWorkspaceRoot: true

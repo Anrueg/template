@@ -1,5 +1,6 @@
 [workspace]
 members = ["{{ backend }}/*"]
+exclude = ["{{ backend }}/.docker"]
 resolver = "3"
 
 [workspace.package]
@@ -15,37 +16,17 @@ edition = "2024"
 [workspace.lints.clippy]
 # warnings = { level = "forbid" }
 
-# Dependency management:
-#
-# in workspace Cargo.toml
-# [workspace.dependencies]
-# dotenvy = "0.15.0"
-#
-# in package Cargo.toml
-# [dependencies]
-# dotenvy = { workspace = true }
 [workspace.dependencies]
 dotenvy = { git = "https://github.com/allan2/dotenvy", features = [ "macros" ] }
-envconfig = "0.11"
-strum = { version = "0.27", features = [ "derive" ] }
-derive-getters = "0.5"
-bon = "3"
-tracing = "0.1"
-tracing-subscriber = "0.3"
-tracing-opentelemetry = "0.29"
-thiserror = "1"
-anyhow = { version = "1", features = [ "backtrace" ] }
-tokio = { version = "1", features = [ "full" ] }
-serde = { version = "1", features = [ "derive" ] }
-serde_json = "1"
-axum = "0.8"
-listenfd = "1"
-derivative = "2"
-
-# Auto reload
-# https://docs.rs/listenfd/latest/listenfd/
-# https://stackoverflow.com/questions/29461693/how-can-i-get-cargo-to-recompile-changed-files-automatically
-# https://lucumr.pocoo.org/2025/1/19/what-is-systemfd/
+bon = "*"
+tracing = "*"
+tracing-subscriber = "*"
+tracing-opentelemetry = "*"
+thiserror = "*"
+miette = { version = "*", features = [ "fancy", "serde" ] }
+serde = { version = "*", features = [ "derive" ] }
+serde_json = "*"
+derivative = "*"
 
 # DI
 # https://crates.io/crates/more-di

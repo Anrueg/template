@@ -22,7 +22,7 @@ ADD .cargo /workspace/.cargo/
 ADD rust /workspace/rust/
 COPY --from=recipe /workspace/recipe.json /workspace/recipe.json
 RUN cargo chef cook --profile=${PROFILE} --recipe-path recipe.json
-ENV PROFILE ${PROFILE}
+ENV PROFILE="${PROFILE}"
 
 
 FROM builder

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from "node:fs"
 import path from "node:path"
 
@@ -37,22 +39,22 @@ edition = { workspace = true }
 [dependencies]
 dotenv = { workspace = true }
 */
-function updateToml(pkg: moon.Package, mutate: (cfg: CargoToml) => void) {
-    const cargoPath = path.join(pkg.path, "Cargo.toml")
+function updateToml(cargoPath: string, mutate: (cfg: CargoToml) => void) {
     if (!fs.existsSync(cargoPath)) {
         return
     }
 
-    console.log(`update ${cargoPath}`)
+    const raw = fs.readFileSync(cargoPath, "utf-8").trim()
+    const content = parseToml(raw) as CargoToml
 
-    const content = parseToml(fs.readFileSync(cargoPath, "utf-8")) as CargoToml
     mutate(content)
-    // const merged = merge(content, overrides)
 
     fs.writeFileSync(
         cargoPath,
         stringifyToml(content, { newline: "\n", newlineAround: "section", indent: "  ", forceInlineArraySpacing: 3 })
     )
+
+    return content
 }
 
 function updateCompose(file: string, packages: moon.Package[], portAssigner: PortAssigner) {
@@ -95,7 +97,7 @@ function addService(document: Document, pkg: moon.Package, portAssigner: PortAss
     const svcName = pkg.project.metadata!.slug!
 
     document.setIn(["services", svcName, "build", "context"], ".")
-    document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.run")
+    document.setIn(["services", svcName, "build", "dockerfile"], "rust/.docker/Dockerfile.run")
     document.setIn(["services", svcName, "command"], pkg.project.name)
 
     compose.setPortmap(document, svcName, portAssigner.next(), 80)
@@ -116,7 +118,7 @@ function addService(document: Document, pkg: moon.Package, portAssigner: PortAss
 function addBuilder(document: Document) {
     const svcName = "rust-builder"
     document.setIn(["services", svcName, "build", "context"], ".")
-    document.setIn(["services", svcName, "build", "dockerfile"], "docker/rust/Dockerfile.build")
+    document.setIn(["services", svcName, "build", "dockerfile"], "rust/.docker/Dockerfile.build")
     document.setIn(["services", svcName, "build", "args", "PROFILE"], "$ENVIRONMENT")
 
     const globalEnv = document.get("x-environment") as YAMLMap | null
@@ -132,13 +134,61 @@ function addBuilder(document: Document) {
     compose.addVolumeToService(document, svcName, "./.moon/cache/watcher/rust:/watcher:ro")
 }
 
+interface TsconfigPaths {
+    compilerOptions?: { paths?: Record<string, string[]> }
+}
+
+function updateTSConfigPaths(confPath: string, paths: Record<string, string>) {
+    if (fs.existsSync(confPath)) {
+        const conf = JSON.parse(fs.readFileSync(confPath, "utf-8")) as TsconfigPaths
+        conf.compilerOptions ??= { paths: {} }
+        conf.compilerOptions.paths ??= {}
+
+        for (const [alias, pth] of Object.entries(paths)) {
+            const paths = (conf.compilerOptions.paths[alias] ??= [])
+            if (!paths.includes(pth)) {
+                paths.push(pth)
+            }
+        }
+
+        fs.writeFileSync(confPath, JSON.stringify(conf, null, 2))
+    }
+}
+
 function main() {
     const packages = moon.packages({ folder: "./rust" })
-    const cargoToml = parseToml(fs.readFileSync("Cargo.toml", "utf-8")) as WorkspaceCargo
+    const cargoToml: WorkspaceCargo = updateToml("Cargo.toml", (config: any) => {
+        const wsdeps = config.workspace!.dependencies!
+
+        for (const pkg of packages) {
+            if (pkg.tags.includes("rust-wasm")) {
+                continue
+            }
+
+            const pkgConf = parseToml(fs.readFileSync(path.join(pkg.path, "Cargo.toml"), "utf-8")) as CargoToml
+            if (pkgConf.dependencies == null) {
+                continue
+            }
+
+            for (const [k, v] of Object.entries(pkgConf.dependencies)) {
+                if (typeof v === "string") {
+                    wsdeps[k] ??= inline({ version: "*" })
+                    continue
+                }
+
+                if (v.workspace != null || v.path != null) {
+                    continue
+                }
+
+                wsdeps[k] ??= inline({ ...v, version: "*" })
+            }
+        }
+    }) as any
     const workspace = cargoToml.workspace
+    const wasmPaths: Record<string, string> = {}
 
     for (const pkg of packages) {
-        updateToml(pkg, config => {
+        updateToml(path.join(pkg.path, "Cargo.toml"), config => {
             config.package ??= Section({})
             config.package["name"] = pkg.project.name
             // config.package["autolib"] ??= false
@@ -160,43 +210,54 @@ function main() {
                 section["doctest"] = true
             }
 
+            let libName = pkg.project.name.replace(/-/g, "_")
             if (pkg.type === "library" || pkg.type === "configuration") {
                 const section = (config.lib ??= Section({} as Record<string, any>))
                 section["path"] = "lib.rs"
                 section["doctest"] = true
+                if (section["name"] != null) {
+                    libName = section["name"]
+                }
             }
 
-            config.dependencies ??= Section({})
-            for (const other of packages) {
-                if (other.id === pkg.id || other.type !== "configuration") {
-                    continue
+            // Update depencencies expect for rust-wasm
+            if (!pkg.tags.includes("rust-wasm")) {
+                config.dependencies ??= Section({})
+                for (const other of packages) {
+                    if (other.id === pkg.id || other.type !== "configuration") {
+                        continue
+                    }
+
+                    config.dependencies[other.project.name] = inline({
+                        path: unixPath(path.relative(pkg.path, other.id))
+                    })
                 }
 
-                config.dependencies[other.project.name] = inline({ path: unixPath(path.relative(pkg.path, other.id)) })
-            }
-
-            const deps: string[] = []
-            for (const key of Object.keys(workspace.dependencies ?? {})) {
-                config.dependencies[key] = inline({ workspace: true })
-                deps.push(key)
-            }
-
-            const remove = Object.keys(config.dependencies).filter(dep => {
-                const value = config.dependencies![dep]
-                if (typeof value === "string") {
-                    return false
+                const deps: string[] = []
+                for (const key of Object.keys(workspace.dependencies ?? {})) {
+                    config.dependencies[key] = inline({ workspace: true })
+                    deps.push(key)
                 }
 
-                if (value.workspace !== true) {
-                    return false
+                const remove = Object.keys(config.dependencies).filter(dep => {
+                    const value = config.dependencies![dep]
+                    if (typeof value === "string") {
+                        return false
+                    }
+
+                    if (value.workspace !== true) {
+                        return false
+                    }
+
+                    return !deps.includes(dep)
+                })
+
+                for (const key of remove) {
+                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                    delete config.dependencies[key]
                 }
-
-                return !deps.includes(dep)
-            })
-
-            for (const key of remove) {
-                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                delete config.dependencies[key]
+            } else {
+                wasmPaths[`@sfn/${pkg.id}`] = unixPath(`dist/wasm/${pkg.id}/${libName}.js`)
             }
 
             config.lints ??= Section({ workspace: true })
@@ -205,6 +266,11 @@ function main() {
 
     const portAssigner = new PortAssigner(8000)
     updateCompose("docker-compose.yml", packages, portAssigner)
+    updateTSConfigPaths("tsconfig.base.json", wasmPaths)
+
+    moon.packages({ folder: "./angular" }).forEach(pkg => {
+        updateTSConfigPaths(path.join(pkg.path, "tsconfig.cli.json"), wasmPaths)
+    })
 }
 
 main()

@@ -1,5 +1,5 @@
 ---
-skip: {{ type == "application" or preset == "initd" }}
+skip: {{ type == "application" or preset == "initd" or preset == "wasm" }}
 ---
 pub fn public_function() {
     println!("Hello, world!");

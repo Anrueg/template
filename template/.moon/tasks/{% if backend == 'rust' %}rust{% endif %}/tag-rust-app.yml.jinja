@@ -1,6 +1,15 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
+  builder:
+    extends: compose.up
+    args: [rust-builder]
+    deps: [wizard:watcher]
+    preset: server
+    options:
+      mutex: rust-builder
+      internal: true
+
   .runner:
     extends: compose.up
     args: ["@meta(slug)"]

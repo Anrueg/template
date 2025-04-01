@@ -6,21 +6,24 @@ x-environment: &environment
 
 services:
   {% if database == 'gel' -%}
+  # gel / edgedb-nek kell lennie, hogy a cli megtalálja
   {{ database_host }}:
     build:
       context: .
-      dockerfile: docker/gel/Dockerfile
+      dockerfile: gel/.docker/Dockerfile
     environment:
       GEL_SERVER_SECURITY: insecure_dev_mode
       GEL_SERVER_DEFAULT_AUTH_METHOD: Trust
       GEL_SERVER_ADMIN_UI: enabled
       GEL_SERVER_USER: "{{ database_user }}"
-      GEL_SERVER_PASSWORD: "{{ database_password }}"
+      # Ha nincs megadva, akkor nem kér jelszó
+      # GEL_SERVER_PASSWORD: "{{ database_password }}"
       GEL_SERVER_DEFAULT_BRANCH: "{{ database_name }}"
       GEL_SERVER_INSTANCE_NAME: "$PROJECT_SLUG"
 
       # valid values are: trace, debug, info, warning, error
       GEL_DOCKER_LOG_LEVEL: info
+      GEL_SERVER_DATADIR: "/data"
     ports:
       - "{{ database_port }}:5656"
     volumes:

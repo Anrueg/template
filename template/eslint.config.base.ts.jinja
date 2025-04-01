@@ -165,10 +165,10 @@ export default [
 
                 // JAVASCRIPT
                 "@stylistic/js/max-len": ["warn", { code: 120 }],
-                "@stylistic/js/quotes": ["error", "double", { avoidEscape: true }],
+                "@stylistic/js/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
 
                 // TYPESCRIPT
-                "@stylistic/ts/quotes": ["error", "double", { avoidEscape: true }],
+                "@stylistic/ts/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
                 "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
 
                 "@typescript-eslint/no-unused-vars": "off",

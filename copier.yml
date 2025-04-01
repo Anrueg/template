@@ -169,6 +169,9 @@ _tasks:
   - command: moon generate rust-package --force -- --name=task-runner --type=application
     when: "{{ backend == 'rust' and backend_type == 'app' }}"
 
+  - command: moon generate rust-package --force -- --name=assembly --type=library --preset=wasm
+    when: "{{ backend == 'rust' and backend_type == 'app' }}"
+
   - command: moon generate angular-lib --force -- --name=common
     when: "{{ frontend == 'angular' }}"
 
@@ -188,7 +191,7 @@ _tasks:
     git log --pretty=format:"%H" -n 1
     || (git add . && (git diff-index --quiet HEAD || git commit -m "Initial commit"))
 
-  - moon clean
+  - moon clean --lifetime 0ms
   - moon wizard:sync
   - moon :format
 

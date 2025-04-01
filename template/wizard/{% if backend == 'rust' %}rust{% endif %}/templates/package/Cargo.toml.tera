@@ -1,3 +1,30 @@
 [package]
 name = "{{ name }}"
 
+[dependencies]
+{% if preset == 'wasm' %}
+wasm-bindgen = { version = "*", features = ["serde-serialize"] }
+js-sys = { version = "*" }
+web-sys = { version = "*" }
+{%- endif %}
+{% if preset == 'axum' -%}
+axum = "*"
+{%- endif %}
+{% if preset == 'initd' -%}
+listenfd = "*"
+envconfig = "*"
+strum = { version = "*", features = [ "derive" ] }
+derive-getters = "*"
+{%- endif %}
+{% if preset == "axum" or preset == "initd" -%}
+tokio = { version = "*", features = [ "full" ] }
+{%- endif %}
+
+
+{% if preset == 'wasm' -%}
+[profile.release]
+opt-level = "s"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+{%- endif %}

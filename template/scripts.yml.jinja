@@ -1,22 +1,22 @@
 start: >-
   cross-env
   ENVIRONMENT=development
-  moonx :start
+  moon run :start
 
 build:development: >-
   cross-env
   ENVIRONMENT=development
-  moonx :build
+  moon run :build
 
 build:production: >-
   cross-env
   ENVIRONMENT=production
-  moonx :build
+  moon run :build
 
 build:staging: >-
   cross-env
   ENVIRONMENT=staging
-  moonx :build
+  moon run :build
 
 {% if database == 'gel' -%}
 migrate: >-
@@ -26,5 +26,5 @@ migrate: >-
 
 {% if storybook -%}
 ss: >-
-  moonx :storybook
+  moon run :storybook
 {%- endif %}

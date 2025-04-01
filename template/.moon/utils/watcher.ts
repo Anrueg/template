@@ -309,4 +309,5 @@ async function watchTree(root: string): Promise<void> {
     await watcher.watch(300)
 }
 
+mkdirp.sync(".moon/cache/watcher")
 await watchTree(process.cwd())

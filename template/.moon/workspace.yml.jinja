@@ -42,3 +42,11 @@ generator:
     - /wizard/*/templates
 
 telemetry: false
+
+pipeline:
+  installDependencies: ["bun"]
+  syncProjects: false
+  syncWorkspace: false
+  autoCleanCache: true
+  cacheLifetime: '24 hours'
+

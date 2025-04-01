@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "baseUrl": "."
+    "outDir": "../../dist/out-tsc"
   },
   "files": [
     "./main.ts"

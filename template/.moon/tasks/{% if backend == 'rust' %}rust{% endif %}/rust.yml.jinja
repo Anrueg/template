@@ -70,15 +70,6 @@ tasks:
 #       runFromWorkspaceRoot: true
 #       mutex: cargo-recipe
 
-  builder:
-    extends: compose.up
-    args: [rust-builder]
-    deps: [wizard:watcher]
-    preset: server
-    options:
-      mutex: rust-builder
-      internal: true
-
   test:
     command: cargo nextest run --package=$projectName --profile=${ENVIRONMENT}
     toolchain: rust

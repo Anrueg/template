@@ -30,7 +30,7 @@ async function main(taskDef: TaskDefinition) {
 }
 
 async function runTask(name: string) {
-    const cmd = `moon run ${name}`
+    const cmd = `moon run ${name} --no-actions`
     return await Bun.$`${{ raw: cmd }}`.throws(true)
 }
 

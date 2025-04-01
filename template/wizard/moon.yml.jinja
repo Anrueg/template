@@ -44,7 +44,7 @@ fileGroups:
 
   "{{ name }}":
     description: "{{ note }}"
-    command: moon run wizard:sync
+    command: moon run wizard:sync --no-actions
     toolchain: system
     deps: ["{{ name }}.gen"{% if post %}, "{{ name }}.post"{% endif %}]
     options:
@@ -73,7 +73,7 @@ tasks:
       cache: false
 
   sync.angular:
-    command: moon run "#angular:format"
+    command: moon run "#angular:format" --no-actions
     deps: [sync.angular.do]
     options:
       runDepsInParallel: false
@@ -103,7 +103,7 @@ tasks:
       cache: false
 
   sync.rust:
-    command: moon run "#rust:format"
+    command: moon run "#rust:format" --no-actions
     deps: [sync.rust.do]
     options:
       runDepsInParallel: false

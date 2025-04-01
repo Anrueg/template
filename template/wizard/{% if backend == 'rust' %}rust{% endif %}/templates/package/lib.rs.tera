@@ -10,12 +10,26 @@ pub mod prelude {
     pub use crate::component::*;
     pub use crate::config::*;
 }
+
+pub use prelude::*;
+{% elif preset == "wasm" %}
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn greet() {
+    alert("Hello From Rust!");
+}
 {% else %}
 mod example;
 
 pub mod prelude {
     pub use crate::example::*;
 }
-{% endif %}
 
 pub use prelude::*;
+{% endif %}

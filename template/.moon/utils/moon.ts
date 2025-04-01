@@ -16,6 +16,7 @@ export interface Package {
     configPath: string
     type: PackageType
     project: Project
+    tags: string[]
 }
 
 export type PackageType = "application" | "library" | "configuration"
@@ -67,13 +68,19 @@ function byFolder(folder: string): Package[] {
 export function read(configPath: string, packagePath?: string): Package {
     packagePath ??= path.dirname(configPath)
     const config = parseYaml(fs.readFileSync(configPath, "utf-8"), { merge: true }) as Package
-    return { ...config, path: packagePath, configPath }
+    const defaults = { tags: [] }
+
+    return {
+        ...defaults,
+        ...config,
+        path: packagePath,
+        configPath
+    }
 }
 
 export function isMoonConfig(path: string): boolean {
     return /(?:\\|\/)moon\.ya?ml$/.test(path)
 }
-
 
 function sortByPath(a: Package, b: Package) {
     return a.path.localeCompare(b.path)

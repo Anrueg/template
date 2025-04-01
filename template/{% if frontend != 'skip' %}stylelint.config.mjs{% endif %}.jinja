@@ -1,5 +1,4 @@
-import type { Config } from "stylelint"
-
+/** @type {import('stylelint').Config} */
 export default {
     extends: [
         {% if frontend_style_language == 'scss' -%}
@@ -28,4 +27,4 @@ export default {
                 trailingComma: "none"
             }]
     }
-} satisfies Config
+}
