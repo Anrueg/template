@@ -5,8 +5,10 @@ import path from "node:path"
 
 import * as mkdirp from "mkdirp"
 import { inline, parse as parseToml, Section, stringify as stringifyToml } from "@ltd/j-toml"
-import { compose, moon, PortAssigner, unixPath } from "@workspace/moon"
+import { answers, compose, moon, PortAssigner, unixPath } from "@workspace/moon"
 import { Document, Scalar, YAMLMap } from "yaml"
+
+const { frontend_ns } = answers
 
 interface WorkspaceCargo {
     workspace: CargoToml
@@ -257,7 +259,7 @@ function main() {
                     delete config.dependencies[key]
                 }
             } else {
-                wasmPaths[`@sfn/${pkg.id}`] = unixPath(`dist/wasm/${pkg.id}/${libName}.js`)
+                wasmPaths[`@${frontend_ns}/${pkg.id}`] = unixPath(`dist/wasm/${pkg.id}/${libName}.js`)
             }
 
             config.lints ??= Section({ workspace: true })
