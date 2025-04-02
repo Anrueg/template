@@ -212,14 +212,10 @@ function main() {
                 section["doctest"] = true
             }
 
-            let libName = pkg.project.name.replace(/-/g, "_")
             if (pkg.type === "library" || pkg.type === "configuration") {
                 const section = (config.lib ??= Section({} as Record<string, any>))
                 section["path"] = "lib.rs"
                 section["doctest"] = true
-                if (section["name"] != null) {
-                    libName = section["name"]
-                }
             }
 
             // Update depencencies expect for rust-wasm
@@ -259,7 +255,7 @@ function main() {
                     delete config.dependencies[key]
                 }
             } else {
-                wasmPaths[`@${frontend_ns}/${pkg.id}`] = unixPath(`dist/wasm/${pkg.id}/${libName}.js`)
+                wasmPaths[`@${frontend_ns}/${pkg.id}`] = unixPath(`dist/wasm/${pkg.id}`)
             }
 
             config.lints ??= Section({ workspace: true })
