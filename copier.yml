@@ -75,6 +75,7 @@ _tasks:
       eslint-plugin-prettier
       eslint-config-prettier
       eslint-plugin-unused-imports
+      eslint-plugin-only-warn
       @trivago/prettier-plugin-sort-imports
       @stylistic/eslint-plugin-ts
       @stylistic/eslint-plugin-js

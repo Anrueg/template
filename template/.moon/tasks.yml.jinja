@@ -50,6 +50,7 @@ tasks:
     extends: eslint
     args:
       - --fix
+      - --config=$workspaceRoot/eslint.config.format.ts
       # - --fix-type problem,suggestion,layout
 
   stylelint:
