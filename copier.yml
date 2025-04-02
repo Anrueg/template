@@ -47,6 +47,9 @@ _tasks:
         "$(iwr https://www.geldata.com/ps1 -useb)".Replace("--no-wait-for-exit-prompt", "--no-wait-for-exit-prompt -y -q") | iex
     when: "{{ database == 'gel' and _copier_conf.os == 'windows' }}"
 
+  - command: gel cli upgrade --to-nightly
+    when: "{{ database == 'gel' and _copier_conf.os == 'windows' }}"
+
   - git init --initial-branch={{ default_branch }}
 
   - command: >-

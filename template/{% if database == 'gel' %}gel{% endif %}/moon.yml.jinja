@@ -85,8 +85,10 @@ tasks:
       internal: true
       shell: false
 
+  # Átmenetileg kikapcsolva
   start:
-    deps: [.runner]
+    command: noop
+    # deps: [.runner]
 
   format:
     extends: eslint.fix
