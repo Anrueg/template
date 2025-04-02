@@ -16,6 +16,8 @@ import yamlPlugin from "eslint-plugin-yml"
 import globals from "globals"
 import tslint from "typescript-eslint"
 
+import tsconfig from "./tsconfig.base.json"
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const gitignorePath = path.resolve(__dirname, ".gitignore")
@@ -29,13 +31,27 @@ export function flatten(configs: Linter.Config[]): Linter.Config {
     }, {})
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
+const allowFromTSConfig = Object.entries(tsconfig.compilerOptions.paths)
+    .reduce<string[]>((dst, [_, v]) => {
+        dst.push(...v.map(v => `!${v}`))
+        dst.push(...v.filter(v => !/.+\..{2,5}$/.test(v)).map(v => `!${v.replace(/\/$/, "")}/**`))
+        return dst
+    }, [])
+    .filter((v, i, a) => a.findIndex(value => value === v) === i)
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const gitIgnores = includeIgnoreFile(gitignorePath).ignores!
+
 /* ! DO NOT EDIT ! */
 
 export default [
-    {
-        ...includeIgnoreFile(gitignorePath),
-        name: "GIT / .gitignore"
-    },
+    // XXX: Valamiért szerintem full bugos az unignore pattern, addig viszont jobb, ha nincs semmi ignorálva
+    // https://github.com/eslint/eslint/issues/19471
+    // {
+    //     ignores: [...gitIgnores, ...allowFromTSConfig],
+    //     name: "GIT / .gitignore"
+    // },
     {
         ...flatten(jsoncPlugin.configs["flat/prettier"]),
         name: "JSONC / prettier"
