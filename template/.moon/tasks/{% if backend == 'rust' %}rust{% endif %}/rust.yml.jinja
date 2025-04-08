@@ -70,7 +70,7 @@ tasks:
 #       runFromWorkspaceRoot: true
 #       mutex: cargo-recipe
 
-  test.doctest:
+  test.doc:
     command: cargo test --doc --package=$projectName --features=doctest --profile=${ENVIRONMENT}
     toolchain: rust
     deps: [lint]
