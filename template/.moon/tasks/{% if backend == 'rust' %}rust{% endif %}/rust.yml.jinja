@@ -70,11 +70,31 @@ tasks:
 #       runFromWorkspaceRoot: true
 #       mutex: cargo-recipe
 
-  test:
-    command: cargo nextest run --package=$projectName --profile=${ENVIRONMENT}
+  test.doctest:
+    command: cargo test --doc --package=$projectName --features=doctest --profile=${ENVIRONMENT}
     toolchain: rust
+    deps: [lint]
     options:
       runFromWorkspaceRoot: true
       mutex: rust-test
+      outputStyle: stream
+      cache: false
+
+  test.unit:
+    command: cargo test --package=$projectName --profile=${ENVIRONMENT}
+    toolchain: rust
+    deps: [lint]
+    options:
+      runFromWorkspaceRoot: true
+      mutex: rust-test
+      outputStyle: stream
+      cache: false
+
+  test:
+    deps: [test.doctest, test.unit]
+    options:
+      runFromWorkspaceRoot: true
+      runDepsInParallel: false
+      outputStyle: stream
       cache: false
 

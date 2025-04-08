@@ -1,6 +1,9 @@
 [package]
 name = "{{ name }}"
 
+[features]
+doctest = []
+
 [dependencies]
 {% if preset == 'wasm' %}
 wasm-bindgen = { version = "*", features = ["serde-serialize"] }
@@ -19,7 +22,6 @@ derive-getters = "*"
 {% if preset == "axum" or preset == "initd" -%}
 tokio = { version = "*", features = [ "full" ] }
 {%- endif %}
-
 
 {% if preset == 'wasm' -%}
 [profile.release]
