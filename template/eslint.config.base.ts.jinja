@@ -88,8 +88,9 @@ export default [
         ignores: ["**/*.toml"],
         rules: {
             ...prettierPluginConfig.rules,
+            // TODO: miltiline ternary operators, is broken
             "prettier/prettier": [
-                "error",
+                "warn",
                 {
                     semi: false,
                     trailingComma: "none",
@@ -99,6 +100,8 @@ export default [
                     bracketSameLine: true,
                     htmlWhitespaceSensitivity: "ignore",
                     embeddedLanguageFormatting: "auto",
+                    experimentalTernaries: false,
+                    experimentalOperatorPosition: "start",
                     plugins: ["@trivago/prettier-plugin-sort-imports"],
 
                     // IMPORT SORT
@@ -113,7 +116,7 @@ export default [
                         "^@angular/",
                         "^rxjs",
                         "<THIRD_PARTY_MODULES>",
-                        "^@some-fancy-name/*",
+                        "^@{{ frontend_ns }}/*",
                         "^[./]"
                     ]
                 }
