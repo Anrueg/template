@@ -80,7 +80,7 @@ function updateAngularConfig(packages: AngularPackage[], serverPort: PortAssigne
                 }
             }
 
-            config["architect"]["storybook"] = {
+            config["architect"].storybook = {
                 builder: "@storybook/angular:start-storybook",
                 defaultConfiguration: "development",
                 options: { ...options, port: storybookPort.next(), host: "0.0.0.0" },
@@ -145,6 +145,7 @@ function main() {
     )
 
     for (const pkg of packages) {
+        const selfAlias: Record<string, string> = { "@/*": unixPath(`${pkg.path}/*`) }
         // TODO: ng packager entrypoint
         tsconfigUpdatePaths(
             path.join(pkg.path, "tsconfig.cli.json"),
@@ -154,9 +155,9 @@ function main() {
                 .reduce<Record<string, string>>((dst, pkg) => {
                     dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
                     return dst
-                }, {})
+                }, selfAlias)
         )
-        // tsconfigUpdatePaths(path.join(pkg.path, "tsconfig.json"), {})
+        tsconfigUpdatePaths(path.join(pkg.path, "tsconfig.json"), selfAlias)
     }
 }
 
