@@ -89,6 +89,14 @@ export default [
         rules: {
             ...prettierPluginConfig.rules,
             // TODO: miltiline ternary operators, is broken
+            /* TODO:
+            function updateImportsFromRoute(imports: Imports, relativeFrom: string, route: Route) {
+                // why add leading ; in this case
+                ; (Object.entries(route.traits) as Array<[RouteTrait, string]>)
+                    .filter(([k]) => k !== RouteTrait.Component)
+                    .forEach(([k, v]) => { })
+            }
+            */
             "prettier/prettier": [
                 "warn",
                 {
@@ -306,7 +314,8 @@ export default [
             ],
             "@angular-eslint/component-max-inline-declarations": "off",
             "@angular-eslint/no-input-rename": "off",
-            "@angular-eslint/use-component-view-encapsulation": "off"
+            "@angular-eslint/use-component-view-encapsulation": "off",
+            "@angular-eslint/use-injectable-provided-in": "off"
         }
     },
     {%- endif %}

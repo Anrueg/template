@@ -31,6 +31,7 @@ tasks:
       internal: true
 
   eslint:
+    toolchain: {{ frontend_toolchain }}
     command:
       - eslint
       - --no-error-on-unmatched-pattern
@@ -38,13 +39,15 @@ tasks:
       - --cache
       - --cache-location=$workspaceRoot/.moon/cache/.eslintcache
       - --no-warn-ignored
-    args:
-      - "@files(eslint)"
     inputs:
-      - "@group(eslint)"
-    toolchain: {{ frontend_toolchain }}
+      - "@files(eslint)"
+    toolchain: bun
     options:
+      affectedFiles: true
+      affectedPassInputs: true
       internal: true
+      shell: false
+      mergeInputs: replace
 
   eslint.fix:
     extends: eslint
@@ -54,17 +57,18 @@ tasks:
       # - --fix-type problem,suggestion,layout
 
   stylelint:
+    toolchain: {{ frontend_toolchain }}
     command:
       - stylelint
       - --allow-empty-input
-    args:
-      - "@files(stylelint)"
     inputs:
-      - "@group(stylelint)"
-    toolchain: {{ frontend_toolchain }}
+      - "@files(stylelint)"
     options:
-      mergeArgs: prepend
+      affectedFiles: true
+      affectedPassInputs: true
       internal: true
+      shell: false
+      mergeInputs: replace
 
   stylelint.fix:
     extends: stylelint
