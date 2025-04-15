@@ -145,7 +145,6 @@ function main() {
     )
 
     for (const pkg of packages) {
-        const selfAlias: Record<string, string> = { "@/*": unixPath(`${pkg.path}/*`) }
         // TODO: ng packager entrypoint
         tsconfigUpdatePaths(
             path.join(pkg.path, "tsconfig.cli.json"),
@@ -155,9 +154,9 @@ function main() {
                 .reduce<Record<string, string>>((dst, pkg) => {
                     dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
                     return dst
-                }, selfAlias)
+                }, {})
         )
-        tsconfigUpdatePaths(path.join(pkg.path, "tsconfig.json"), selfAlias)
+        tsconfigUpdatePaths(path.join(pkg.path, "tsconfig.json"), {})
     }
 }
 

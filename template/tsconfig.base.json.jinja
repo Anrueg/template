@@ -19,7 +19,8 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-        "@workspace/moon": [".moon/utils"]
+        "@workspace/moon": [".moon/utils"],
+        "@/*": ["${configDir}/*"]
         {%- if storybook -%},
         "@workspace/storybook": [".storybook/index.ts"]
         {%- endif %}
