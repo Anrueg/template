@@ -156,7 +156,6 @@ function main() {
                     return dst
                 }, {})
         )
-        tsconfigUpdatePaths(path.join(pkg.path, "tsconfig.json"), {})
     }
 }
 
