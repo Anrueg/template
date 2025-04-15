@@ -13,6 +13,7 @@ skip: {{ service_worker == false }}
           "/index.html",
           "/*.css",
           "/*.js",
+          "/media/*.wasm",
           "/assets/manifest/favicon.ico",
           "/assets/manifest/manifest.webmanifest"
         ]
