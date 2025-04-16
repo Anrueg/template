@@ -151,10 +151,13 @@ function main() {
             packages
                 .filter(v => v.type !== "application")
                 .filter(v => v.project.name !== pkg.project.name)
-                .reduce<Record<string, string>>((dst, pkg) => {
-                    dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
-                    return dst
-                }, {})
+                .reduce<Record<string, string>>(
+                    (dst, pkg) => {
+                        dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
+                        return dst
+                    },
+                    { "@/*": unixPath(`${pkg.path}/*`) }
+                )
         )
     }
 }
