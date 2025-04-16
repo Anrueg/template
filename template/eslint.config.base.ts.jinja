@@ -31,6 +31,19 @@ export function flatten(configs: Linter.Config[]): Linter.Config {
     }, {})
 }
 
+export function workspaceGlob(directory: string, pattern: string): string {
+    const root = path.resolve(__dirname, directory)
+    if (path.relative(root, process.cwd()).startsWith("..")) {
+        return nglob(path.join(directory, pattern))
+    } else {
+        return pattern
+    }
+}
+
+function nglob(g: string): string {
+    return g.replace(/\\/g, "/")
+}
+
 // eslint-disable-next-line unused-imports/no-unused-vars
 const allowFromTSConfig = Object.entries(tsconfig.compilerOptions.paths)
     .reduce<string[]>((dst, [_, v]) => {
@@ -159,16 +172,6 @@ export default [
                 "yoda": ["error", "never", { exceptRange: true }],
                 "no-alert": "error",
                 "prefer-arrow-callback": "error",
-                "no-unused-vars": "off",
-                // "no-unused-vars": ["error", {
-                //     vars: "all",
-                //     args: "after-used",
-                //     argsIgnorePattern: "^_",
-                //     caughtErrors: "all",
-                //     destructuredArrayIgnorePattern: "^_",
-                //     ignoreRestSiblings: true,
-                //     ignoreClassWithStaticInitBlock: true
-                // }],
                 "no-empty": [
                     "error",
                     {
@@ -176,6 +179,8 @@ export default [
                     }
                 ],
 
+                "no-unused-vars": "off",
+                "@typescript-eslint/no-unused-vars": "off",
                 "unused-imports/no-unused-imports": "error",
                 "unused-imports/no-unused-vars": [
                     "error",
@@ -184,6 +189,7 @@ export default [
                         args: "after-used",
                         argsIgnorePattern: "^_",
                         caughtErrors: "all",
+                        caughtErrorsIgnorePattern: "^ignore",
                         destructuredArrayIgnorePattern: "^_",
                         ignoreRestSiblings: true,
                         ignoreClassWithStaticInitBlock: true
@@ -198,7 +204,6 @@ export default [
                 "@stylistic/ts/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
                 "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
 
-                "@typescript-eslint/no-unused-vars": "off",
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-non-null-assertion": "off",
                 "@typescript-eslint/no-for-in-array": "error",
@@ -283,7 +288,7 @@ export default [
     {% if frontend == "angular" -%}
     {
         name: "Angular / common",
-        files: ["angular/**/*.ts"],
+        files: [workspaceGlob("angular", "**/*.ts")],
         plugins: {
             "@angular-eslint": angularLint
         },
