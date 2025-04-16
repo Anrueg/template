@@ -1,3 +1,4 @@
+{%- from 'macros.jinja' import stylelint_extensions -%}
 /** @type {import('stylelint').Config} */
 export default {
     extends: [
@@ -26,5 +27,8 @@ export default {
                 semi: true,
                 trailingComma: "none"
             }]
-    }
+    },
+    ignoreFiles: [
+        "!**/*.{{ stylelint_extensions() }}",
+    ]
 }
