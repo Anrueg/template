@@ -208,6 +208,7 @@ export default [
                 "@typescript-eslint/no-non-null-assertion": "off",
                 "@typescript-eslint/no-for-in-array": "error",
                 "@typescript-eslint/no-extraneous-class": "off",
+                "@typescript-eslint/no-unnecessary-type-parameters": "off",
                 "@typescript-eslint/no-confusing-void-expression": [
                     "error",
                     {
@@ -244,6 +245,12 @@ export default [
                     "error",
                     {
                         allowConstantLoopConditions: "only-allowed-literals"
+                    }
+                ],
+                "@typescript-eslint/unbound-method": [
+                    "error",
+                    {
+                        ignoreStatic: true
                     }
                 ]
             }
