@@ -160,6 +160,14 @@ _tasks:
       vite
     when: "{{ storybook }}"
 
+  - command: >-
+      {{ frontend_toolchain }} add -d
+      @storybook/addon-styling-webpack
+      css-loader
+      postcss
+      postcss-loader
+    when: "{{ storybook and frontend_style_language == 'css' }}"
+
   - command: moon generate rust-package --force -- --name=initd --type=configuration --preset=initd
     when: "{{ backend == 'rust' and backend_type == 'app' }}"
 

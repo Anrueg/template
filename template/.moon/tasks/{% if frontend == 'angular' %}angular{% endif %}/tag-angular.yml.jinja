@@ -72,6 +72,8 @@ tasks:
     toolchain: {{ frontend_toolchain }}
     preset: server
     deps:
+      - ^:build
+      - ^:start
       - ^:storybook
       - ~:start.pre
     options:

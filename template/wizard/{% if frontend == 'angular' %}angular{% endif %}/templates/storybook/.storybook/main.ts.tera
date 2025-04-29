@@ -8,5 +8,34 @@ export default {
         "@storybook/addon-interactions",
         "@storybook/addon-themes",
         "@storybook/addon-a11y"
-    ]
+        {%- if frontend_style_language == "css" -%},
+        // using postcss loader for css files
+        {
+            name: "@storybook/addon-styling-webpack",
+            options: {
+                rules: [
+                    {
+                        test: /\.css$/,
+                        use: [
+                            "style-loader",
+                            {
+                                loader: "css-loader",
+                                options: { importLoaders: 1 }
+                            },
+                            {
+                                loader: "postcss-loader",
+                                options: { implementation: require.resolve("postcss") }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        {%- endif %}
+    ],
+    /**
+     * Useful for loading fonts, or defining other metadata, styles, etc...
+     * https://storybook.js.org/docs/addons/writing-presets#ui-configuration
+     */
+    previewHead: (head) => `${head}`
 } satisfies StorybookConfig
