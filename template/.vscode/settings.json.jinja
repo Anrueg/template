@@ -57,9 +57,14 @@
         "*.gel": "gel",
         "*.gel": "gel",
         "*.tera": "tera",
+        "*.state.ts": "angular-resolver",
+        "*.prompt.ts": "angular-interceptor",
+        "*.nav.ts": "routing",
+        "*.breadcrumb.ts": "routing",
         "tsconfig.cli.json": "tsconfig",
         "tsconfig.release.json": "tsconfig",
         "eslint.config.base.ts": "eslint"
+        {%- if frontend_style_framework == "tailwind" -%},"*.css": "tailwindcss"{%- endif -%}
     },
 
     "material-icon-theme.files.customClones":[
@@ -168,6 +173,7 @@
 
     "files.associations": {
       ".prototools": "toml"
+      {%- if frontend_style_framework == "tailwind" -%},"*.css": "tailwindcss"{%- endif -%}
     },
 
     "explorer.fileNesting.enabled": true,

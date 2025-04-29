@@ -3,6 +3,7 @@
   "dest": "../../dist/angular/{{ name }}",
   "inlineStyleLanguage": "{{ frontend_style_language }}",
   "deleteDestPath": false,
+  "allowedNonPeerDependencies": ["."],
   "lib": {
     "entryFile": "public-api.ts",
     "styleIncludePaths": [
