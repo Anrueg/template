@@ -51,10 +51,19 @@ function updateAngularConfig(packages: AngularPackage[], serverPort: PortAssigne
         const hasStorybookFolder = fs.existsSync(storybookFolder)
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (UseStorybook && hasStorybookFolder) {
-            const options = {
+            const options: Record<string, any> = {
                 configDir: unixPath(storybookFolder),
                 compodoc: true,
-                compodocArgs: ["-e", "json", "-d", unixPath(pkg.path)],
+                compodocArgs: [
+                    "-e",
+                    "json",
+                    "-d",
+                    unixPath(pkg.path),
+                    "--disablePrivate",
+                    "--disableProtected",
+                    "--disableInternal",
+                    "--disableLifeCycleHooks"
+                ],
                 experimentalZoneless: true,
                 loglevel: "info",
                 open: false
@@ -62,7 +71,7 @@ function updateAngularConfig(packages: AngularPackage[], serverPort: PortAssigne
 
             const stylesPath = path.join(pkg.path, `styles.${answers.frontend_style_language}`)
             if (fs.existsSync(stylesPath)) {
-                options.styles = [unixPath(stylesPath)]
+                options["styles"] = [unixPath(stylesPath)]
             }
 
             const configurations = {
@@ -156,7 +165,7 @@ function main() {
                         dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
                         return dst
                     },
-                    { "@/*": unixPath(`${pkg.path}/*`) }
+                    { "@/*": unixPath(`${pkg.id}/*`) }
                 )
         )
     }
