@@ -9,11 +9,14 @@ tasks:
     options:
       mutex: rust-builder
       internal: true
+      cache: false
 
   .runner:
     extends: compose.up
     args: ["@meta(slug)"]
     preset: server
+    options:
+      cache: false
 
   start:
     deps: [builder, .runner]

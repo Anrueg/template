@@ -20,6 +20,9 @@ pub enum Environment {
 
     #[strum(ascii_case_insensitive)]
     Development,
+
+    #[strum(ascii_case_insensitive)]
+    CI,
 }
 
 #[derive(Debug, PartialEq)]

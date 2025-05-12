@@ -85,11 +85,11 @@ function updateCompose(file: string, packages: moon.Package[], portAssigner: Por
     compose.removeServices(
         document,
         kv =>
-            kv.key instanceof Scalar &&
-            kv.key.value !== "rust-builder" &&
-            typeof kv.key.value === "string" &&
-            !exists.includes(kv.key.value) &&
-            kv.key.value.startsWith("rust-")
+            kv.key instanceof Scalar
+            && kv.key.value !== "rust-builder"
+            && typeof kv.key.value === "string"
+            && !exists.includes(kv.key.value)
+            && kv.key.value.startsWith("rust-")
     )
 
     compose.save(document, file)
@@ -207,7 +207,7 @@ function main() {
                     section = Section({} as Record<string, any>)
                     config.bin.push(section)
                 }
-                section["name"] = pkg.project.name.replace(/-/g, "_")
+                section["name"] = pkg.project.name
                 section["path"] = "main.rs"
                 section["doctest"] = true
             }
