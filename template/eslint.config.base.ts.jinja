@@ -13,6 +13,7 @@ import storybook from "eslint-plugin-storybook"
 import tomlPlugin from "eslint-plugin-toml"
 import unusedImportsPlugin from "eslint-plugin-unused-imports"
 import yamlPlugin from "eslint-plugin-yml"
+import { globalIgnores } from "eslint/config"
 import globals from "globals"
 import tslint from "typescript-eslint"
 
@@ -65,6 +66,7 @@ export default [
     //     ignores: [...gitIgnores, ...allowFromTSConfig],
     //     name: "GIT / .gitignore"
     // },
+    globalIgnores(["**/__generated__/", "**/generated"], "Ignore / generated"),
     {
         ...flatten(jsoncPlugin.configs["flat/prettier"]),
         name: "JSONC / prettier"
