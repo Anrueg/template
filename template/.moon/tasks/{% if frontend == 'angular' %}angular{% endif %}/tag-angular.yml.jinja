@@ -51,7 +51,6 @@ tasks:
       - /.angular
     options:
       runFromWorkspaceRoot: true
-      runDepsInParallel: false
 
   build.pre:
     command: noop
@@ -62,7 +61,7 @@ tasks:
 
   start.pre:
     preset: server
-    deps: [~:build.pre, wizard:watcher]
+    deps: [~:build, wizard:watcher]
     options:
       internal: true
 

@@ -4,8 +4,7 @@ import { fileURLToPath } from "node:url"
 import angularLint from "@angular-eslint/eslint-plugin"
 import { includeIgnoreFile } from "@eslint/compat"
 import markdown from "@eslint/markdown"
-import jsStylistic from "@stylistic/eslint-plugin-js"
-import tsStylistic from "@stylistic/eslint-plugin-ts"
+import stylistic from "@stylistic/eslint-plugin"
 import type { Linter } from "eslint"
 import jsoncPlugin from "eslint-plugin-jsonc"
 import prettierPluginConfig from "eslint-plugin-prettier/recommended"
@@ -152,8 +151,7 @@ export default [
             extends: [tslint.configs.strictTypeChecked, tslint.configs.stylisticTypeChecked],
             files: ["**/*.ts", "**/*.tsx"],
             plugins: {
-                "@stylistic/js": jsStylistic,
-                "@stylistic/ts": tsStylistic,
+                "@stylistic": stylistic,
                 "unused-imports": unusedImportsPlugin
             },
             languageOptions: {
@@ -198,13 +196,9 @@ export default [
                     }
                 ],
 
-                // JAVASCRIPT
-                "@stylistic/js/max-len": ["warn", { code: 120 }],
-                "@stylistic/js/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
-
-                // TYPESCRIPT
-                "@stylistic/ts/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
-                "@stylistic/ts/quote-props": ["error", "consistent-as-needed"],
+                "@stylistic/max-len": ["warn", { code: {{ line_width }} }],
+                "@stylistic/quotes": ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
+                "@stylistic/quote-props": ["error", "consistent-as-needed"],
 
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-non-null-assertion": "off",
@@ -253,6 +247,17 @@ export default [
                     "error",
                     {
                         ignoreStatic: true
+                    }
+                ],
+                "@typescript-eslint/no-unsafe-assignment": "off",
+                "@typescript-eslint/no-unsafe-return": "off",
+                "@typescript-eslint/no-unsafe-argument": "off",
+                "@typescript-eslint/no-unsafe-call": "off",
+                "@typescript-eslint/no-unsafe-member-access": "off",
+                "@typescript-eslint/no-empty-object-type": [
+                    "error",
+                    {
+                        allowInterfaces: "with-single-extends"
                     }
                 ]
             }

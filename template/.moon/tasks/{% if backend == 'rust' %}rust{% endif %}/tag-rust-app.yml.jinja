@@ -11,13 +11,12 @@ tasks:
       internal: true
       cache: false
 
-  .runner:
+  start:
     extends: compose.up
     args: ["@meta(slug)"]
+    deps: [builder]
     preset: server
     options:
       cache: false
-
-  start:
-    deps: [builder, .runner]
+      internal: false
 

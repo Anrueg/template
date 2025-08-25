@@ -1,26 +1,17 @@
 $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 tasks:
-  .runner:
+  start:
     command: {{ frontend_toolchain }} ng serve
     args:
       - $projectName
       - --configuration=$ENVIRONMENT
     preset: server
     toolchain: {{ frontend_toolchain }}
-    options:
-      runFromWorkspaceRoot: true
-      runDepsInParallel: false
-      internal: true
-      cache: true
-
-  start:
     deps:
-      - ^:build
       - ^:start
       - ~:start.pre
-      - .runner
     options:
       runFromWorkspaceRoot: true
-      runDepsInParallel: false
+      cache: true
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import fs from "node:fs"
 import path from "node:path"
 
@@ -135,6 +134,7 @@ function main() {
     const packages = getPackages().sort((a, b) => a.id.localeCompare(b.id))
     const serverPort = new PortAssigner(4200)
     const storybookPort = new PortAssigner(7001)
+    const ngPackgrModules = {} as Record<string, string>
 
     updateAngularConfig(packages, serverPort, storybookPort)
     tsconfigUpdatePaths(
@@ -145,7 +145,10 @@ function main() {
             for (const mod of fs.readdirSync(pkg.path)) {
                 const publicApi = path.join(pkg.path, mod, "public-api.ts")
                 if (fs.existsSync(publicApi)) {
-                    dst[`@${AngularNs}/${pkg.project.name}/${mod}`] = unixPath(`${pkg.path}/${mod}/public-api.ts`)
+                    const _pckg = `@${AngularNs}/${pkg.project.name}/${mod}`
+                    const _pth = unixPath(`${pkg.path}/${mod}/public-api.ts`)
+                    dst[_pckg] = _pth
+                    ngPackgrModules[_pckg] = _pth
                 }
             }
 
@@ -165,7 +168,7 @@ function main() {
                         dst[`@${AngularNs}/${pkg.project.name}`] = unixPath(`dist/${pkg.id}`)
                         return dst
                     },
-                    { "@/*": unixPath(`${pkg.id}/*`) }
+                    { "@/*": unixPath(`${pkg.id}/*`), ...ngPackgrModules }
                 )
         )
     }
